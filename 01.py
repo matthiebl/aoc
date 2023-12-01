@@ -17,18 +17,19 @@ def get_digit(line: str, i: int) -> int:
     return starts_with_index(line[i:i+5], ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'])
 
 
-def get_first(line: str, pred):
-    i = 0
-    while pred(line, i) == None:
-        i += 1
-    return pred(line, i)
+def first_first(line: str, start: int, inc: int, f):
+    i = start
+    while f(line, i) == None:
+        i += inc
+    return f(line, i)
 
 
-def get_last(line: str, pred):
-    i = len(line) - 1
-    while pred(line, i) == None:
-        i -= 1
-    return pred(line, i)
+def get_left_most(line: str, f):
+    return first_first(line, 0, 1, f)
+
+
+def get_right_most(line: str, f):
+    return first_first(line, len(line) - 1, -1, f)
 
 
 def main(file: str) -> None:
@@ -36,17 +37,13 @@ def main(file: str) -> None:
 
     data = adv.input_as_lines(file)
 
-    p1 = 0
-    for line in data:
-        line = list(filter(lambda x: x in '123456789', line))
-        p1 += int(line[0]) * 10 + int(line[-1])
+    def first_last_dig(l):
+        line = list(map(int, filter(lambda x: x in '123456789', l)))
+        return line[0] * 10 + line[-1]
+    p1 = sum(first_last_dig(line) for line in data)
     print(f'{p1=}')
 
-    p2 = 0
-    for line in data:
-        n1 = get_first(line, get_digit)
-        n2 = get_last(line, get_digit)
-        p2 += n1 * 10 + n2
+    p2 = sum(get_left_most(line, get_digit) * 10 + get_right_most(line, get_digit) for line in data)
     print(f'{p2=}')
 
 
