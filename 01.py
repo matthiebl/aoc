@@ -4,28 +4,31 @@ from sys import argv
 import advent as adv
 
 
-def get_digit(line, i):
+def starts_with_index(s: str, l: list[str]) -> int:
+    for i, match in enumerate(l):
+        if s.startswith(match):
+            return i
+    return None
+
+
+def get_digit(line: str, i: int) -> int:
     if line[i] in '1234567890':
         return int(line[i])
-    if line[i:i+3] == 'one':
-        return 1
-    if line[i:i+3] == 'two':
-        return 2
-    if line[i:i+5] == 'three':
-        return 3
-    if line[i:i+4] == 'four':
-        return 4
-    if line[i:i+4] == 'five':
-        return 5
-    if line[i:i+3] == 'six':
-        return 6
-    if line[i:i+5] == 'seven':
-        return 7
-    if line[i:i+5] == 'eight':
-        return 8
-    if line[i:i+4] == 'nine':
-        return 9
-    return None
+    return starts_with_index(line[i:i+5], ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'])
+
+
+def get_first(line: str, pred):
+    i = 0
+    while pred(line, i) == None:
+        i += 1
+    return pred(line, i)
+
+
+def get_last(line: str, pred):
+    i = len(line) - 1
+    while pred(line, i) == None:
+        i -= 1
+    return pred(line, i)
 
 
 def main(file: str) -> None:
@@ -35,26 +38,15 @@ def main(file: str) -> None:
 
     p1 = 0
     for line in data:
-        n1 = 0
-        while line[n1] not in '1234567890':
-            n1 += 1
-        n2 = len(line) - 1
-        while line[n2] not in '1234567890':
-            n2 -= 1
-        n = line[n1] + line[n2]
-        p1 += int(n)
+        line = list(filter(lambda x: x in '123456789', line))
+        p1 += int(line[0]) * 10 + int(line[-1])
     print(f'{p1=}')
 
     p2 = 0
     for line in data:
-        n1 = 0
-        while get_digit(line, n1) == None:
-            n1 += 1
-        n2 = len(line) - 1
-        while get_digit(line, n2) == None:
-            n2 -= 1
-        n = get_digit(line, n1) * 10 + get_digit(line, n2)
-        p2 += n
+        n1 = get_first(line, get_digit)
+        n2 = get_last(line, get_digit)
+        p2 += n1 * 10 + n2
     print(f'{p2=}')
 
 
