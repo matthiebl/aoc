@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.10
 
 from sys import argv
-import advent as adv
+import days.advent as adv
 
 
 def starts_with_index(s: str, l: list[str]) -> int:
@@ -43,7 +43,8 @@ def main(file: str) -> None:
     p1 = sum(first_last_dig(line) for line in data)
     print(f'{p1=}')
 
-    p2 = sum(get_left_most(line, get_digit) * 10 + get_right_most(line, get_digit) for line in data)
+    p2 = sum(get_left_most(line, get_digit) * 10 +
+             get_right_most(line, get_digit) for line in data)
     print(f'{p2=}')
 
 
