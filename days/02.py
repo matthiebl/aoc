@@ -1,7 +1,15 @@
 #!/usr/bin/env python3.10
 
 from sys import argv
+from collections import defaultdict
 import advent as adv
+
+
+ALLOWED = {
+    'red': 12,
+    'green': 13,
+    'blue': 14,
+}
 
 
 def main(file: str) -> None:
@@ -16,31 +24,22 @@ def main(file: str) -> None:
         id = int(game_info[5:])
         game = adv.double_sep(game, '; ', ', ')
 
-        red = 0
-        green = 0
-        blue = 0
+        min_needed = defaultdict(int)
 
         invalid = False
         for hand in game:
             for cube in hand:
                 count, colour = cube.split(' ')
                 count = int(count)
-                if colour == 'red':
-                    red = max(red, count)
-                if colour == 'green':
-                    green = max(green, count)
-                if colour == 'blue':
-                    blue = max(blue, count)
 
-                if colour == 'red' and count > 12:
+                if count > ALLOWED[colour]:
                     invalid = True
-                elif colour == 'green' and count > 13:
-                    invalid = True
-                elif colour == 'blue' and count > 14:
-                    invalid = True
+                min_needed[colour] = max(min_needed[colour], count)
+
         if not invalid:
             p1 += id
-        p2 += red * blue * green
+
+        p2 += min_needed['red'] * min_needed['green'] * min_needed['blue']
 
     print(f'{p1=}')
     print(f'{p2=}')
