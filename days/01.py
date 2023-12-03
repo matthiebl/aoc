@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.10
 
 from sys import argv
-import days.advent as adv
+import advent as adv
 
 
 def starts_with_index(s: str, l: list[str]) -> int:
