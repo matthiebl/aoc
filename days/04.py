@@ -15,22 +15,19 @@ def main(file: str) -> None:
     cards = defaultdict(int)
     p1 = 0
     for i, [winning, mine] in enumerate(data):
-        winning = re.findall('\d+', winning)
-        mine = re.findall('\d+', mine)
+        winning = set(re.findall('\d+', winning))
+        mine = set(re.findall('\d+', mine))
 
-        matching_numbers = 0
-        score = 0
-        for n in winning:
-            if n in mine:
-                score = score * 2 if score > 0 else 1
-                matching_numbers += 1
-        p1 += score
+        matching_numbers = len(winning & mine)
+        if matching_numbers > 0:
+            p1 += 2 ** (matching_numbers - 1)
+
         cards[i + 1] += 1
         for j in range(matching_numbers):
             cards[i + j + 2] += cards[i + 1]
-    print(f'{p1=}')
 
     p2 = sum(cards.values())
+    print(f'{p1=}')
     print(f'{p2=}')
 
 
