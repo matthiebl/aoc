@@ -41,14 +41,9 @@ def main(file: str) -> None:
                 continue
             # only care about parts
             l1 = len(p1)
-            add_num(x - 1, y - 1)
-            add_num(x - 1, y)
-            add_num(x - 1, y + 1)
-            add_num(x, y - 1)
-            add_num(x, y + 1)
-            add_num(x + 1, y - 1)
-            add_num(x + 1, y)
-            add_num(x + 1, y + 1)
+            for xx in [-1, 0, 1]:
+                for yy in [-1, 0, 1]:
+                    add_num(x + xx, y + yy)
             l2 = len(p1)
             if c == '*' and l2 - l1 == 2:
                 p2 += p1[-1] * p1[-2]
