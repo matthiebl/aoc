@@ -10,7 +10,10 @@ I use my own general helper functions that I have collected from doing previous 
 
 | Day | Part 1   | Rank  | Score | Part 2   | Rank  | Score | Notes
 | --- | -------- | ----- | ----- | -------- | ----- | ----- | ----
-| 1   | 00:03:30 | 1008  | 0     | 00:07:22 | 123   | 0     | Happy w/ Part 2
+| 1   | 00:03:30 | 1008  | 0     | 00:07:22 | 123   | 0     | Happy w/ p2
 | 2   | 00:06:47 | 471   | 0     | 00:08:58 | 354   | 0     | 
-| 3   | 00:21:58 | 1781  | 0     | 00:25:14 | 958   | 0     | At least I got Part 2 under 1000 :/
+| 3   | 00:21:58 | 1781  | 0     | 00:25:14 | 958   | 0     | At least I got p2 under 1000 :/
 | 4   | 01:33:12 | 17542 | 0     | 01:52:28 | 13949 | 0     | Couldn't start until 1:25 after start so took my time
+| 5   | 00:20:15 | 1370  | 0     | >24h     | 45104 | 0     | Had to stop p2 to study for exam, since it was too hard
+| 6   | 02:05:16 | 17542 | 0     | 02:13:55 | 13949 | 0     | Did on train home after said exam
+| 7   | 00:34:28 | 3239  | 0     | 01:23:39 | 5798  | 0     | Not my fav kind of puzzle, and working at same time
