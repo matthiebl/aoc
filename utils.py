@@ -4,7 +4,7 @@ from sys import argv
 from os import chmod, path
 from re import findall
 from aocd import get_data
-from typing import Callable, Iterable, TypeVar
+from typing import Callable, Iterable
 from ast import literal_eval
 
 A = any
@@ -119,15 +119,16 @@ def create_script(day: str) -> None:
         return
     with open(f'{day}.py', 'w') as f:
         f.write(
-            f"""#!/opt/homebrew/bin/python3.12
+            f"""#!/usr/bin/env python3.10
 
 from sys import argv
-import advent as adv
+import aocutils as u
 
 def main(file: str) -> None:
     print('Day {day}')
 
-    data = adv.input_as_lines(file)
+    data = u.input_as_lines(file)
+    print(data)
 
 if __name__ == '__main__':
     file = argv[1] if len(argv) >= 2 else '{day}.in'
@@ -137,16 +138,18 @@ if __name__ == '__main__':
 
 
 if __name__ == '__main__':
-    if len(argv) != 3 or argv[1] not in ['script', 'input', 'setup'] or not argv[2].isdigit():
-        print(f'Usage: \'{argv[0]} [command] <day>')
+
+    if len(argv) != 4 or argv[1] not in ['script', 'input', 'setup'] or not argv[2].isdigit() or not argv[3].isdigit():
+        print(f'Usage: \'{argv[0]} [command] <year> <day>')
         exit(1)
     command = argv[1]
-    day = argv[2]
+    year = int(argv[2])
+    day = argv[3]
 
     if command == 'script':
         create_script(day)
     elif command == 'input':
-        create_input(day)
+        create_input(day, year)
     elif command == 'setup':
         create_script(day)
-        create_input(day)
+        create_input(day, year)
