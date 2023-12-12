@@ -1,4 +1,4 @@
-# Advent of Code 2023
+# Advent of Code
 
 A collection of my solutions for [Advent of Code](https://adventofcode.com/)
 
@@ -10,6 +10,7 @@ from doing previous AoC's to speed up the boring stuff.
 ## Personal Stats
 
 | Year | Stars | Score |
+| ---- | ----- | ----- |
 | 2015 | 0     | 0     |
 | 2016 | 0     | 0     |
 | 2017 | 0     | 0     |
