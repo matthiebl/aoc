@@ -3,14 +3,14 @@
 from sys import argv
 import re
 from collections import defaultdict
-import advent as adv
+import aocutils as u
 
 
 def main(file: str) -> None:
     print('Day 04')
 
     data = [line[8:].strip().split(' | ')
-            for line in adv.input_as_lines(file)]
+            for line in u.input_as_lines(file)]
 
     cards = defaultdict(int)
     p1 = 0

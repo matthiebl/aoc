@@ -2,13 +2,13 @@
 
 from sys import argv
 import math
-import advent as adv
+import aocutils as u
 
 
 def main(file: str) -> None:
     print('Day 08')
 
-    [[instructions], graph] = adv.input_from_grouped_lines(file)
+    [[instructions], graph] = u.input_from_grouped_lines(file)
 
     G = {}
     for line in graph:

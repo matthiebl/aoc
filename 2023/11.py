@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.10
 
 from sys import argv
-import advent as adv
+import aocutils as u
 
 
 def rotate(lst):
@@ -43,7 +43,7 @@ def total_dist_expanded(galaxies: list[tuple[int, int]], rows: list[int], cols: 
 def main(file: str) -> None:
     print('Day 11')
 
-    data = [list(row) for row in adv.input_as_lines(file)]
+    data = [list(row) for row in u.input_as_lines(file)]
 
     galaxies = []
     for y, row in enumerate(data):

@@ -1,18 +1,17 @@
 #!/usr/bin/env python3.10
 
 from sys import argv
-import advent as adv
+import aocutils as u
 
 
 def main(file: str) -> None:
     print('Day 09')
 
-    data = adv.input_as_lines(file, map=adv.find_digits)
+    data = u.input_as_lines(file, map=u.find_digits)
 
     p1 = 0
     p2 = 0
     for line in data:
-        print(line)
         history: list[list[int]] = [line]
         while not all(n == 0 for n in history[-1]):
             new = []
@@ -29,9 +28,6 @@ def main(file: str) -> None:
         history[0].insert(0, 0)
         for la, lb in zip(history, history[1:]):
             lb.insert(0, lb[0] - la[0])
-            print(la, lb)
-        print(history[-1][0])
-        print()
         p2 += history[-1][0]
 
     print(f'{p1=}')

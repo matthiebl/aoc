@@ -1,11 +1,11 @@
 #!/usr/bin/env python3.10
 
 from sys import argv, setrecursionlimit
-import advent as adv
+import aocutils as u
 
 setrecursionlimit(10000)
 
-help_me = {
+LEFT_RIGHT_DIRS = {
     ('|', 0, 1): (1, 0, -1, 0),
     ('|', 0, -1): (-1, 0, 1, 0),
     ('-', 1, 0): (0, -1, 0, 1),
@@ -45,7 +45,7 @@ def find_all(data, G, V, x, y):
 def main(file: str) -> None:
     print('Day 10')
 
-    data = [list(row) for row in adv.input_as_lines(file)]
+    data = [list(row) for row in u.input_as_lines(file)]
 
     # setup
     G: dict[tuple[int, int], list[tuple[int, int]]] = {}
@@ -116,7 +116,7 @@ def main(file: str) -> None:
     while (x, y) not in V2:
         V2.add((x, y))
 
-        ans = help_me.get((data[y][x], dx, dy), None)
+        ans = LEFT_RIGHT_DIRS.get((data[y][x], dx, dy), None)
         if ans is not None:
             dxl, dyl, dxr, dyr = ans
             find_all(data, V, LEFT, x + dxl, y + dyl)
@@ -127,10 +127,14 @@ def main(file: str) -> None:
         nx, ny = a if b in V2 else b
         dx, dy = nx - x, ny - y
 
-    # p2 with either be on the left or right of the loop
-    print(len(LEFT))
-    print(len(RIGHT))
-    # too lazy to work out which side
+    # print(len(LEFT))
+    # print(len(RIGHT))
+
+    # assumption here is that (0, 0) will always be outside of the loop
+    # this may be wrong for other inputs
+    # one of the above print statements should be correct
+    p2 = len(LEFT) if (0, 0) in RIGHT else len(RIGHT)
+    print(f'{p2=}')
 
 
 if __name__ == '__main__':

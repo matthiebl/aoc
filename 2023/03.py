@@ -1,13 +1,13 @@
 #!/usr/bin/env python3.10
 
 from sys import argv
-import advent as adv
+import aocutils as u
 
 
 def main(file: str) -> None:
     print('Day 03')
 
-    data: list[str] = adv.input_as_lines(file)
+    data: list[str] = u.input_as_lines(file)
 
     p1 = []
     V = set()

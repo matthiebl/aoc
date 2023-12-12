@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.10
 
 from sys import argv
-import advent as adv
+import aocutils as u
 
 
 def starts_with_index(s: str, l: list[str]) -> int:
@@ -35,7 +35,7 @@ def get_right_most(line: str, f):
 def main(file: str) -> None:
     print('Day 01')
 
-    data = adv.input_as_lines(file)
+    data = u.input_as_lines(file)
 
     def first_last_dig(l):
         line = list(map(int, filter(lambda x: x in '123456789', l)))

@@ -2,7 +2,7 @@
 
 from sys import argv
 from collections import defaultdict
-import advent as adv
+import aocutils as u
 
 
 ALLOWED = {
@@ -15,14 +15,14 @@ ALLOWED = {
 def main(file: str) -> None:
     print('Day 02')
 
-    data = adv.input_as_lines(file)
+    data = u.input_as_lines(file)
 
     p1 = 0
     p2 = 0
     for line in data:
         [game_info, game] = line.split(': ')
         id = int(game_info[5:])
-        game = adv.double_sep(game, '; ', ', ')
+        game = u.double_sep(game, '; ', ', ')
 
         min_needed = defaultdict(int)
 

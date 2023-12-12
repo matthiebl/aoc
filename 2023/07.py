@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.10
 
 from sys import argv
-import advent as adv
+import aocutils as u
 from collections import Counter
 
 card_val = {
@@ -109,7 +109,7 @@ def value2(hand: str) -> int:
 def main(file: str) -> None:
     print('Day 07')
 
-    hands = adv.input_as_lines(file, map=lambda s: (
+    hands = u.input_as_lines(file, map=lambda s: (
         s.split()[0], int(s.split()[1])))
 
     hands.sort(key=lambda t: value(t[0]))

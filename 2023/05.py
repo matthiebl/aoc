@@ -2,7 +2,7 @@
 
 from sys import argv
 import re
-import advent as adv
+import aocutils as u
 
 
 def map_mapping(input: tuple[int, int, int]) -> tuple[int, int, int]:
@@ -98,7 +98,7 @@ def in_range(seed: int, ranges: list[int]):
 def main(file: str) -> None:
     print('Day 05')
 
-    data = adv.input_from_grouped_lines(file)
+    data = u.input_from_grouped_lines(file)
 
     seeds = list(map(int, re.findall('\d+', data[0][0])))
 
@@ -117,8 +117,6 @@ def main(file: str) -> None:
 
     p2 = 0
     while True:
-        if p2 % 1000000 == 0:
-            print(p2)
         curr = p2
         for mapping in mappings:
             curr = convert(mapping, curr)

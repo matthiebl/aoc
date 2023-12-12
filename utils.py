@@ -7,7 +7,6 @@ from aocd import get_data
 from typing import Callable, Iterable, TypeVar
 from ast import literal_eval
 
-YEAR = 2023
 A = any
 B = any
 
@@ -110,9 +109,9 @@ def dict_visualise(d: dict, name: str, indent: int = 0):
     print(tabs + '}' + (',' if indent > 0 else ''))
 
 
-def create_input(day: str) -> None:
+def create_input(day: str, year: int) -> None:
     with open(f'{day}.in', 'w') as f:
-        f.write(get_data(day=int(day), year=YEAR))
+        f.write(get_data(day=int(day), year=year))
 
 
 def create_script(day: str) -> None:
@@ -120,7 +119,7 @@ def create_script(day: str) -> None:
         return
     with open(f'{day}.py', 'w') as f:
         f.write(
-            f"""#!/usr/bin/env python3.10
+            f"""#!/opt/homebrew/bin/python3.12
 
 from sys import argv
 import advent as adv
