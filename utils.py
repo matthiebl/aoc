@@ -53,6 +53,11 @@ def array_3D(base: A, x: int, y: int, z: int) -> list[list[list[A]]]:
     return [array_2D(base, x, y) for _ in range(z)]
 
 
+def in_grid(grid: list[list[A]], row: int, col: int) -> bool:
+    """row = y, col = x"""
+    return 0 <= row < len(grid) and 0 <= col < len(grid[row])
+
+
 def list_eval(s: str) -> list:
     return literal_eval(s)
 
