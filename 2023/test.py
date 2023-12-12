@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.12
 
+from argparse import ArgumentParser
 import os
 import re
 from io import StringIO
@@ -33,15 +34,41 @@ class colour:
     UNDERLINE = '\033[4m'
 
 
-for test in TESTS:
-    s = os.popen(f'./{test}.py').read()
-    p1, p2 = TESTS[test]
-    a = re.search(f'p1={p1}\n', s)
-    b = re.search(f'p2={p2}\n', s)
-    if not a or not b:
-        print(f'Test {test} {colour.BOLD}{colour.FAIL}failed{colour.RESET}')
-        print('===== OUTPUT =====')
-        print(s)
+def run_tests(tests: set[str]):
+    tests = sorted(list(tests))
+
+    for test in tests:
+        if test not in TESTS:
+            print(f'Test {test} {colour.BOLD}{colour.WARNING}skipped{
+                  colour.RESET} - no such test')
+            continue
+        s = os.popen(f'./{test}.py').read()
+        p1, p2 = TESTS[test]
+        a = re.search(f'p1={p1}\n', s)
+        b = re.search(f'p2={p2}\n', s)
+        if not a or not b:
+            print(f'Test {test} {colour.BOLD}{
+                  colour.FAIL}failed{colour.RESET}')
+            print('===== OUTPUT =====')
+            print(s)
+        else:
+            print(f'Test {test} {colour.BOLD}{colour.OKGREEN}passed{
+                colour.RESET} - {p1=}, {p2=}')
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser()
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        '-t', help='only run the provided tests', nargs='+', type=int)
+    group.add_argument(
+        '-x', help='exclude the provided tests', nargs='+', type=int)
+    args = parser.parse_args()
+
+    all_tests = set(TESTS.keys())
+    if args.t:
+        run_tests(set(map(lambda s: str(s).rjust(2, '0'), args.t)))
+    elif args.x:
+        run_tests(all_tests - set(map(lambda s: str(s).rjust(2, '0'), args.x)))
     else:
-        print(f'Test {test} {colour.BOLD}{colour.OKGREEN}passed{
-              colour.RESET} - {p1=}, {p2=}')
+        run_tests(all_tests)
