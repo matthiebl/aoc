@@ -1,9 +1,8 @@
 #!/usr/bin/env python3.12
 
-from sys import argv
-import re
-from collections import defaultdict
 import aocutils as u
+from sys import argv
+from collections import defaultdict
 
 
 def main(file: str) -> None:
@@ -15,8 +14,8 @@ def main(file: str) -> None:
     cards = defaultdict(int)
     p1 = 0
     for i, [winning, mine] in enumerate(data):
-        winning = set(re.findall('\d+', winning))
-        mine = set(re.findall('\d+', mine))
+        winning = set(u.find_digits(winning))
+        mine = set(u.find_digits(mine))
 
         matching_numbers = len(winning & mine)
         if matching_numbers > 0:

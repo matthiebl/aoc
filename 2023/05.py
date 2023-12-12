@@ -100,7 +100,7 @@ def main(file: str) -> None:
 
     data = u.input_from_grouped_lines(file)
 
-    seeds = list(map(int, re.findall('\d+', data[0][0])))
+    seeds = u.find_digits(data[0][0])
 
     mappings = [sorted([map_mapping(tuple(map(int, line.split(' '))))
                         for line in region[1:]], key=lambda t: t[0]) for region in data[1:]]
