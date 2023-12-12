@@ -1,19 +1,16 @@
 #!/usr/bin/env python3.12
 
-from sys import argv
 import aocutils as u
+from sys import argv
+from functools import cache
 
-CACHE = {}
 
-
-def make_options(mask: str, length: int, nums: list[int]):
+@cache
+def make_options(mask: str, length: int, nums: tuple[int]):
     if len(nums) == 0:
         if mask.count('#') == 0:
             return 1
         return 0
-
-    if (mask, length, tuple(nums)) in CACHE:
-        return CACHE[(mask, length, tuple(nums))]
 
     first = nums[0]
     rest = nums[1:]
@@ -26,7 +23,6 @@ def make_options(mask: str, length: int, nums: list[int]):
             continue
         total += make_options(mask[len(s):], length - dots - first - 1, rest)
 
-    CACHE[(mask, length, tuple(nums))] = total
     return total
 
 
@@ -42,7 +38,7 @@ def main(file: str) -> None:
     p1 = 0
     for [[line], nums] in data:
         nums = u.map_int(nums)
-        p1 += make_options(line, len(line), nums)
+        p1 += make_options(line, len(line), tuple(nums))
     print(f'{p1=}')
 
     p2 = 0
@@ -50,8 +46,7 @@ def main(file: str) -> None:
         nums = u.map_int(nums) * 5
         line = '?'.join([line] * 5)
 
-        ans = make_options(line, len(line), nums)
-        p2 += ans
+        p2 += make_options(line, len(line), tuple(nums))
     print(f'{p2=}')
 
 

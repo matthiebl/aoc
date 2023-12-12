@@ -124,10 +124,10 @@ def create_script(day: str) -> None:
         return
     with open(f'{day}.py', 'w') as f:
         f.write(
-            f"""#!/usr/bin/env python3.10
+            f"""#!/usr/bin/env python3.12
 
-from sys import argv
 import aocutils as u
+from sys import argv
 
 def main(file: str) -> None:
     print('Day {day}')
