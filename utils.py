@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
-from sys import argv
-from os import chmod, path
 from re import findall
-from aocd import get_data
 from typing import Callable, Iterable
 from ast import literal_eval
 
@@ -178,54 +175,3 @@ def dict_visualise(d: dict, name: str, indent: int = 0):
         else:
             print(tabs + '  ' + str(k) + ': ' + str(v) + ',')
     print(tabs + '}' + (',' if indent > 0 else ''))
-
-
-"""
-Creation of script and input
-"""
-
-
-def create_input(day: str, year: int) -> None:
-    with open(f'{day}.in', 'w') as f:
-        f.write(get_data(day=int(day), year=year))
-
-
-def create_script(day: str) -> None:
-    if path.exists(f'{day}.py') and input(f'{day}.py already exists. Are you sure you want to overwrite? ') != 'y':
-        return
-    with open(f'{day}.py', 'w') as f:
-        f.write(
-            f"""#!/usr/bin/env python3.12
-
-import aocutils as u
-from sys import argv
-
-def main(file: str) -> None:
-    print('Day {day}')
-
-    data = u.input_as_lines(file)
-    print(data)
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '{day}.in'
-    main(file)
-""")
-    chmod(f'{day}.py', 0o744)
-
-
-if __name__ == '__main__':
-
-    if len(argv) != 4 or argv[1] not in ['script', 'input', 'setup'] or not argv[2].isdigit() or not argv[3].isdigit():
-        print(f'Usage: \'{argv[0]} [command] <year> <day>')
-        exit(1)
-    command = argv[1]
-    year = int(argv[2])
-    day = argv[3]
-
-    if command == 'script':
-        create_script(day)
-    elif command == 'input':
-        create_input(day, year)
-    elif command == 'setup':
-        create_script(day)
-        create_input(day, year)
