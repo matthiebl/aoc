@@ -3,7 +3,7 @@
 from argparse import ArgumentParser
 import os
 import re
-from io import StringIO
+from time import time
 
 
 TESTS = {
@@ -37,15 +37,22 @@ class colour:
 def run_tests(tests: set[str]):
     tests = sorted(list(tests))
 
+    total = 0
     for test in tests:
         if test not in TESTS:
             print(f'Test {test} {colour.BOLD}{colour.WARNING}skipped{
                   colour.RESET} - no such test')
             continue
+
+        start = time()
         s = os.popen(f'./{test}.py').read()
+        end = time()
+        total += end - start
+
         p1, p2 = TESTS[test]
         a = re.search(f'p1={p1}\n', s)
         b = re.search(f'p2={p2}\n', s)
+
         if not a or not b:
             print(f'Test {test} {colour.BOLD}{
                   colour.FAIL}failed{colour.RESET}')
@@ -53,7 +60,9 @@ def run_tests(tests: set[str]):
             print(s)
         else:
             print(f'Test {test} {colour.BOLD}{colour.OKGREEN}passed{
-                colour.RESET} - {p1=}, {p2=}')
+                colour.RESET} - in {end - start:.3f}s - {p1=}, {p2=}')
+
+    print(f'Tests finished in {total:.3f}s')
 
 
 if __name__ == '__main__':
