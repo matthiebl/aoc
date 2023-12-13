@@ -23,9 +23,14 @@ from doing previous AoC's to speed up the boring stuff.
 
 ## Using
 
-Since python is so fun, the easiest way to use any of my
-code would be to copy the `utils.py` file into the year you
-want. Rename it to `aocutils.py` and run
-`python3 <day>.py <path/to/input>`. You need to ensure that
-the [`aocd` package](https://pypi.org/project/advent-of-code-data/)
-is also installed for your version of python.
+In order to use any of my code, you will need my `/utils.py` file.
+This contains a few useful functions I have kept handy to speed up
+my solves.
+
+Since python is so fun, importing the file in the current structure
+is unlikely to work for you. I recommend moving the `utils.py` file
+into the same directory as the file you are trying to execute.
+
+By default, running `python3 X.py` will look for the file `X.in` as
+the input file to use. So put your input in that file, or you can
+specify a file with `python3 X.py your-input-file`.
