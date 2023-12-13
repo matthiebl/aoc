@@ -23,12 +23,12 @@ from doing previous AoC's to speed up the boring stuff.
 
 ## Using
 
-In order to use any of my code, you will need my `/utils.py` file.
+In order to use any of my code, you will need my `/aocutils.py` file.
 This contains a few useful functions I have kept handy to speed up
 my solves.
 
 Since python is so fun, importing the file in the current structure
-is unlikely to work for you. I recommend moving the `utils.py` file
+is unlikely to work for you. I recommend moving the `aocutils.py` file
 into the same directory as the file you are trying to execute.
 
 By default, running `python3 X.py` will look for the file `X.in` as
