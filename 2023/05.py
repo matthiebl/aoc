@@ -1,78 +1,33 @@
 #!/usr/bin/env python3.12
 
-from sys import argv
-import re
 import aocutils as u
+from sys import argv
+
+"""
+--- Day 5: If You Give A Seed A Fertilizer ---
+
+This was an hard challenge for so early...
+
+Initial solution I implemented to solve the challenge was to work the
+lowest location backwards to a seed. If that seed was in a range from
+the seed ranges, then I found the correct seed, else move to a larger
+location.
+
+This worked fine, but far too slow...
+
+Instead, lets just map across the ranges themselves. Instead of doing
+one seed at a time, we can move the whole range of seeds across. If a
+range overlaps a mapping range we can just do the non-intersecting
+part as well. Eventaully we will convert a range, the whole way.
+
+Do this for all ranges and we end up with all the outcome ranges from
+the inputs. We then just need to lowest start of a range!
+"""
 
 
-def map_mapping(input: tuple[int, int, int]) -> tuple[int, int, int]:
+def map_mapping(input: list[int, int, int]) -> tuple[int, int, int]:
     dest, source, rang = input
     return source, source + rang, dest - source
-
-
-def missing_region(l: list[tuple[int, int, int]]) -> bool:
-    _, lend, _ = l[0]
-    for start, end, _ in l[1:]:
-        if lend != start:
-            return True
-        lend = end
-    return False
-
-
-def clean_up_list(l: list[tuple[int, int, int]]):
-    if l[0][0] != 0:
-        l.insert(0, (0, l[0][0], 0))
-
-    while missing_region(l):
-        _, lend, _ = l[0]
-        for i, (start, end, _) in enumerate(l[1:]):
-            if lend != start:
-                l.insert(i + 1, (lend, start, 0))
-                break
-            lend = end
-    return l
-
-
-def converge(l1: list[tuple[int, int, int]], l2: list[tuple[int, int, int]]):
-    l1_max, l2_max = l1[-1][1], l2[-1][1]
-    if l1_max > l2_max:
-        l2.append((l2_max, l1_max, 0))
-    elif l2_max > l1_max:
-        l1.append((l1_max, l2_max, 0))
-
-    new = []
-    while l1 and l2:
-        a1, a2, a3 = l1.pop(0)
-        b1, b2, b3 = l2.pop(0)
-        if a2 < b2:
-            new.append((a1, a2, a3 + b3))
-            l2.insert(0, (a2, b2, b3))
-        elif b2 < a2:
-            new.append((b1, b2, a3 + b3))
-            l1.insert(0, (b2, a2, a3))
-        else:
-            new.append((a1, a2, a3 + b3))
-
-    new_new = []
-    a1, a2, a3 = new.pop(0)
-    while new:
-        b1, b2, b3 = new.pop(0)
-        if a2 == b1 and a3 == b3:
-            a2 = b2
-        else:
-            new_new.append((a1, a2, a3))
-            a1, a2, a3 = b1, b2, b3
-    new_new.append((a1, a2, a3))
-
-    return new_new
-
-
-def simplify(mappings: list[list[tuple[int, int, int]]]):
-    while len(mappings) > 1:
-        a = mappings.pop(0)
-        b = mappings.pop(0)
-        converged = converge(clean_up_list(a), clean_up_list(b))
-        mappings.insert(0, converged)
 
 
 def convert(mapping: list[tuple[int, int, int]], input: int) -> int:
@@ -82,17 +37,28 @@ def convert(mapping: list[tuple[int, int, int]], input: int) -> int:
     return input
 
 
-def reverse_mappings(mappings: list[list[tuple[int, int, int]]]):
-    mappings.reverse()
-    for i, mapping in enumerate(mappings):
-        mappings[i] = [(l + inc, h + inc, -inc) for l, h, inc in mapping]
+def convert_range(ranges: list[tuple[int, int]], mapping: list[tuple[int, int, int]]) -> list[tuple[int, int]]:
+    finished: list[tuple[int, int]] = []
 
+    while ranges:
+        lo, hi = ranges.pop()
+        found = False
+        for s, e, d in mapping:
+            before, inter, after = u.range_overlap((lo, hi), (s, e))
+            if inter is None:
+                continue
+            finished.append((inter[0] + d, inter[1] + d))
+            if before:
+                ranges.append(before)
+            if after:
+                ranges.append(after)
+            found = True
+            break
+        if not found:
+            # current range should just remain diff +0
+            finished.append((lo, hi))
 
-def in_range(seed: int, ranges: list[int]):
-    for i in range(0, len(ranges), 2):
-        if ranges[i] <= seed < ranges[i] + ranges[i + 1]:
-            return True
-    return False
+    return finished
 
 
 def main(file: str) -> None:
@@ -101,8 +67,7 @@ def main(file: str) -> None:
     data = u.input_from_grouped_lines(file)
 
     seeds = u.find_digits(data[0][0])
-
-    mappings = [sorted([map_mapping(tuple(map(int, line.split(' '))))
+    mappings = [sorted([map_mapping(u.map_int(line.split(' ')))
                         for line in region[1:]], key=lambda t: t[0]) for region in data[1:]]
 
     p1 = 10 ** 20
@@ -113,16 +78,15 @@ def main(file: str) -> None:
         p1 = min(p1, curr)
     print(f'{p1=}')
 
-    reverse_mappings(mappings)
-
-    p2 = 0
-    while True:
-        curr = p2
+    seed_ranges = u.groups_of(seeds, 2)
+    all_ranges = []
+    for start, size in seed_ranges:
+        ranges = [(start, start + size)]
         for mapping in mappings:
-            curr = convert(mapping, curr)
-        if in_range(curr, seeds):
-            break
-        p2 += 1
+            # print(ranges)
+            ranges = convert_range(ranges, mapping)
+        all_ranges += ranges
+    p2 = min(lo for lo, _ in all_ranges)
     print(f'{p2=}')
 
 
