@@ -19,16 +19,33 @@ def reflection_h(space, row):
     return row
 
 
-def reflection_v(space, row):
-    space = rotate(space)
-    above = space[:row]
-    above.reverse()
-    below = space[row:]
+def find_reflection_score(space, exclude: int = 0):
+    for i in range(1, len(space)):
+        score = 100 * reflection_h(space, i)
+        if score > 0 and score != exclude:
+            return score
+    rotated = rotate(space)
+    for i in range(1, len(rotated)):
+        score = reflection_h(rotated, i)
+        if score > 0 and score != exclude:
+            return score
+    return 0
 
-    for a, b in zip(above, below):
-        if a != b:
-            return 0
-    return row
+
+def smudge_score(space, prev_score: int):
+    for i in range(len(space)):
+        for j in range(len(space[i])):
+            space[i] = list(space[i])
+            space[i][j] = '#' if space[i][j] == '.' else '.'
+            space[i] = ''.join(space[i])
+
+            new_score = find_reflection_score(space, prev_score)
+            if new_score:
+                return new_score
+
+            space[i] = list(space[i])
+            space[i][j] = '#' if space[i][j] == '.' else '.'
+            space[i] = ''.join(space[i])
 
 
 def main(file: str) -> None:
@@ -39,48 +56,9 @@ def main(file: str) -> None:
     p1 = 0
     p2 = 0
     for space in spaces:
-        score = 0
-        for i in range(1, len(space)):
-            score += 100 * reflection_h(space, i)
-        rotated = rotate(space)
-        for i in range(1, len(rotated)):
-            score += reflection_h(rotated, i)
+        score = find_reflection_score(space)
         p1 += score
-
-        new = 0
-        found = False
-        for i in range(len(space)):
-            if found:
-                break
-            for j in range(len(space[i])):
-                if found:
-                    break
-
-                space[i] = list(space[i])
-                space[i][j] = '#' if space[i][j] == '.' else '.'
-                space[i] = ''.join(space[i])
-
-                for k in range(1, len(space)):
-                    new = 100 * reflection_h(space, k)
-                    if new == score:
-                        new = 0
-                    if new:
-                        found = True
-                        p2 += new
-                        break
-                rotated = rotate(space)
-                for k in range(1, len(rotated)):
-                    new = reflection_h(rotated, k)
-                    if new == score:
-                        new = 0
-                    if new:
-                        found = True
-                        p2 += new
-                        break
-
-                space[i] = list(space[i])
-                space[i][j] = '#' if space[i][j] == '.' else '.'
-                space[i] = ''.join(space[i])
+        p2 += smudge_score(space, score)
 
     print(f'{p1=}')
     print(f'{p2=}')
