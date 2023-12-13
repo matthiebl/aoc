@@ -11,6 +11,11 @@ A = any
 B = any
 
 
+"""
+Input Parsing
+"""
+
+
 def read_input(file: str) -> str:
     return open(file, 'r').read()
 
@@ -41,25 +46,22 @@ def find_digits(s: str, map: Callable[[str], A] = int, group: Callable[[str], B]
     return group(map(digit) for digit in findall(r'(-?[0-9]+)', s))
 
 
+def list_eval(s: str) -> list:
+    return literal_eval(s)
+
+
+"""
+Grouping data
+"""
+
+
 def groups_of(it: Iterable[A], by: int) -> list[Iterable[A]]:
     return [it[i:i + by] for i in range(0, len(it), by)]
 
 
-def array_2D(base: A, width: int, height: int) -> list[list[A]]:
-    return [[base] * width for _ in range(height)]
-
-
-def array_3D(base: A, x: int, y: int, z: int) -> list[list[list[A]]]:
-    return [array_2D(base, x, y) for _ in range(z)]
-
-
-def in_grid(grid: list[list[A]], row: int, col: int) -> bool:
-    """row = y, col = x"""
-    return 0 <= row < len(grid) and 0 <= col < len(grid[row])
-
-
-def list_eval(s: str) -> list:
-    return literal_eval(s)
+"""
+Min maxing
+"""
 
 
 def sum_max(amount: int, it: Iterable[int], key: Callable[[int], int] = int) -> int:
@@ -73,6 +75,70 @@ def min_max_x_y(it: Iterable[tuple[int, int]]) -> tuple[int, int, int, int]:
     max_x = max(x for x, y in it)
     max_y = max(y for x, y in it)
     return (min_x, min_y, max_x, max_y)
+
+
+"""
+Tuple utils
+"""
+
+
+def add_tup(left: tuple, right: tuple) -> tuple:
+    return tuple(l + r for l, r in zip(left, right))
+
+
+def range_overlap(range: tuple[int, int], mask: tuple[int, int]) -> tuple[tuple[int, int], tuple[int, int], tuple[int, int]]:
+    """
+    range is a tuple that represents the range [a, b)
+    mask  is a tuple that represents the range [c, d)
+
+    casts a shadow from range, over mask, and
+    finds the ranges, before, in between and after
+    that correspend the the parts of the shadow
+    if that makes any sense
+
+    a --------------- b
+            c --------------- d
+    |        |       |
+    [before ][middle][after ]
+    """
+    a, b = range
+    c, d = mask
+
+    before = (a, min(b, c))
+    middle = (max(a, c), min(b, d))
+    after = (max(a, d), b)
+
+    if before[0] >= before[1]:
+        before = None
+    if middle[0] >= middle[1]:
+        middle = None
+    if after[0] >= after[1]:
+        after = None
+
+    return before, middle, after
+
+
+"""
+Array utils
+"""
+
+
+def in_grid(grid: list[list[A]], row: int, col: int) -> bool:
+    """row = y, col = x"""
+    return 0 <= row < len(grid) and 0 <= col < len(grid[row])
+
+
+"""
+Array creation and display
+"""
+
+
+def array_2D(base: A, width: int, height: int) -> list[list[A]]:
+    return [[base] * width for _ in range(height)]
+
+
+def array_3D(base: A, x: int, y: int, z: int) -> list[list[list[A]]]:
+    return [array_2D(base, x, y) for _ in range(z)]
 
 
 def array_collect_def(it: Iterable[tuple[int, int]], fill: str = '#', empty: str = '.') -> list[list[str]]:
@@ -112,6 +178,11 @@ def dict_visualise(d: dict, name: str, indent: int = 0):
         else:
             print(tabs + '  ' + str(k) + ': ' + str(v) + ',')
     print(tabs + '}' + (',' if indent > 0 else ''))
+
+
+"""
+Creation of script and input
+"""
 
 
 def create_input(day: str, year: int) -> None:
