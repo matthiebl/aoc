@@ -11,20 +11,20 @@ Creation of script and input
 AOC_YEARS = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
 
 
-def create_input(day: str, year: int) -> None:
+def create_input(day: int, year: int) -> None:
     try:
-        data = get_data(day=int(day), year=year)
+        data = get_data(day=day, year=year)
     except exceptions.PuzzleLockedError:
         print(f'AoC {year} day {day} not available yet!')
         exit()
-    with open(f'{day}.in', 'w') as f:
+    with open(f'{day:02d}.in', 'w') as f:
         f.write(data)
 
 
-def create_script(day: str) -> None:
-    if path.exists(f'{day}.py') and input(f'{day}.py already exists. Are you sure you want to overwrite? ') != 'y':
+def create_script(day: int) -> None:
+    if path.exists(f'{day:02d}.py') and input(f'{day}.py already exists. Are you sure you want to overwrite? ') != 'y':
         return
-    with open(f'{day}.py', 'w') as f:
+    with open(f'{day:02d}.py', 'w') as f:
         f.write(
             f"""#!/usr/bin/env python3.12
 
@@ -38,10 +38,10 @@ def main(file: str) -> None:
     print(data)
 
 if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '{day}.in'
+    file = argv[1] if len(argv) >= 2 else '{day:02d}.in'
     main(file)
 """)
-    chmod(f'{day}.py', 0o744)
+    chmod(f'{day:02d}.py', 0o744)
 
 
 if __name__ == '__main__':
