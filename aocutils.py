@@ -4,6 +4,9 @@ from re import findall
 from typing import Callable, Iterable
 from ast import literal_eval
 
+# easy imports
+from collections import Counter, defaultdict
+
 A = any
 B = any
 
