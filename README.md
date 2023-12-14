@@ -11,7 +11,7 @@ from doing previous AoC's to speed up the boring stuff.
 
 | Year | Stars | Score |
 | ---- | ----- | ----- |
-| 2015 | 0     | 0     |
+| 2015 | 10    | 0     |
 | 2016 | 0     | 0     |
 | 2017 | 0     | 0     |
 | 2018 | 0     | 0     |
@@ -19,7 +19,7 @@ from doing previous AoC's to speed up the boring stuff.
 | 2020 | 39    | 0     |
 | 2021 | 28    | 0     |
 | 2022 | 50    | 0     |
-| 2023 | 24    | 0     |
+| 2023 | 28    | 0     |
 
 ## Using
 
