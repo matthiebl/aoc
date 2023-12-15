@@ -16,43 +16,29 @@ def main(file: str) -> None:
 
     data = u.read_input(file).split(',')
 
-    p1 = 0
-    for word in data:
-        p1 += hash_(word)
-
-    HASHMAP = {}
-    for word in data:
-        dash, eq = False, 0
-        if word[-1] == '-':
-            label = word[:-1]
-            dash = True
-        else:
-            label = word[:-2]
-            eq = int(word[-1])
-
-        if dash:
-            lens = HASHMAP.get(hash_(label), None)
-            if lens is None:
-                continue
-            HASHMAP[hash_(label)] = list(filter(lambda t: t[0] != label, lens))
-        else:
-            lens = HASHMAP.get(hash_(label), None)
-            if lens is None:
-                HASHMAP[hash_(label)] = [(label, eq)]
-                continue
-
-            if len(list(filter(lambda t: t[0] == label, lens))) == 0:
-                HASHMAP[hash_(label)].append((label, eq))
-            else:
-                HASHMAP[hash_(label)] = list(
-                    map(lambda t: (t[0], eq if t[0] == label else t[1]), lens))
-
+    p1 = sum(map(hash_, data))
     print(f'{p1=}')
 
+    boxes = u.defaultdict(list)
+    focal = {}
+    for word in data:
+        if word[-1] == '-':
+            label = word[:-1]
+            hash__ = hash_(label)
+            if label in boxes[hash__]:
+                boxes[hash__].remove(label)
+        else:
+            label, focus = word.split('=')
+            focus = int(focus)
+            hash__ = hash_(label)
+            if label not in boxes[hash__]:
+                boxes[hash__].append(label)
+            focal[label] = focus
+
     p2 = 0
-    for k, v in HASHMAP.items():
-        for i, (label, focus) in enumerate(v):
-            p2 += (k + 1) * (i + 1) * focus
+    for k, v in boxes.items():
+        for i, label in enumerate(v):
+            p2 += (k + 1) * (i + 1) * focal[label]
     print(f'{p2=}')
 
 
