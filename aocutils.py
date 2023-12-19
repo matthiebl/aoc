@@ -3,6 +3,7 @@
 from re import findall
 from typing import Callable, Iterable
 from ast import literal_eval
+from functools import reduce
 
 # easy imports
 from collections import Counter, defaultdict
@@ -40,6 +41,10 @@ def double_sep(
 
 def map_int(it: Iterable[str]) -> list[int]:
     return list(map(int, it))
+
+
+def mul(it: Iterable[int]) -> int:
+    return reduce(lambda x, acc: x * acc, it, 1)
 
 
 def find_digits(s: str, map: Callable[[str], A] = int, group: Callable[[str], B] = list) -> 'B[A]':
@@ -82,8 +87,12 @@ Tuple utils
 """
 
 
-def add_tup(left: tuple, right: tuple) -> tuple:
+def add_tup(left: tuple[int], right: tuple) -> tuple:
     return tuple(l + r for l, r in zip(left, right))
+
+
+def mul_tup(tup: tuple[int], mulitplier: int) -> tuple:
+    return tuple(x * mulitplier for x in tup)
 
 
 def range_overlap(range: tuple[int, int], mask: tuple[int, int]) -> tuple[tuple[int, int], tuple[int, int], tuple[int, int]]:
