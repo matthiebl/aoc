@@ -23,7 +23,12 @@ My solutions for [Advent of Code 2023](https://adventofcode.com/2023)
 | 15  | 00:04:00 | 742   | 0     | 00:20:33 | 959   | 0     | 
 | 16  | 00:28:53 | 1480  | 0     | 00:36:47 | 1405  | 0     | 
 | 17  | 08:32:36 | 7981  | 0     | 08:38:41 | 6983  | 0     | Got stuck on caching
+| 18  | 00:22:49 | 979   | 0     | 18:29:27 | 14451 | 0     | Had no idea about any existing algos
 
 ## Asides
+
+This year so far has been a nice twist on how I remember previous years. A lot of the puzzles involve
+trying to calculate a number of things that is far too large to brute force. This makes the challenge
+less about just doing something, but instead coming up with a smart way to do it efficiently.
 
 Very glad day 17 wasn't just, "hey, we messed up, the heat map is actually 10 times larger in width and height, try again..."
