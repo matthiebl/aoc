@@ -7,6 +7,11 @@ Workflows = dict[str, tuple[list[tuple[str, str, int, str]], str]]
 
 INDEX = {'x': 0, 'm': 1, 'a': 2, 's': 3}
 
+OPS = {
+    '<': int.__lt__,
+    '>': int.__gt__,
+}
+
 
 def is_accepted(workflows: Workflows, name, ratings):
     if name == 'A':
@@ -15,18 +20,16 @@ def is_accepted(workflows: Workflows, name, ratings):
         return False
     rules, default = workflows[name]
     for (key, cmp, n, target) in rules:
-        if cmp == '>' and ratings[INDEX[key]] > n:
-            return is_accepted(workflows, target, ratings)
-        if cmp == '<' and ratings[INDEX[key]] < n:
+        if OPS[cmp](ratings[key], n):
             return is_accepted(workflows, target, ratings)
     return is_accepted(workflows, default, ratings)
 
 
-PREV = {}
+sections = {}
 
 
-def intersection(xmas, kind):
-    not_checked = list(PREV.keys())
+def intersection(xmas: u.Coords, kind):
+    not_checked = list(sections.keys())
     splits = [xmas]
     while splits:
         this = splits.pop()
@@ -56,30 +59,29 @@ def intersection(xmas, kind):
                             splits.append([a, b, c, d])
             break
         if not intersections:
-            PREV[tuple(this)] = kind
+            sections[tuple(this)] = kind
 
 
-def send(workflows, name, xmas):
-    if any(b - a <= 0 for a, b in xmas):
+def send(workflows: Workflows, name, xmas: dict[str, u.Coord]):
+    if any(b - a <= 0 for a, b in xmas.values()):
         return
     if name == 'R' or name == 'A':
-        intersection(xmas, name)
+        intersection(xmas.values(), name)
         return
     rules, default = workflows[name]
     xxmas = xmas.copy()
 
     for (key, cmp, n, target) in rules:
-        index = INDEX[key]
-        lo, hi = xxmas[index]
+        lo, hi = xxmas[key]
         xxxmas = xxmas.copy()
         if cmp == '>':
-            xxxmas[index] = (max(lo, n + 1), hi)
+            xxxmas[key] = (max(lo, n + 1), hi)
             send(workflows, target, xxxmas)
-            xxmas[index] = (lo, min(hi, n + 1))
+            xxmas[key] = (lo, min(hi, n + 1))
         elif cmp == '<':
-            xxxmas[index] = (lo, min(hi, n))
+            xxxmas[key] = (lo, min(hi, n))
             send(workflows, target, xxxmas)
-            xxmas[index] = (max(lo, n), hi)
+            xxmas[key] = (max(lo, n), hi)
     send(workflows, default, xxmas)
 
 
@@ -100,16 +102,19 @@ def main(file: str) -> None:
             workflows[name][0].append((key, cmp, n, target))
 
     p1 = 0
-    for coord in parts:
-        nums = u.find_digits(coord)
-        if is_accepted(workflows, 'in', nums):
-            p1 += sum(nums)
+    for rating in parts:
+        item = {}
+        for key, val in u.double_sep(rating[1:-1], ',', '='):
+            item[key] = int(val)
+        if is_accepted(workflows, 'in', item):
+            p1 += sum(item.values())
     print(f'{p1=}')
 
-    send(workflows, 'in', [(1, 4001), (1, 4001), (1, 4001), (1, 4001)])
+    send(workflows, 'in',
+         {'x': (1, 4001), 'm': (1, 4001), 'a': (1, 4001), 's': (1, 4001)})
     p2 = 0
-    for l in PREV:
-        if PREV[l] == 'A':
+    for l in sections:
+        if sections[l] == 'A':
             p2 += u.mul(b - a for a, b in l)
     print(f'{p2=}')
 

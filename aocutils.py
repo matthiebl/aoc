@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from re import findall
-from typing import Callable, Iterable, TypeVar
+from typing import Callable, Iterable, TypeVar, Container
 from ast import literal_eval
 from functools import reduce
 
@@ -38,9 +38,9 @@ def double_sep(
     sep1: str,
     sep2: str,
     map: Callable[[str], A] = str,
-    group: Callable[[list], B] = list
-) -> list['B[A]']:
-    return [group(map(b) for b in a.split(sep2)) for a in s.split(sep1)]
+    group: Callable[[list[A]], B] = list
+) -> list[list[A]]:
+    return list(group(map(b) for b in a.split(sep2)) for a in s.split(sep1))
 
 
 def map_int(it: Iterable[str]) -> list[int]:
