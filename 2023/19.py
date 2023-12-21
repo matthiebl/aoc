@@ -3,105 +3,114 @@
 import aocutils as u
 from sys import argv
 
+Workflows = dict[str, tuple[list[tuple[str, str, int, str]], str]]
+
 INDEX = {'x': 0, 'm': 1, 'a': 2, 's': 3}
 
 
-def is_accepted(RULES, r, nums):
-    if r == 'A':
+def is_accepted(workflows: Workflows, name, ratings):
+    if name == 'A':
         return True
-    if r == 'R':
+    if name == 'R':
         return False
-    rules = RULES[r]
-    for rule in rules:
-        if ':' not in rule:
-            if rule == 'A':
-                return True
-            if rule == 'R':
-                return False
-            return is_accepted(RULES, rule, nums)
-        check, goto = rule.split(':')
-        index = INDEX[check[0]]
-        num = int(check[2:])
-        if check[1] == '>' and nums[index] > num:
-            return is_accepted(RULES, goto, nums)
-        if check[1] == '<' and nums[index] < num:
-            return is_accepted(RULES, goto, nums)
+    rules, default = workflows[name]
+    for (key, cmp, n, target) in rules:
+        if cmp == '>' and ratings[INDEX[key]] > n:
+            return is_accepted(workflows, target, ratings)
+        if cmp == '<' and ratings[INDEX[key]] < n:
+            return is_accepted(workflows, target, ratings)
+    return is_accepted(workflows, default, ratings)
 
 
-PREV = []
+PREV = {}
 
 
-def intersection(xmas):
-    count = 0
-    for prev in PREV:
-        prev = [(max(lo1, lo2), min(hi1, hi2))
-                for (lo1, hi1), (lo2, hi2) in zip(xmas, prev)]
-        if any(b - a <= 0 for a, b in prev):
-            continue
-        count += u.mul(b - a for a, b in prev)
-        # for a in u.range_overlap(xmas[0], prev[0]):
-        #     for b in u.range_overlap(xmas[1], prev[1]):
-        #         for c in u.range_overlap(xmas[2], prev[0]):
-        #             for d in u.range_overlap(xmas[3], prev[0]):
-        #                 pass
-        print(prev)
-        print(*[u.range_overlap(r1, r2)
-              for r1, r2 in zip(xmas, prev)], sep='\n')
-        print()
-    PREV.append(xmas)
-    return count
+def intersection(xmas, kind):
+    not_checked = list(PREV.keys())
+    splits = [xmas]
+    while splits:
+        this = splits.pop()
+        intersections = False
+        for prev in not_checked:
+            # prev = not_checked.pop()
+            ranges = [u.range_overlap(r1, r2) for r1, r2 in zip(this, prev)]
+            inter = [b for _, b, _ in ranges]
+            if any(a is None for a in inter):
+                # no intersection
+                continue
+            intersections = True
+            for a in ranges[0]:
+                if a is None:
+                    continue
+                for b in ranges[1]:
+                    if b is None:
+                        continue
+                    for c in ranges[2]:
+                        if c is None:
+                            continue
+                        for d in ranges[3]:
+                            if d is None:
+                                continue
+                            if [a, b, c, d] == inter:
+                                continue
+                            splits.append([a, b, c, d])
+            break
+        if not intersections:
+            PREV[tuple(this)] = kind
 
 
-def send(RULES, r, xmas):
-    if any(b - a <= 0 for a, b in xmas) or r == 'R':
-        return 0
-    if r == 'A':
-        count = u.mul(b - a for a, b in xmas)
-        copies = intersection(xmas)
-        print(xmas, count, copies)
-        return count - copies
-    rules = RULES[r]
+def send(workflows, name, xmas):
+    if any(b - a <= 0 for a, b in xmas):
+        return
+    if name == 'R' or name == 'A':
+        intersection(xmas, name)
+        return
+    rules, default = workflows[name]
     xxmas = xmas.copy()
 
-    total = 0
-    for rule in rules:
-        if ':' not in rule:
-            return total + send(RULES, rule, xmas)
-        check, goto = rule.split(':')
-        index = INDEX[check[0]]
-        num = int(check[2:])
+    for (key, cmp, n, target) in rules:
+        index = INDEX[key]
         lo, hi = xxmas[index]
         xxxmas = xxmas.copy()
-        if check[1] == '>':
-            xxxmas[index] = (max(lo, num), hi)
-            total += send(RULES, goto, xxxmas)
-            xxmas[index] = (lo, min(hi, num))
-        elif check[1] == '<':
-            xxxmas[index] = (lo, min(hi, num))
-            total += send(RULES, goto, xxxmas)
-            xxmas[index] = (max(lo, num), hi)
-    return total
+        if cmp == '>':
+            xxxmas[index] = (max(lo, n + 1), hi)
+            send(workflows, target, xxxmas)
+            xxmas[index] = (lo, min(hi, n + 1))
+        elif cmp == '<':
+            xxxmas[index] = (lo, min(hi, n))
+            send(workflows, target, xxxmas)
+            xxmas[index] = (max(lo, n), hi)
+    send(workflows, default, xxmas)
 
 
 def main(file: str) -> None:
     print('Day 19')
 
-    [inst, coords] = u.input_from_grouped_lines(file)
+    [instructions, parts] = u.input_from_grouped_lines(file)
 
-    I = {}
-    for ins in inst:
-        name, rules = ins.split('{')
-        rules = rules[:-1].split(',')
-        I[name] = rules
+    workflows: Workflows = {}
+    for instruction in instructions:
+        name, rules = instruction[:-1].split('{')
+        rules = rules.split(',')
+        workflows[name] = ([], rules.pop())
+        for rule in rules:
+            comparison, target = rule.split(':')
+            key, cmp = comparison[0], comparison[1]
+            n = int(comparison[2:])
+            workflows[name][0].append((key, cmp, n, target))
 
     p1 = 0
-    for coord in coords:
+    for coord in parts:
         nums = u.find_digits(coord)
-        if is_accepted(I, 'in', nums):
+        if is_accepted(workflows, 'in', nums):
             p1 += sum(nums)
     print(f'{p1=}')
 
-    p2 = send(I, 'in', [(1, 4001), (1, 4001), (1, 4001), (1, 4001)])
+    send(workflows, 'in', [(1, 4001), (1, 4001), (1, 4001), (1, 4001)])
+    p2 = 0
+    for l in PREV:
+        if PREV[l] == 'A':
+            p2 += u.mul(b - a for a, b in l)
     print(f'{p2=}')
 
 

@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 
 from re import findall
-from typing import Callable, Iterable
+from typing import Callable, Iterable, TypeVar
 from ast import literal_eval
 from functools import reduce
 
 # easy imports
 from collections import Counter, defaultdict
 
-A = any
-B = any
+# Types
+A = TypeVar('A')
+B = TypeVar('B')
+
+Coord = tuple[int, int]
+Coords = list[Coord]
 
 
 """
