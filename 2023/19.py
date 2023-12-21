@@ -5,43 +5,26 @@ from sys import argv
 
 Workflows = dict[str, tuple[list[tuple[str, str, int, str]], str]]
 
-INDEX = {'x': 0, 'm': 1, 'a': 2, 's': 3}
-
 OPS = {
     '<': int.__lt__,
     '>': int.__gt__,
 }
-
-
-def is_accepted(workflows: Workflows, name, ratings):
-    if name == 'A':
-        return True
-    if name == 'R':
-        return False
-    rules, default = workflows[name]
-    for (key, cmp, n, target) in rules:
-        if OPS[cmp](ratings[key], n):
-            return is_accepted(workflows, target, ratings)
-    return is_accepted(workflows, default, ratings)
-
-
 sections = {}
 
 
 def intersection(xmas: u.Coords, kind):
-    not_checked = list(sections.keys())
     splits = [xmas]
     while splits:
         this = splits.pop()
         intersections = False
-        for prev in not_checked:
-            # prev = not_checked.pop()
+        for prev in sections:
             ranges = [u.range_overlap(r1, r2) for r1, r2 in zip(this, prev)]
             inter = [b for _, b, _ in ranges]
             if any(a is None for a in inter):
                 # no intersection
                 continue
             intersections = True
+            # very ugly...
             for a in ranges[0]:
                 if a is None:
                     continue
@@ -85,6 +68,48 @@ def send(workflows: Workflows, name, xmas: dict[str, u.Coord]):
     send(workflows, default, xxmas)
 
 
+def is_accepted(workflows: Workflows, ratings: dict[str, int], name: str = 'in'):
+    if name == 'A':
+        return True
+    if name == 'R':
+        return False
+    rules, default = workflows[name]
+    for (key, cmp, n, target) in rules:
+        if OPS[cmp](ratings[key], n):
+            return is_accepted(workflows, ratings, target)
+    return is_accepted(workflows, ratings, default)
+
+
+def count(workflows: Workflows, ranges: dict[str, u.Coord], name: str = 'in'):
+    if name == 'R':
+        return 0
+    if name == 'A':
+        return u.mul(b - a for a, b in ranges.values())
+
+    rules, default = workflows[name]
+    total = 0
+    for (key, cmp, n, target) in rules:
+        lo, hi = ranges[key]
+        T = n + 1, hi
+        F = lo, n + 1
+        if cmp == '<':
+            T = lo, n
+            F = n, hi
+        if T[0] <= T[1]:
+            copy = dict(ranges)
+            copy[key] = T
+            total += count(workflows, copy, target)
+        if F[0] <= F[1]:
+            ranges = dict(ranges)
+            ranges[key] = F
+        else:
+            break
+    else:
+        total += count(workflows, ranges, default)
+
+    return total
+
+
 def main(file: str) -> None:
     print('Day 19')
 
@@ -106,17 +131,22 @@ def main(file: str) -> None:
         item = {}
         for key, val in u.double_sep(rating[1:-1], ',', '='):
             item[key] = int(val)
-        if is_accepted(workflows, 'in', item):
+        if is_accepted(workflows, item):
             p1 += sum(item.values())
     print(f'{p1=}')
 
-    send(workflows, 'in',
-         {'x': (1, 4001), 'm': (1, 4001), 'a': (1, 4001), 's': (1, 4001)})
-    p2 = 0
-    for l in sections:
-        if sections[l] == 'A':
-            p2 += u.mul(b - a for a, b in l)
+    p2 = count(workflows,
+               {'x': (1, 4001), 'm': (1, 4001), 'a': (1, 4001), 's': (1, 4001)})
     print(f'{p2=}')
+
+    # This will find out where every single section of the ranges will end up
+    # send(workflows, 'in',
+    #      {'x': (1, 4001), 'm': (1, 4001), 'a': (1, 4001), 's': (1, 4001)})
+    # p2 = 0
+    # for r in sections:
+    #     if sections[r] == 'A':
+    #         p2 += u.mul(b - a for a, b in r)
+    # print(f'{p2=}')
 
 
 if __name__ == '__main__':
