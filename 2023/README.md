@@ -24,6 +24,9 @@ My solutions for [Advent of Code 2023](https://adventofcode.com/2023)
 | 16  | 00:28:53 | 1480  | 0     | 00:36:47 | 1405  | 0     | 
 | 17  | 08:32:36 | 7981  | 0     | 08:38:41 | 6983  | 0     | Got stuck on caching
 | 18  | 00:22:49 | 979   | 0     | 18:29:27 | 14451 | 0     | Had no idea about any existing algos
+| 19  | 00:25:25 | 1204  | 0     | >24h     | 17057 | 0     | Took me way too long to work out 4D intersections
+| 20  | 00:54:58 | 1306  | 0     | -        | -     | -     |
+| 21  | 00:12:31 | 1133  | 0     | -        | -     | -     |
 
 ## Asides
 
@@ -32,3 +35,5 @@ trying to calculate a number of things that is far too large to brute force. Thi
 less about just doing something, but instead coming up with a smart way to do it efficiently.
 
 Very glad day 17 wasn't just, "hey, we messed up, the heat map is actually 10 times larger in width and height, try again..."
+
+Ah boy day 21 was exactly what I said about day 17... except infinite
