@@ -16,6 +16,11 @@ Coord = tuple[int, int]
 Coords = list[Coord]
 
 
+DX = [0, 1, 0, -1]
+DY = [-1, 0, 1, 0]
+DXY = list(zip(DX, DY))
+
+
 """
 Input Parsing
 """
@@ -184,10 +189,28 @@ def array_visualise(arr: list[list[str]], sep: str = '') -> None:
 
 def dict_visualise(d: dict, name: str, indent: int = 0):
     tabs = '  ' * indent
-    print(tabs + name + ': {')
+    print(tabs + str(name) + ': {')
     for k, v in d.items():
         if isinstance(v, dict):
             dict_visualise(v, k, indent + 1)
         else:
             print(tabs + '  ' + str(k) + ': ' + str(v) + ',')
     print(tabs + '}' + (',' if indent > 0 else ''))
+
+
+"""
+Graph utils
+"""
+
+
+def graph_from_grid(grid: list[list[A]], valid: list[A]) -> dict[Coord, list[Coord]]:
+    G: dict[Coord, list[Coord]] = {}
+    for y, row in enumerate(grid):
+        for x, ch in enumerate(row):
+            if ch not in valid:
+                continue
+            G[(x, y)] = []
+            for dx, dy in DXY:
+                if in_grid(grid, y + dy, x + dx) and grid[y + dy][x + dx] in valid:
+                    G[(x, y)].append((x + dx, y + dy))
+    return G
