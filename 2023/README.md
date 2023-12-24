@@ -27,6 +27,10 @@ My solutions for [Advent of Code 2023](https://adventofcode.com/2023)
 | 19  | 00:25:25 | 1204  | 0     | >24h     | 17057 | 0     | Took me way too long to work out 4D intersections
 | 20  | 00:54:58 | 1306  | 0     | -        | -     | -     |
 | 21  | 00:12:31 | 1133  | 0     | -        | -     | -     |
+| 22  | 23:46:52 | 11315 | 0     | -        | -     | -     | Away for ages
+| 23  | 00:11:21 | 189   | 0     | >24h     | 9732  | -     | 
+| 24  | 00:33:14 | 576   | 0     | -        | -     | -     |
+| 25  | -        | -     | -     | -        | -     | -     |
 
 ## Asides
 
