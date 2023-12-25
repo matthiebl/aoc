@@ -3,129 +3,74 @@
 import aocutils as u
 from sys import argv
 
+LOW = 'LOW'
+HIGH = 'HIGH'
+STOP = 'STOP'
 
-class Mod:
-    def __init__(self, kind, name, outputs) -> None:
-        self.kind = kind
-        self.name = name
-        self.outputs: list[str] = outputs
-
-    def process(self, signal: int, name: str):
-        pass
-
-    def __repr__(self) -> str:
-        return f'<{self.kind}:{self.name}, out={self.outputs}>'
+modules = {}
+signals = {
+    LOW: 0,
+    HIGH: 0,
+}
 
 
-class Broad(Mod):
-    def __init__(self, name, outputs) -> None:
-        super().__init__('broadcaster', name, outputs)
-
-    def process(self, signal: int, name: str):
-        return signal
-
-
-class Flip(Mod):
-    def __init__(self, name, outputs) -> None:
-        self.on = False
-        super().__init__('flip-flop', name, outputs)
-
-    def process(self, signal: int, name: str):
-        if signal == 1:
-            return -1
-        self.on = not self.on
-        return 1 if self.on else 0
-
-    def __repr__(self) -> str:
-        return f'<{self.kind}:{self.name}, out={self.outputs}, status={"on" if self.on else "off"}>'
-
-
-class Conj(Mod):
-    def __init__(self, name, outputs) -> None:
-        self.mem = u.defaultdict(int)
-        super().__init__('conjunction', name, outputs)
-
-    def process(self, signal: int, name: str):
-        self.mem[name] = signal
-        if all(sig == 1 for sig in self.mem.values()):
-            return 0
-        return 1
-
-    def __repr__(self) -> str:
-        return f'<{self.kind}:{self.name}, out={self.outputs}, mem={self.mem}>'
-
-
-def push_button(modules, t):
-    low = 0
-    high = 0
-    Q = [('', modules['broadcaster'], 0)]
-
+def push_button():
+    Q = [('broadcaster', LOW, None)]
     while Q:
-        prev, module, signal = Q.pop(0)
-        module: Mod = module
+        name, recv, last = Q.pop(0)
+        props = modules[name]
 
-        if signal == 0:
-            low += 1
-        else:
-            high += 1
+        signals[recv] += 1
 
-        output = module.process(signal, prev)
-        if output == -1:
-            continue
-
-        for mod in module.outputs:
-            if mod not in modules:
-                if output == 0:
-                    if mod == 'rx':
-                        return 0, 0, True
-                    low += 1
-                else:
-                    high += 1
+        send = recv
+        if props['type'] == '&':
+            props['memory'][last] = recv
+            send = LOW if all(
+                sig == HIGH for sig in props['memory'].values()) else HIGH
+        elif props['type'] == '%':
+            if recv == HIGH:
                 continue
-            Q.append((module.name, modules[mod], output))
-    return low, high, False
+            props['on'] = not props['on']
+            send = HIGH if props['on'] else LOW
+
+        for nxt in props['outputs']:
+            if nxt not in modules:
+                signals[send] += 1
+                continue
+            Q.append((nxt, send, name))
 
 
 def main(file: str) -> None:
     print('Day 20')
 
     data = u.input_as_lines(file)
-    modules = {}
-    conj = []
-    for line in data:
-        [[name], outputs] = u.double_sep(line, ' -> ', ', ')
-        if name[0] == '%':
-            modules[name[1:]] = Flip(name[1:], outputs)
-        elif name[0] == '&':
-            modules[name[1:]] = Conj(name[1:], outputs)
-            conj.append(name[1:])
-        else:
-            modules[name] = Broad(name, outputs)
 
-    for mod in modules:
-        for con in conj:
-            if con in modules[mod].outputs:
-                modules[con].mem[mod] = 0
-    # for mod in modules:
-    #     print(mod, modules[mod])
+    for info in data:
+        name, rest = info.split(' -> ')
+        outputs = rest.split(', ')
 
-    low = 0
-    high = 0
-    t = 0
-    while True:
-        if t == 1000:
-            p1 = low * high
-            print(f'{p1=}')
-        a, b, out = push_button(modules, t)
-        if out:
-            p2 = t
-            print(f'{p2=}')
-            break
-        low += a
-        high += b
-        t += 1
-        if t % 1000 == 0:
-            print(t)
+        props = {
+            'type': name[0],
+            'name': name[1:] if name[0] != 'b' else name,
+            'outputs': outputs,
+        }
+
+        if props['type'] == '&':
+            props['memory'] = {}
+        elif props['type'] == '%':
+            props['on'] = False
+
+        modules[props['name']] = props
+
+    for module in modules:
+        for output in modules[module]['outputs']:
+            if output in modules and modules[output]['type'] == '&':
+                modules[output]['memory'][module] = LOW
+
+    for t in range(1000):
+        push_button()
+    p1 = u.mul(signals.values())
+    print(f'{p1=}')
 
 
 if __name__ == '__main__':
