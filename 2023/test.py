@@ -30,7 +30,8 @@ TESTS = {
     '21': (3605, None),               #
     '22': (473, None),                #
     '23': (2166, 6378),               # 13.060s
-    '24': (17906, None),              #
+    '24': (17906, 571093786416929),   # 0.421s
+    '25': (506202, None),             # 2.098s
 }
 
 
@@ -62,16 +63,19 @@ def run_tests(tests: set[str]):
         total += end - start
 
         p1, p2 = TESTS[test]
-        a = re.search(f'p1={p1}\n', s)
-        b = re.search(f'p2={p2}\n', s)
+        a, b = True, True
+        if p1:
+            a = re.search(f'p1={p1}\n', s)
+        if p2:
+            b = re.search(f'p2={p2}\n', s)
 
         if not a or not b:
-            print(f'Test {test} {colour.BOLD}{
+            print(f'Day {test} {colour.BOLD}{
                   colour.FAIL}failed{colour.RESET}')
             print('===== OUTPUT =====')
             print(s)
         else:
-            print(f'Test {test} {colour.BOLD}{colour.OKGREEN}passed{
+            print(f'Day {test} {colour.BOLD}{colour.OKGREEN}passed{
                 colour.RESET} - in {end - start:.3f}s - {p1=}, {p2=}')
 
     print(f'Tests finished in {total:.3f}s')
