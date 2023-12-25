@@ -3,7 +3,7 @@
 import aocutils as u
 from sys import argv
 
-import networkx as nx
+from networkx import Graph, minimum_edge_cut, connected_components
 
 
 def main(file: str) -> None:
@@ -11,7 +11,7 @@ def main(file: str) -> None:
 
     edges = u.input_as_lines(file)
 
-    G = nx.Graph()
+    G = Graph()
     for line in edges:
         a, lst = line.split(': ')
         lst = lst.split()
@@ -20,9 +20,9 @@ def main(file: str) -> None:
             G.add_node(b)
             G.add_edge(a, b)
 
-    G.remove_edges_from(nx.minimum_edge_cut(G))
+    G.remove_edges_from(minimum_edge_cut(G))
 
-    forests = nx.connected_components(G)
+    forests = connected_components(G)
     p1 = len(next(forests)) * len(next(forests))
 
     print(f'{p1=}')
