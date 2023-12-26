@@ -187,6 +187,10 @@ def array_visualise(arr: list[list[str]], sep: str = '') -> None:
     print()
 
 
+def visualise(it: Iterable[tuple[int, int]], fill: str = '#', empty: str = '.', sep: str = ''):
+    array_visualise(array_collect_def(it, fill, empty), sep)
+
+
 def dict_visualise(d: dict, name: str, indent: int = 0):
     tabs = '  ' * indent
     print(tabs + str(name) + ': {')
