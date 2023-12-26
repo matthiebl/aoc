@@ -4,8 +4,6 @@ import aocutils as u
 from sys import argv
 from math import lcm
 
-import graphviz
-
 LOW = 'LOW'
 HIGH = 'HIGH'
 STOP = 'STOP'
@@ -92,14 +90,6 @@ def main(file: str) -> None:
                 rg_inputs.add(module)
             if output in modules and modules[output]['type'] == '&':
                 modules[output]['memory'][module] = LOW
-
-    dot = graphviz.Digraph('computer wires')
-
-    for node, pre in nodes:
-        dot.node(node, {'': '', '%': 'f-', '&': 'n-', 'b': ''}[pre] + node)
-    dot.edges(edges)
-
-    dot.render('output.gv')
 
     for _ in range(1000):
         push_button()
