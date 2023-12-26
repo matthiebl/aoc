@@ -91,6 +91,10 @@ def min_max_x_y(it: Iterable[tuple[int, int]]) -> tuple[int, int, int, int]:
     return (min_x, min_y, max_x, max_y)
 
 
+def manhattan_dist(x1: int, y1: int, x2: int, y2: int) -> int:
+    return abs(x1 - x2) + abs(y1 - y2)
+
+
 """
 Tuple utils
 """

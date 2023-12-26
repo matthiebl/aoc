@@ -19,7 +19,7 @@ from doing previous AoC's to speed up the boring stuff.
 | 2020 | 39    | 0     |
 | 2021 | 28    | 0     |
 | 2022 | 50    | 0     |
-| 2023 | 28    | 0     |
+| 2023 | 50    | 0     |
 
 ## Using
 

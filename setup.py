@@ -32,7 +32,7 @@ import aocutils as u
 from sys import argv
 
 def main(file: str) -> None:
-    print('Day {day}')
+    print('Day {day:02d}')
 
     data = u.input_as_lines(file)
     print(data)
