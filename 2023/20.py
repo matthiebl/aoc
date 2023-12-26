@@ -2,6 +2,9 @@
 
 import aocutils as u
 from sys import argv
+from math import lcm
+
+import graphviz
 
 LOW = 'LOW'
 HIGH = 'HIGH'
@@ -14,10 +17,24 @@ signals = {
 }
 
 
-def push_button():
+def reset_modules():
+    for props in modules.values():
+        if props['type'] == '%':
+            props['on'] = False
+        elif props['type'] == '&':
+            for module in props['memory']:
+                props['memory'][module] = LOW
+    signals[LOW] = 0
+    signals[HIGH] = 0
+
+
+def push_button(check=None):
     Q = [('broadcaster', LOW, None)]
     while Q:
         name, recv, last = Q.pop(0)
+        # print(name, recv, last, Q)
+        if name == check and recv == LOW:
+            return True
         props = modules[name]
 
         signals[recv] += 1
@@ -38,6 +55,7 @@ def push_button():
                 signals[send] += 1
                 continue
             Q.append((nxt, send, name))
+    return False
 
 
 def main(file: str) -> None:
@@ -62,15 +80,45 @@ def main(file: str) -> None:
 
         modules[props['name']] = props
 
+    nodes = set()
+    edges = []
+    rg_inputs = set()
     for module in modules:
+        nodes.add((module, modules[module]['type']))
         for output in modules[module]['outputs']:
+            nodes.add((output, ''))
+            edges.append((module, output))
+            if output == 'rg':
+                rg_inputs.add(module)
             if output in modules and modules[output]['type'] == '&':
                 modules[output]['memory'][module] = LOW
 
-    for t in range(1000):
+    dot = graphviz.Digraph('computer wires')
+
+    for node, pre in nodes:
+        dot.node(node, {'': '', '%': 'f-', '&': 'n-', 'b': ''}[pre] + node)
+    dot.edges(edges)
+
+    dot.render('output.gv')
+
+    for _ in range(1000):
         push_button()
     p1 = u.mul(signals.values())
     print(f'{p1=}')
+
+    times = []
+    for check in rg_inputs:
+        reset_modules()
+        t = 0
+        while True:
+            t += 1
+            low = push_button(check)
+            if low:
+                times.append(t)
+                break
+
+    p2 = lcm(*times)
+    print(f'{p2=}')
 
 
 if __name__ == '__main__':
