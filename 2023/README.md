@@ -25,12 +25,12 @@ My solutions for [Advent of Code 2023](https://adventofcode.com/2023)
 | 17  | 08:32:36 | 7981  | 0     | 08:38:41 | 6983  | 0     | Got stuck on caching
 | 18  | 00:22:49 | 979   | 0     | 18:29:27 | 14451 | 0     | Had no idea about any existing algos
 | 19  | 00:25:25 | 1204  | 0     | >24h     | 17057 | 0     | Took me way too long to work out 4D intersections
-| 20  | 00:54:58 | 1306  | 0     | >24h     | 15696 | -     | 
-| 21  | 00:12:31 | 1133  | 0     | -        | -     | -     |
-| 22  | 23:46:52 | 11315 | 0     | >24h     | 13029 | -     | Just Christmas things
+| 20  | 00:54:58 | 1306  | 0     | >24h     | 15696 | 0     | 
+| 21  | 00:12:31 | 1133  | 0     | >24h     | 11749 | 0     |
+| 22  | 23:46:52 | 11315 | 0     | >24h     | 13029 | 0     | Just Christmas things
 | 23  | 00:11:21 | 189   | 0     | >24h     | 9732  | 0     | ^
 | 24  | 00:33:14 | 576   | 0     | >24h     | 6822  | 0     | ^
-| 25  | 04:28:47 | 3968  | 0     | -        | -     | -     | ^, and all hard
+| 25  | 04:28:47 | 3968  | 0     | >24h     | 6685  | 0     | ^, and all hard
 
 ## Asides
 
@@ -41,3 +41,17 @@ less about just doing something, but instead coming up with a smart way to do it
 Very glad day 17 wasn't just, "hey, we messed up, the heat map is actually 10 times larger in width and height, try again..."
 
 Ah boy day 21 was exactly what I said about day 17... except infinite
+
+Those last 6 or so days got difficult for part 2. I thoroughly enjoyed this year though, and it ended up
+being a great learning experience.
+
+I often prefer problems that don't require knowledge of complex algorithms, since these often end up
+just requiring an imported library to do anything efficiently.
+Having to use `sympy` for day 24, and `networkx` for day 25 made them feel a little less rewarding.
+Learning these libraries is definitely beneficial but feels cheap.
+
+## Tests
+
+I made a test runner that ensures all of my results stay accurate throughout any refactors.
+
+Cool enough, every day solves correcly in under 30 seconds!

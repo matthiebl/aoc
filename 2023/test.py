@@ -33,6 +33,7 @@ TESTS = {
     '24': (17906, 571093786416929),      # 0.421s
     '25': (506202, None),                # 1.999s
 }
+# Tests finished in 29.744s
 
 
 class colour:
