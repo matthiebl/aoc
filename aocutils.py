@@ -15,6 +15,10 @@ B = TypeVar('B')
 Coord = tuple[int, int]
 Coords = list[Coord]
 
+# Interval is tuple (lo, hi) representing mathematical interval [lo, hi)
+Interval = tuple[int, int]
+Intervals = list[Interval]
+
 
 DX = [0, 1, 0, -1]
 DY = [-1, 0, 1, 0]
@@ -100,7 +104,7 @@ Tuple utils
 """
 
 
-def add_tup(left: tuple[int], right: tuple) -> tuple:
+def add_tup(left: tuple[int], right: tuple[int]) -> tuple:
     return tuple(l + r for l, r in zip(left, right))
 
 
@@ -108,7 +112,7 @@ def mul_tup(tup: tuple[int], mulitplier: int) -> tuple:
     return tuple(x * mulitplier for x in tup)
 
 
-def range_overlap(range: tuple[int, int], mask: tuple[int, int]) -> tuple[tuple[int, int], tuple[int, int], tuple[int, int]]:
+def range_overlap(range: Interval, mask: Interval) -> tuple[Interval, Interval, Interval]:
     """
     range is a tuple that represents the range [a, b)
     mask  is a tuple that represents the range [c, d)
@@ -138,6 +142,23 @@ def range_overlap(range: tuple[int, int], mask: tuple[int, int]) -> tuple[tuple[
         after = None
 
     return before, middle, after
+
+
+def merge_intervals(intervals: Interval) -> Interval:
+    intervals.sort()
+    if len(intervals) == 0:
+        return []
+
+    merged = [intervals[0]]
+
+    for lo, hi in intervals[1:]:
+        mlo, mhi = merged[-1]
+        if lo > mhi:
+            merged.append((lo, hi))
+        elif lo <= mhi:
+            merged[-1] = (mlo, max(hi, mhi))
+
+    return merged
 
 
 """
