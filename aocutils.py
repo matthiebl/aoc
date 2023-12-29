@@ -77,6 +77,10 @@ def groups_of(it: Iterable[A], by: int) -> list[Iterable[A]]:
     return [it[i:i + by] for i in range(0, len(it), by)]
 
 
+def columns(l: list[A]) -> list[tuple[A]]:
+    return list(zip(*l))
+
+
 """
 Min maxing
 """
