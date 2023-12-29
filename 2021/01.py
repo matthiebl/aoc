@@ -12,10 +12,8 @@ def main(file: str) -> None:
     p1 = sum(1 if d2 > d1 else 0 for d1, d2 in zip(depths, depths[1:]))
     print(f'{p1=}')
 
-    window_sums = [sum((a, b, c))
-                   for a, b, c in zip(depths, depths[1:], depths[2:])]
-    p2 = sum(1 if d2 > d1 else 0 for d1,
-             d2 in zip(window_sums, window_sums[1:]))
+    window_sums = [sum((a, b, c)) for a, b, c in zip(depths, depths[1:], depths[2:])]
+    p2 = sum(1 if d2 > d1 else 0 for d1, d2 in zip(window_sums, window_sums[1:]))
     print(f'{p2=}')
 
 
