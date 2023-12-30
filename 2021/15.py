@@ -38,10 +38,10 @@ def main(file: str) -> None:
                     heappush(pq, (dist + value(nx, ny), nx, ny))
                     visited.add((nx, ny))
 
-    d = dijkstras(W, H)
-    print(d)
-    d = dijkstras(W * 5, H * 5)
-    print(d)
+    p1 = dijkstras(W, H)
+    print(f'{p1=}')
+    p2 = dijkstras(W * 5, H * 5)
+    print(f'{p2=}')
 
     # hi 2948
 

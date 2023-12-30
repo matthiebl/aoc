@@ -19,10 +19,10 @@ def main(file: str) -> None:
             d2 += aim * n
         elif ins == 'down':
             d += n
-            aim -= n
+            aim += n
         else:
             d -= n
-            aim += n
+            aim -= n
 
     p1 = x * d
     print(f'{p1=}')
