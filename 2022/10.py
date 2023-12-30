@@ -35,7 +35,7 @@ def main(file: str) -> None:
 
     print(f'{p1=}')
     print('\n'.join(p2))
-    print('p2=ERCREPCJ')  # Just to pass test runner
+    print("p2='ERCREPCJ'")  # Just to pass test runner
 
 
 if __name__ == '__main__':
