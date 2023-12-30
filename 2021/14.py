@@ -4,12 +4,6 @@ import aocutils as u
 from sys import argv
 
 
-class Packet:
-    def __init__(self, **kwargs) -> None:
-        self.data = kwargs
-        self.sub = []
-
-
 def main(file: str) -> None:
     print('Day 14')
 
