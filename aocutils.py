@@ -25,6 +25,11 @@ DY = [-1, 0, 1, 0]
 DXY = list(zip(DX, DY))
 
 
+class Box:
+    FILL = '█'
+    GRAY = '▒'
+
+
 """
 Input Parsing
 """
