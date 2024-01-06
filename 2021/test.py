@@ -26,14 +26,14 @@ TESTS = {
     '17': (5460, 3618),             # 0.120s
     '18': (3665, 4775),             # 1.077s
     '19': (None, None),             #
-    '20': (None, None),             #
+    '20': (5339, 18395),            # 1.901s
     '21': (None, None),             #
     '22': (None, None),             #
     '23': (None, None),             #
     '24': (None, None),             #
     '25': (None, None),             #
 }
-# Tests finished in 42.519s
+# Tests finished in 4.740s
 
 
 class colour:
