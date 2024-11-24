@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
 from argparse import ArgumentParser
-from aocd import get_data, exceptions
 from os import chmod, path
+
+from aocd import exceptions, get_data
 
 """
 Creation of script and input
 """
 
-AOC_YEARS = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
+AOC_YEARS = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
 
 def create_input(day: int, year: int) -> None:
@@ -19,10 +20,11 @@ def create_input(day: int, year: int) -> None:
         exit()
     with open(f'{day:02d}.in', 'w') as f:
         f.write(data)
+    print(f'\nInput: https://adventofcode.com/{year}/day/{day}\n')
 
 
 def create_script(day: int) -> None:
-    if path.exists(f'{day:02d}.py') and input(f'{day}.py already exists. Are you sure you want to overwrite? ') != 'y':
+    if path.exists(f'{day:02d}.py') and input(f'{day:02d}.py already exists. Are you sure you want to overwrite? ') != 'y':
         return
     with open(f'{day:02d}.py', 'w') as f:
         f.write(
@@ -64,5 +66,5 @@ if __name__ == '__main__':
     elif args.input:
         create_input(args.day, args.year)
     else:
-        create_input(args.day, args.year)
         create_script(args.day)
+        create_input(args.day, args.year)

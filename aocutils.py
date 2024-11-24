@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
-from re import findall
-from typing import Callable, Iterable, TypeVar, Container
 from ast import literal_eval
-from functools import reduce
-
 # easy imports
 from collections import Counter, defaultdict
+from functools import reduce
+from re import findall
+from typing import Callable, Container, Iterable, TypeVar
 
 # Types
 A = TypeVar('A')
@@ -252,3 +251,16 @@ def graph_from_grid(grid: list[list[A]], valid: list[A]) -> dict[Coord, list[Coo
                 if in_grid(grid, y + dy, x + dx) and grid[y + dy][x + dx] in valid:
                     G[(x, y)].append((x + dx, y + dy))
     return G
+
+
+"""
+Decorators
+"""
+
+
+def print_result(func):
+    def wrapper(*args, **kwargs):
+        res = func(*args, **kwargs)
+        print(f'{func.__name__}({args}, {kwargs}) = {res}')
+        return res
+    return wrapper
