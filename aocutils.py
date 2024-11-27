@@ -264,3 +264,16 @@ def print_result(func):
         print(f'{func.__name__}({args}, {kwargs}) = {res}')
         return res
     return wrapper
+
+
+def cache(store: dict):
+    def decorator(func):
+        def wrapper(*args):
+            if args in store:
+                print(f'Found {args}')
+                return store[args]
+            res = func(*args)
+            store[args] = res
+            return res
+        return wrapper
+    return decorator
