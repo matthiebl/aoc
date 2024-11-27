@@ -20,7 +20,8 @@ def create_input(day: int, year: int) -> None:
         exit()
     with open(f'{day:02d}.in', 'w') as f:
         f.write(data)
-    print(f'\nInput: https://adventofcode.com/{year}/day/{day}\n')
+    print(f'\nPuzzle: https://adventofcode.com/{year}/day/{day}')
+    print(f'Input:  https://adventofcode.com/{year}/day/{day}/input\n')
 
 
 def create_script(day: int) -> None:
