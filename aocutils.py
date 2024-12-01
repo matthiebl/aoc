@@ -4,6 +4,7 @@ from ast import literal_eval
 # easy imports
 from collections import Counter, defaultdict
 from functools import reduce
+from itertools import islice
 from re import findall
 from typing import Callable, Container, Iterable, TypeVar
 
@@ -83,6 +84,18 @@ def groups_of(it: Iterable[A], by: int) -> list[Iterable[A]]:
 
 def columns(l: list[A]) -> list[tuple[A]]:
     return list(zip(*l))
+
+
+def window(seq, n: int = 2):
+    "Returns a sliding window (of width n) over data from the iterable"
+    "   s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...                   "
+    it = iter(seq)
+    result = tuple(islice(it, n))
+    if len(result) == n:
+        yield result
+    for elem in it:
+        result = result[1:] + (elem,)
+        yield result
 
 
 """
