@@ -8,28 +8,15 @@ import aocutils as u
 def main(file: str) -> None:
     print('Day 01')
 
-    data = u.input_as_lines(file)
-    a = []
-    b = []
-    for l in data:
-        l = l.split()
-        x = int(l[0])
-        y = int(l[1])
-        a.append(x)
-        b.append(y)
-    a = sorted(a)
-    b = sorted(b)
+    pairs = u.input_as_lines(file, map=lambda p: u.map_int(p.split()))
+    left = sorted(x for x, _ in pairs)
+    right = sorted(y for _, y in pairs)
 
-    p1 = 0
-    for x, y in zip(a, b):
-        p1 += abs(x - y)
-    print(p1)
+    p1 = sum(abs(x - y) for x, y in zip(left, right))
+    print(f'{p1=}')
 
-    p2 = 0
-    for x in a:
-        c = b.count(x)
-        p2 += x * c
-    print(p2)
+    p2 = sum(x * right.count(x) for x in left)
+    print(f'{p2=}')
 
 
 if __name__ == '__main__':
