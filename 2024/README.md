@@ -9,7 +9,7 @@ Solutions will be done in python3.12 again this year.
 | Day | Part 1   | Rank  | Score | Part 2   | Rank  | Score | Notes
 | --- | -------- | ----- | ----- | -------- | ----- | ----- | ----
 | 1   | 00:02:09 | 367   | 0     | 00:04:07 | 474   | 0     | Made a silly mistake on p2 and had to wait...
-| 2   |          |       |       |          |       |       | 
+| 2   | 00:06:15 | 950   | 0     | 00:08:57 | 612   | 0     | Website loading issues...
 | 3   |          |       |       |          |       |       | 
 | 4   |          |       |       |          |       |       | 
 | 5   |          |       |       |          |       |       | 
