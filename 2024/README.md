@@ -10,7 +10,7 @@ Solutions will be done in python3.12 again this year.
 | --- | -------- | ----- | ----- | -------- | ----- | ----- | ----
 | 1   | 00:02:09 | 367   | 0     | 00:04:07 | 474   | 0     | Made a silly mistake on p2 and had to wait...
 | 2   | 00:06:15 | 950   | 0     | 00:08:57 | 612   | 0     | Website loading issues...
-| 3   |          |       |       |          |       |       | 
+| 3   | 00:10:51 | 4612  | 0     | 00:14:04 | 2069  | 0     | Was busy for 8 min
 | 4   |          |       |       |          |       |       | 
 | 5   |          |       |       |          |       |       | 
 | 6   |          |       |       |          |       |       | 
