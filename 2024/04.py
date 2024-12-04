@@ -11,24 +11,25 @@ def main(file: str) -> None:
     data = u.input_as_lines(file)
 
     p1 = 0
+    # Horizontals
     for y in range(len(data)):
         for x in range(len(data[0]) - 3):
             search = data[y][x:x+4]
             if search in ['XMAS', 'SAMX']:
                 p1 += 1
+    # Verticals
     for y in range(len(data) - 3):
         for x in range(len(data[0])):
             search = data[y][x] + data[y+1][x] + data[y+2][x] + data[y+3][x]
             if search in ['XMAS', 'SAMX']:
                 p1 += 1
+    # Diagonals
     for y in range(len(data) - 3):
         for x in range(len(data[0]) - 3):
             search = data[y][x] + data[y+1][x+1] + data[y+2][x+2] + data[y+3][x+3]
             if search in ['XMAS', 'SAMX']:
                 p1 += 1
-    for y in range(3, len(data)):
-        for x in range(len(data[0]) - 3):
-            search = data[y][x] + data[y-1][x+1] + data[y-2][x+2] + data[y-3][x+3]
+            search = data[y+3][x] + data[y+2][x+1] + data[y+1][x+2] + data[y][x+3]
             if search in ['XMAS', 'SAMX']:
                 p1 += 1
     print(f'{p1=}')
