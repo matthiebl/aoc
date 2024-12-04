@@ -41,6 +41,7 @@ def main(file: str) -> None:
             up = data[y+2][x] + data[y+1][x+1] + data[y][x+2]
             if down in ['MAS', 'SAM'] and up in ['MAS', 'SAM']:
                 p2 += 1
+
     print(f'{p2=}')
 
 
