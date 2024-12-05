@@ -22,6 +22,9 @@ class colour:
 
 def run_tests(args, answers: dict[str, dict[str, str]], tests: set[str]):
     tests = sorted(list(tests))
+    if not tests:
+        print('No tests to run. Skipping...')
+        return
 
     total = 0
     for test in tests:
@@ -81,8 +84,11 @@ if __name__ == '__main__':
         exit(0)
 
     if args.t:
-        run_tests(args, answers[args.year], available_tests.intersection(
-            set(map(lambda s: str(s).rjust(2, '0'), args.t))))
+        provided_tests = set(map(lambda s: str(s).rjust(2, '0'), args.t))
+        missing_tests = provided_tests - available_tests
+        if missing_tests:
+            print(f'The following tests are not available: {', '.join(list(sorted(missing_tests)))}')
+        run_tests(args, answers[args.year], available_tests.intersection(provided_tests))
     elif args.x:
         run_tests(args, answers[args.year], available_tests - set(map(lambda s: str(s).rjust(2, '0'), args.x)))
     else:
