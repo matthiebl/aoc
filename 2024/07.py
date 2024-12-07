@@ -3,29 +3,22 @@
 import aocutils as u
 from sys import argv
 
-results = {"p1": set(), "p2": set()}
 
-
-def try_calc(target: int, ns: list[int], curr: int, p2=False):
-    key = "p2" if p2 else "p1"
-    if target in results[key]:
-        return
+def combine(target: int, ns: list[int], curr: int, p2=False):
     if not ns and curr == target:
-        results[key].add(target)
-        return
-    elif not ns:
-        return
+        return target
+    if not ns or curr > target:
+        return -1
 
     cp = ns.copy()
     n = cp.pop(0)
-
-    if curr == -1:
-        try_calc(target, cp, n, p2)
-    else:
-        try_calc(target, cp, curr + n, p2)
-        try_calc(target, cp, curr * n, p2)
-        if p2:
-            try_calc(target, cp, int(str(curr) + str(n)), p2)
+    if combine(target, cp, curr + n, p2) > 0:
+        return target
+    if combine(target, cp, curr * n, p2) > 0:
+        return target
+    if p2 and combine(target, cp, int(str(curr) + str(n)), p2) > 0:
+        return target
+    return -1
 
 
 def main(file: str) -> None:
@@ -33,14 +26,10 @@ def main(file: str) -> None:
 
     data = [u.find_digits(line) for line in u.input_as_lines(file)]
 
-    for [res, *ns] in data:
-        try_calc(res, ns, -1)
-    p1 = sum(results["p1"])
+    p1 = sum(filter(lambda r: r > 0, (combine(res, ns[1:], ns[0]) for [res, *ns] in data)))
     print(f'{p1=}')
 
-    for [res, *ns] in data:
-        try_calc(res, ns, -1, p2=True)
-    p2 = sum(results["p2"])
+    p2 = sum(filter(lambda r: r > 0, (combine(res, ns[1:], ns[0], p2=True) for [res, *ns] in data)))
     print(f'{p2=}')
 
 
