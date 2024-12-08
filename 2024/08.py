@@ -1,16 +1,12 @@
 #!/usr/bin/env python3.13
 
-from collections import Counter, defaultdict
+from collections import defaultdict
 from sys import argv
 
 from maoc import fetch, submit
 
-# from maoc.utils.classes import Point
-# from maoc.utils.collect import chunks, windows
-# from maoc.utils.parse import ints
-
 """
---- Day 8: ---
+--- Day 8: Resonant Collinearity ---
 
 https://adventofcode.com/2024/day/8
 """
@@ -24,45 +20,43 @@ C = len(raw[0])
 
 
 def parse_raw():
-    d = defaultdict(set)
+    antennas = defaultdict(list)
     for r, line in enumerate(raw):
         for c, ch in enumerate(line):
             if ch != ".":
-                d[ch].add((r, c))
-    return {k: list(v) for k, v in d.items()}
+                antennas[ch].append((r, c))
+    return antennas
 
 
-data = parse_raw()
+antennas = parse_raw()
 
 
 def part_one():
-    antinodes = set()
-    for freq in data:
-        for i, (r1, c1) in enumerate(data[freq]):
-            for (r2, c2) in data[freq][i+1:]:
+    nodes = set()
+    for freq in antennas:
+        for i, (r1, c1) in enumerate(antennas[freq]):
+            for (r2, c2) in antennas[freq][i+1:]:
                 dr, dc = r2 - r1, c2 - c1
-                antinodes.add((r1 - dr, c1 - dc))
-                antinodes.add((r2 + dr, c2 + dc))
-    return sum(1 for r, c in antinodes if 0 <= r < R and 0 <= c < C)
+                nodes.add((r1 - dr, c1 - dc))
+                nodes.add((r2 + dr, c2 + dc))
+    return sum(1 for r, c in nodes if 0 <= r < R and 0 <= c < C)
 
 
 def part_two():
-    antinodes = set()
-    for freq in data:
-        for i, (r1, c1) in enumerate(data[freq]):
-            for (r2, c2) in data[freq][i+1:]:
+    nodes = set()
+    for freq in antennas:
+        for i, (r1, c1) in enumerate(antennas[freq]):
+            for (r2, c2) in antennas[freq][i+1:]:
                 dr, dc = r2 - r1, c2 - c1
                 ir, ic = r1, c1
                 while 0 <= ir < R and 0 <= ic < C:
-                    antinodes.add((ir, ic))
-                    ir += dr
-                    ic += dc
+                    nodes.add((ir, ic))
+                    ir, ic = ir + dr, ic + dc
                 ir, ic = r1, c1
                 while 0 <= ir < R and 0 <= ic < C:
-                    antinodes.add((ir, ic))
-                    ir -= dr
-                    ic -= dc
-    return len(antinodes)
+                    nodes.add((ir, ic))
+                    ir, ic = ir - dr, ic - dc
+    return len(nodes)
 
 
 submit(year=2024, day=8, part=1, solution=part_one)
