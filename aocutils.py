@@ -1,12 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.12
 
 from ast import literal_eval
-# easy imports
 from collections import Counter, defaultdict
 from functools import reduce
 from itertools import islice
 from re import findall
-from typing import Callable, Container, Iterable, TypeVar
+from typing import Callable, Iterable, TypeVar
 
 # Types
 A = TypeVar('A')
@@ -23,11 +22,6 @@ Intervals = list[Interval]
 DX = [0, 1, 0, -1]
 DY = [-1, 0, 1, 0]
 DXY = list(zip(DX, DY))
-
-
-class Box:
-    FILL = '█'
-    GRAY = '▒'
 
 
 """
@@ -129,8 +123,8 @@ def add_tup(left: tuple[int], right: tuple[int]) -> tuple:
     return tuple(l + r for l, r in zip(left, right))
 
 
-def mul_tup(tup: tuple[int], mulitplier: int) -> tuple:
-    return tuple(x * mulitplier for x in tup)
+def mul_tup(tup: tuple[int], multiplier: int) -> tuple:
+    return tuple(x * multiplier for x in tup)
 
 
 def range_overlap(range: Interval, mask: Interval) -> tuple[Interval, Interval, Interval]:
@@ -140,7 +134,7 @@ def range_overlap(range: Interval, mask: Interval) -> tuple[Interval, Interval, 
 
     casts a shadow from range, over mask, and
     finds the ranges, before, in between and after
-    that correspend the the parts of the shadow
+    that correspond to the parts of the shadow
     if that makes any sense
 
     a --------------- b

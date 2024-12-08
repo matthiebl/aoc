@@ -1,38 +1,50 @@
-#!/usr/bin/env python3.12
+#!/usr/bin/env python3.13
 
-import aocutils as u
 from sys import argv
 
+from maoc import fetch, submit
+from maoc.utils.parse import ints
 
-def combine(target: int, ns: list[int], curr: int, p2=False):
-    if not ns and curr == target:
-        return target
-    if not ns or curr > target:
-        return -1
+"""
+--- Day 7: Bridge Repair ---
 
-    cp = ns.copy()
-    n = cp.pop(0)
-    if combine(target, cp, curr + n, p2) > 0:
-        return target
-    if combine(target, cp, curr * n, p2) > 0:
-        return target
-    if p2 and combine(target, cp, int(str(curr) + str(n)), p2) > 0:
-        return target
-    return -1
+https://adventofcode.com/2024/day/7
+"""
+
+print("Day 07")
+FILE_NAME = argv[1] if len(argv) >= 2 else "07.in"
+raw = fetch(year=2024, day=7, path=__file__, file_name=FILE_NAME)
 
 
-def main(file: str) -> None:
-    print('Day 07')
-
-    data = [u.find_digits(line) for line in u.input_as_lines(file)]
-
-    p1 = sum(filter(lambda r: r > 0, (combine(res, ns[1:], ns[0]) for [res, *ns] in data)))
-    print(f'{p1=}')
-
-    p2 = sum(filter(lambda r: r > 0, (combine(res, ns[1:], ns[0], p2=True) for [res, *ns] in data)))
-    print(f'{p2=}')
+def parse_raw():
+    return [list(ints(line)) for line in raw.splitlines()]
 
 
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '07.in'
-    main(file)
+equations = parse_raw()
+
+
+def can_obtain(target: int, ns: list[int], p2=False):
+    n = ns[-1]
+    if len(ns) == 1:
+        return target == n
+    if target > n and can_obtain(target - n, ns[:-1], p2):
+        return True
+    if target % n == 0 and can_obtain(target // n, ns[:-1], p2):
+        return True
+    s_t = str(target)
+    s_n = str(n)
+    if p2 and len(s_t) > len(s_n) and s_t.endswith(s_n) and can_obtain(int(s_t[:-len(s_n)]), ns[:-1], p2):
+        return True
+    return False
+
+
+def part_one():
+    return sum(target for [target, *ns] in equations if can_obtain(target, ns))
+
+
+def part_two():
+    return sum(target for [target, *ns] in equations if can_obtain(target, ns, p2=True))
+
+
+submit(year=2024, day=7, part=1, solution=part_one)
+submit(year=2024, day=7, part=2, solution=part_two)
