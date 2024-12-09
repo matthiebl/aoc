@@ -15,7 +15,7 @@ Solutions will be done in python3.12 again this year.
 | 5   | 00:08:13 | 898   | 0     | 00:22:00 | 1821  | 0     | 
 | 6   | 00:08:07 | 755   | 0     | 04:37:13 | 13687 | 0     | Got stuck with negative indices on p2
 | 7   | 00:36:07 | 6138  | 0     | 00:37:26 | 4610  | 0     | Was busy for 15 min, and struggled on p1
-| 8   |          |       |       |          |       |       | 
+| 8   | 00:09:34 | 632   | 0     | 00:12:36 | 410   | 0     | 
 | 9   |          |       |       |          |       |       | 
 | 10  |          |       |       |          |       |       | 
 | 11  |          |       |       |          |       |       | 
