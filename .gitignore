@@ -2,3 +2,4 @@ __pycache__
 *.ex
 *.in
 pyproject.toml
+answers.json
