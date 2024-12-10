@@ -1,69 +1,33 @@
-#!/usr/bin/env python3.12
+from functools import cmp_to_key
+from utils import *
 
-from sys import argv
+args = parse_args(year=2024, day=5)
+raw = get_input(args["filename"], year=2024, day=5)
 
-import aocutils as u
+groups = [group.splitlines() for group in raw.split("\n\n")]
+
+rules, updates = [[tuple(nums(line)) for line in group] for group in groups]
 
 
-def rules_pass(rules: list, update: list):
-    for [ra, rb] in rules:
-        try:
-            ai = update.index(ra)
-            bi = update.index(rb)
-        except ValueError:
-            continue
-
-        if ai >= bi:
+def rules_pass(update: tuple):
+    for ra, rb in rules:
+        if ra in update and rb in update and update.index(ra) >= update.index(rb):
             return False
     return True
 
 
-def main(file: str) -> None:
-    print('Day 05')
-
-    rules, updates = u.input_from_grouped_lines(file)
-    rules = [u.map_int(rule.split('|')) for rule in rules]
-    updates = [u.map_int(update.split(',')) for update in updates]
-
-    bad_updates: list[list[int]] = []
-    p1 = 0
-    for update in updates:
-        if rules_pass(rules, update):
-            p1 += update[len(update) // 2]
-        else:
-            bad_updates.append(update)
-
-    print(f'{p1=}')
-
-    p2 = 0
-    for update in bad_updates:
-        ordered: list[int] = []
-        while update:
-            valid_rules = []
-            for [ra, rb] in rules:
-                try:
-                    update.index(ra)
-                    update.index(rb)
-                except ValueError:
-                    continue
-                valid_rules.append([ra, rb])
-
-            for n in update:
-                bad = False
-                for [ra, rb] in valid_rules:
-                    if n == ra:
-                        bad = True
-                        break
-                if not bad:
-                    ordered.append(n)
-                    update.remove(n)
-                    break
-
-        p2 += ordered[len(ordered) // 2]
-
-    print(f'{p2=}')
+def compare(a: int, b: int) -> int:
+    return -1 if (a, b) in rules else 1
 
 
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '05.in'
-    main(file)
+p1 = 0
+p2 = 0
+for update in updates:
+    if rules_pass(update):
+        p1 += update[len(update) // 2]
+        continue
+    ordered = sorted(update, key=cmp_to_key(compare))
+    p2 += ordered[len(ordered) // 2]
+
+print(p1)
+print(p2)
