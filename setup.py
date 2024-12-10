@@ -46,7 +46,9 @@ FILE_NAME = argv[1] if len(argv) >= 2 else "{day:02d}.in"
 raw = fetch(year={year}, day={day}, path=__file__, file_name=FILE_NAME)
 
 def parse_raw():
-    return raw.splitlines()
+    return raw.splitlines() # lines
+    return [list(line) for line in raw.splitlines()] # grid
+    return [group.splitlines() for group in raw.split("\\n\\n")] # grouped lines
 
 data = parse_raw()
 print(data)
@@ -60,10 +62,10 @@ def part_two():
 p1 = part_one()
 print(p1)
 exit(0)  # Move as we go
-submit(year={year}, day={day}, part=1, solution=p1)
+submit(year={year}, day={day}, part=1, solution=p1, verbose=True)
 p2 = part_two()
 print(p2)
-submit(year={year}, day={day}, part=2, solution=p2)
+submit(year={year}, day={day}, part=2, solution=p2, verbose=True)
 """)
     chmod(f"{day:02d}.py", 0o744)
 
