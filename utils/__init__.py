@@ -1,4 +1,5 @@
 from .input_handling import parse_args, get_input
+from .wrappers import memoize
 
 
 def directions(request: (list | int | str) = 4) -> list[tuple]:
@@ -19,6 +20,8 @@ def directions(request: (list | int | str) = 4) -> list[tuple]:
         8: [0, 1, 2, 3, 5, 6, 7, 8],
         9: [0, 1, 2, 3, 4, 5, 6, 7, 8],
         "X": [0, 4, 8, 2, 4, 6],
+        "cw4": [1, 5, 7, 3],
+        "cw8": [0, 1, 2, 5, 8, 7, 6, 3]
     }
     if isinstance(request, list):
         order = request
@@ -27,6 +30,16 @@ def directions(request: (list | int | str) = 4) -> list[tuple]:
     else:
         raise ValueError(f"No known neighbour order for {request}")
     return [neighbours[i] for i in order]
+
+
+def within_grid(grid: list[list], r: int, c: int) -> bool:
+    return 0 <= r < len(grid) and 0 <= c < len(grid[0])
+
+
+def enumerate_grid(grid: list[list]):
+    for r, row in enumerate(grid):
+        for c, val in enumerate(row):
+            yield (r, c), val, row
 
 
 def nums(s: str):

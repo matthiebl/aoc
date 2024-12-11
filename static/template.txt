@@ -5,10 +5,10 @@ raw = get_input(args["filename"], year={YEAR}, day={DAY})
 
 lines = raw.splitlines()
 
-# groups = [group.splitlines() for group in raw.split("\n\n")]
+groups = [group.splitlines() for group in raw.split("\n\n")]
 
-# grid = [list(line) for line in raw.splitlines()]
-# R, C = len(grid), len(grid[0])
+grid = [list(line) for line in raw.splitlines()]
+R, C = len(grid), len(grid[0])
 
 p1 = 0
 p2 = 0
