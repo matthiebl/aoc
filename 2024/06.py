@@ -1,79 +1,50 @@
-#!/usr/bin/env python3.12
+from utils import *
 
-from sys import argv
+args = parse_args(year=2024, day=6)
+raw = get_input(args["filename"], year=2024, day=6)
 
-import aocutils as u
+grid = [list(line) for line in raw.splitlines()]
+R, C = len(grid), len(grid[0])
 
-D = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+D = directions("cw4")
+
+guard = None
+for r, row in enumerate(grid):
+    if "^" in row:
+        guard = (r, row.index("^"))
+        break
 
 
-def find_guard(grid: list[list[int]]) -> tuple[int, int]:
-    for r, row in enumerate(grid):
-        if '^' in row:
-            return (r, row.index('^'))
-    raise RuntimeError('Could not find guard `^`')
-
-
-def traverse_grid(grid: list[list[int]], start: tuple[int, int]) -> set[tuple[int, int]]:
-    R = len(grid)
-    C = len(grid[0])
+def traverse(start: tuple[int, int], p2: bool = False):
     path = set([start])
+    turns = set()
     r, c = start
     d = 0  # index in D
     while True:
-        dr, dc = D[d % len(D)]
-        nr, nc = r + dr, c + dc
-        if not (0 <= nr < R and 0 <= nc < C):
-            return path
-        if grid[nr][nc] == '#':
-            d += 1
+        dr, dc = D[d]
+        if not within_grid(grid, r + dr, c + dc):
+            return path, False
+        if grid[r + dr][c + dc] == "#":
+            if (r, c, d) in turns:
+                return path, True
+            turns.add((r, c, d))
+            d = (d + 1) % 4
         else:
-            r, c = nr, nc
-        path.add((r, c))
+            r, c = r + dr, c + dc
+        if not p2:
+            path.add((r, c))
 
 
-def is_loop(grid: list[list[int]], start: tuple[int, int]) -> bool:
-    R = len(grid)
-    C = len(grid[0])
-    turns = set()
-    r, c = start
-    d = 0
-    while True:
-        dr, dc = D[d % len(D)]
-        nr, nc = r + dr, c + dc
-        if not (0 <= nr < R and 0 <= nc < C):
-            return False
-        if grid[nr][nc] == '#':
-            if (r, c, d % len(D)) in turns:
-                return True
-            turns.add((r, c, d % len(D)))
-            d += 1
-        else:
-            r, c = nr, nc
+path, _ = traverse(guard)
+p1 = len(path)
+print(p1)
 
-
-def main(file: str) -> None:
-    print('Day 06')
-
-    grid = [list(l) for l in u.input_as_lines(file)]
-
-    guard = find_guard(grid)
-
-    path = traverse_grid(grid, guard)
-    p1 = len(path)
-    print(f'{p1=}')
-
-    p2 = 0
-    for r, c in path:
-        if grid[r][c] != '.':
-            continue
-        grid[r][c] = '#'
-        if is_loop(grid, guard):
-            p2 += 1
-        grid[r][c] = '.'
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '06.in'
-    main(file)
+p2 = 0
+for r, c in path:
+    if grid[r][c] != ".":
+        continue
+    grid[r][c] = "#"
+    if traverse(guard, p2=True)[1]:
+        p2 += 1
+    grid[r][c] = "."
+print(p2)
