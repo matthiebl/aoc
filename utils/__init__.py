@@ -1,45 +1,6 @@
+from .graph import grid_to_graph, weight_const, weight_of_pos, bfs, dijkstras, dfs, directions, within_grid, enumerate_grid
 from .input_handling import parse_args, get_input
 from .wrappers import memoize
-
-
-def directions(request: (list | int | str) = 4) -> list[tuple]:
-    """
-    Return the directional `(r, c)` differences for each neighbour.
-
-    `request` can be a list of index orders where each index is one of:
-    ```
-    [[0, 1, 2],
-     [3, 4, 5],
-     [6, 7, 8]]
-    ```
-    or it can be a key into the common orderings.
-    """
-    neighbours = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
-    common_orderings = {
-        4: [1, 3, 5, 7],
-        8: [0, 1, 2, 3, 5, 6, 7, 8],
-        9: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        "X": [0, 4, 8, 2, 4, 6],
-        "cw4": [1, 5, 7, 3],
-        "cw8": [0, 1, 2, 5, 8, 7, 6, 3]
-    }
-    if isinstance(request, list):
-        order = request
-    elif request in common_orderings:
-        order = common_orderings[request]
-    else:
-        raise ValueError(f"No known neighbour order for {request}")
-    return [neighbours[i] for i in order]
-
-
-def within_grid(grid: list[list], r: int, c: int) -> bool:
-    return 0 <= r < len(grid) and 0 <= c < len(grid[0])
-
-
-def enumerate_grid(grid: list[list]):
-    for r, row in enumerate(grid):
-        for c, val in enumerate(row):
-            yield (r, c), val, row
 
 
 def nums(s: str):
