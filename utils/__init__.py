@@ -33,3 +33,8 @@ def windows(it, n: int = 2):
         if len(window) == n:
             yield window
             del window[0]
+
+
+def tuple_add(t1: tuple[int, ...], t2: tuple[int, ...]) -> tuple[int, ...]:
+    """Add two tuples of the same length."""
+    return tuple(a + b for a, b in zip(t1, t2))
