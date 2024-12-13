@@ -21,11 +21,11 @@ from utils import *
 args = parse_args(year=2024, day=13)
 raw = get_input(args["filename"], year=2024, day=13)
 
-groups = [list(nums(group)) for group in raw.split("\n\n")]
+machines = chunks(nums(raw), 6)
 
 p1 = 0
 p2 = 0
-for [xa, ya, xb, yb, xp, yp] in groups:
+for [xa, ya, xb, yb, xp, yp] in machines:
     a, b = symbols("a b")
     eq1 = Eq(a * xa + b * xb - xp, 0)
     eq2 = Eq(a * ya + b * yb - yp, 0)
