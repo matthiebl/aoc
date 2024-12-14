@@ -35,6 +35,12 @@ def windows(it, n: int = 2):
             del window[0]
 
 
+def mul(*ns: list[int]) -> int:
+    """Mulitplies all the numbers together and returns their result."""
+    from functools import reduce
+    return reduce(lambda a, b: a * b, ns, 1)
+
+
 def tuple_add(t1: tuple[int, ...], t2: tuple[int, ...]) -> tuple[int, ...]:
     """Add two tuples of the same length."""
     return tuple(a + b for a, b in zip(t1, t2))
