@@ -1,23 +1,24 @@
 """
 --- Day 16: Warehouse Woes ---
 https://adventofcode.com/2024/day/16
+
+Today I have solved the problem with Dijkstra's algorithm, where I not only
+keep a graph of a position to adjacent, but a graph of position and direction
+to possible moves, with the weighting including the cost to turn 90 deg.
 """
 
 from heapq import heapify, heappush, heappop
+from collections import deque
 from utils import *
 
 args = parse_args(year=2024, day=16)
-raw = get_input(args["filename"], year=2024, day=16)
+raw = get_input(args.filename, year=2024, day=16)
 
 grid = [list(line) for line in raw.splitlines()]
 R, C = len(grid), len(grid[0])
 
 sr, sc = (R - 2, 1)
 er, ec = (1, C - 2)
-grid[sr][sc] = "."
-grid[er][ec] = "."
-
-g = {}
 
 D = {
     "N": list(zip("WNE", directions([3, 1, 5]))),
@@ -26,18 +27,22 @@ D = {
     "W": list(zip("SWN", directions([7, 3, 1]))),
 }
 
-for (r, c), val, _ in enumerate_grid(grid):
-    if val == "#":
-        continue
+graph = {}
+for (r, c), val, _ in enumerate_grid(grid, skip="#"):
     for d in "NESW":
-        g[(r, c, d)] = []
+        graph[(r, c, d)] = []
         for i, (dd, (dr, dc)) in enumerate(D[d]):
-            if grid[r + dr][c + dc] == ".":
+            if grid[r + dr][c + dc] in ".SE":
                 cost = 1001 if i % 3 != 1 else 1
-                g[(r, c, d)].append((cost, (r + dr, c + dc, dd)))
+                graph[(r, c, d)].append((cost, (r + dr, c + dc, dd)))
 
 
 def dijkstras(graph: dict, start, initial_dist: int = 0):
+    """
+    Modified Dijkstra's algorithm to keep track of the weight and
+    positions that made us arrive at the shortest path so we can
+    reconstruct the shortest paths.
+    """
     distances = {pos: {"w": float("inf"), "paths": []} for pos in graph}
     distances[start]["w"] = initial_dist
 
@@ -59,33 +64,28 @@ def dijkstras(graph: dict, start, initial_dist: int = 0):
             tentative = d + w
             if tentative == distances[adj]["w"]:
                 distances[adj]["paths"].append(nxt)
-
             elif tentative < distances[adj]["w"]:
                 distances[adj] = {"w": tentative, "paths": [nxt]}
-                heappush(heap, (tentative, adj))
+            heappush(heap, (tentative, adj))
 
     return distances
 
 
-dists = dijkstras(g, (sr, sc, "E"))
+dists = dijkstras(graph, (sr, sc, "E"))
 
 shortest_path = min([dists[(r, c, d)] for r, c, d in dists if r == er and c == ec], key=lambda t: t["w"])
 p1 = shortest_path["w"]
 print(p1)
 
-vis = set()
-
-
-def positions(paths: list) -> int:
-    if len(paths) == 0:
-        return
-    vis.update([(r, c) for r, c, _ in paths])
-    [positions(dists[pos]["paths"]) for pos in paths]
-
-
-positions(shortest_path["paths"])
-p2 = len(vis) + 1
+visited = set()
+queue = deque(shortest_path["paths"])
+while queue:
+    nxt = queue.popleft()
+    visited.add(nxt)
+    queue.extend(dists[nxt]["paths"])
+visited = set((r, c) for r, c, _ in visited)
+p2 = len(visited) + 1
 print(p2)
 
-assert p1 == 66404
-assert p2 == 433
+if args.test:
+    args.tester(p1, p2)

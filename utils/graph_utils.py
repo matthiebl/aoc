@@ -182,10 +182,11 @@ def within_grid(grid: list[list], r: int, c: int) -> bool:
     return 0 <= r < len(grid) and 0 <= c < len(grid[0])
 
 
-def enumerate_grid(grid: list[list]):
+def enumerate_grid(grid: list[list], skip: str = ""):
     for r, row in enumerate(grid):
         for c, val in enumerate(row):
-            yield (r, c), val, row
+            if val not in skip:
+                yield (r, c), val, row
 
 
 def find_in_grid(grid: list[list[str]], search: str):
