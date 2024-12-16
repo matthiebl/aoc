@@ -6,7 +6,7 @@ https://adventofcode.com/2024/day/6
 from utils import *
 
 args = parse_args(year=2024, day=6)
-raw = get_input(args["filename"], year=2024, day=6)
+raw = get_input(args.filename, year=2024, day=6)
 
 grid = [list(line) for line in raw.splitlines()]
 R, C = len(grid), len(grid[0])
@@ -54,5 +54,5 @@ for r, c in path:
     grid[r][c] = "."
 print(p2)
 
-assert p1 == 5318
-assert p2 == 1831
+if args.test:
+    args.tester(p1, p2)

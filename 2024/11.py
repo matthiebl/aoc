@@ -6,7 +6,7 @@ https://adventofcode.com/2024/day/11
 from utils import *
 
 args = parse_args(year=2024, day=11)
-raw = get_input(args["filename"], year=2024, day=11)
+raw = get_input(args.filename, year=2024, day=11)
 
 stones = list(nums(raw))
 
@@ -30,5 +30,5 @@ print(p1)
 p2 = sum(split_stones_count(stone, 75) for stone in stones)
 print(p2)
 
-assert p1 == 229043
-assert p2 == 272673043446478
+if args.test:
+    args.tester(p1, p2)

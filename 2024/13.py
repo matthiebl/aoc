@@ -18,7 +18,7 @@ from sympy import symbols, Eq, solve, Integer
 from utils import *
 
 args = parse_args(year=2024, day=13)
-raw = get_input(args["filename"], year=2024, day=13)
+raw = get_input(args.filename, year=2024, day=13)
 
 machines = chunks(nums(raw), 6)
 
@@ -43,5 +43,5 @@ for [xa, ya, xb, yb, xp, yp] in machines:
 print(p1)
 print(p2)
 
-assert p1 == 25751
-assert p2 == 108528956728655
+if args.test:
+    args.tester(p1, p2)

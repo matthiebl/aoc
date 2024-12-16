@@ -7,7 +7,7 @@ from functools import cmp_to_key
 from utils import *
 
 args = parse_args(year=2024, day=5)
-raw = get_input(args["filename"], year=2024, day=5)
+raw = get_input(args.filename, year=2024, day=5)
 
 groups = [group.splitlines() for group in raw.split("\n\n")]
 
@@ -37,5 +37,5 @@ for update in updates:
 print(p1)
 print(p2)
 
-assert p1 == 5732
-assert p2 == 4716
+if args.test:
+    args.tester(p1, p2)

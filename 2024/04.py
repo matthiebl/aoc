@@ -6,7 +6,7 @@ https://adventofcode.com/2024/day/4
 from utils import *
 
 args = parse_args(year=2024, day=4)
-raw = get_input(args["filename"], year=2024, day=4)
+raw = get_input(args.filename, year=2024, day=4)
 
 grid = [list(line) for line in raw.splitlines()]
 R, C = len(grid), len(grid[0])
@@ -36,5 +36,5 @@ for r in range(1, R - 1):
             p2 += 1
 print(p2)
 
-assert p1 == 2530
-assert p2 == 1921
+if args.test:
+    args.tester(p1, p2)

@@ -6,7 +6,7 @@ https://adventofcode.com/2024/day/9
 from utils import *
 
 args = parse_args(year=2024, day=9)
-file = get_input(args["filename"], year=2024, day=9)
+file = get_input(args.filename, year=2024, day=9)
 
 
 # Part 1
@@ -65,5 +65,5 @@ for fid, (pos, size) in files.items():
         p2 += x * fid
 print(p2)
 
-assert p1 == 6288707484810
-assert p2 == 6311837662089
+if args.test:
+    args.tester(p1, p2)

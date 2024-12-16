@@ -6,7 +6,7 @@ https://adventofcode.com/2024/day/7
 from utils import *
 
 args = parse_args(year=2024, day=7)
-raw = get_input(args["filename"], year=2024, day=7)
+raw = get_input(args.filename, year=2024, day=7)
 
 equations = [list(nums(line)) for line in raw.splitlines()]
 
@@ -32,5 +32,5 @@ print(p1)
 p2 = sum(target for [target, *ns] in equations if can_obtain(target, ns, p2=True))
 print(p2)
 
-assert p1 == 66343330034722
-assert p2 == 637696070419031
+if args.test:
+    args.tester(p1, p2)

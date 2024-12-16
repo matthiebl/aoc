@@ -6,7 +6,7 @@ https://adventofcode.com/2024/day/1
 from utils import *
 
 args = parse_args(year=2024, day=1)
-raw = get_input(args["filename"], year=2024, day=1)
+raw = get_input(args.filename, year=2024, day=1)
 
 pairs = list(chunks(nums(raw)))
 left = sorted(x for x, _ in pairs)
@@ -18,5 +18,5 @@ print(p1)
 p2 = sum(x * right.count(x) for x in left)
 print(p2)
 
-assert p1 == 3246517
-assert p2 == 29379307
+if args.test:
+    args.tester(p1, p2)

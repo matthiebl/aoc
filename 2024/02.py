@@ -6,7 +6,7 @@ https://adventofcode.com/2024/day/2
 from utils import *
 
 args = parse_args(year=2024, day=2)
-raw = get_input(args["filename"], year=2024, day=2)
+raw = get_input(args.filename, year=2024, day=2)
 
 reports = [list(nums(line)) for line in raw.splitlines()]
 
@@ -29,5 +29,5 @@ for report in reports:
 print(p1)
 print(p2)
 
-assert p1 == 383
-assert p2 == 436
+if args.test:
+    args.tester(p1, p2)

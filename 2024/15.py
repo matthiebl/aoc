@@ -6,7 +6,7 @@ https://adventofcode.com/2024/day/15
 from utils import *
 
 args = parse_args(year=2024, day=15)
-raw = get_input(args["filename"], year=2024, day=15)
+raw = get_input(args.filename, year=2024, day=15)
 
 lines = raw.splitlines()
 
@@ -72,5 +72,5 @@ for move in moves:
 p2 = sum(100 * r + c for (r, c), val, _ in enumerate_grid(room_wide) if val == "[")
 print(p2)
 
-assert p1 == 1527563
-assert p2 == 1521635
+if args.test:
+    args.tester(p1, p2)

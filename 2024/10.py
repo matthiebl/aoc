@@ -7,7 +7,7 @@ from collections import defaultdict
 from utils import *
 
 args = parse_args(year=2024, day=10)
-raw = get_input(args["filename"], year=2024, day=10)
+raw = get_input(args.filename, year=2024, day=10)
 
 grid = [list(line) for line in raw.splitlines()]
 R, C = len(grid), len(grid[0])
@@ -37,5 +37,5 @@ p1 = sum(len(s) for s in trail_ends.values())
 print(p1)
 print(p2)
 
-assert p1 == 552
-assert p2 == 1225
+if args.test:
+    args.tester(p1, p2)

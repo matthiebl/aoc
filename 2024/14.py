@@ -6,7 +6,7 @@ https://adventofcode.com/2024/day/14
 from utils import *
 
 args = parse_args(year=2024, day=14)
-raw = get_input(args["filename"], year=2024, day=14)
+raw = get_input(args.filename, year=2024, day=14)
 
 robots = [tuple(nums(line))[::-1] for line in raw.splitlines()]
 R, C = 103, 101
@@ -30,5 +30,5 @@ while len(set((r, c) for _, _, r, c in robots)) != num_robots:
     p2 += 1
 print(p2)
 
-assert p1 == 222208000
-assert p2 == 7623
+if args.test:
+    args.tester(p1, p2)

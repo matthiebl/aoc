@@ -48,7 +48,7 @@ from collections import deque
 from utils import *
 
 args = parse_args(year=2024, day=12)
-raw = get_input(args["filename"], year=2024, day=12)
+raw = get_input(args.filename, year=2024, day=12)
 
 grid = [list(line) for line in raw.splitlines()]
 R, C = len(grid), len(grid[0])
@@ -119,5 +119,5 @@ for plot in plots:
 
 print(p2)
 
-assert p1 == 1421958
-assert p2 == 885394
+if args.test:
+    args.tester(p1, p2)
