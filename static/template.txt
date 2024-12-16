@@ -6,7 +6,7 @@ https://adventofcode.com/{YEAR}/day/{DAY}
 from utils import *
 
 args = parse_args(year={YEAR}, day={DAY})
-raw = get_input(args["filename"], year={YEAR}, day={DAY})
+raw = get_input(args.filename, year={YEAR}, day={DAY})
 
 lines = raw.splitlines()
 
@@ -21,3 +21,6 @@ p2 = 0
 
 print(p1)
 # print(p2)
+
+if args.test:
+    args.tester(p1, p2)
