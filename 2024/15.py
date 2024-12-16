@@ -10,134 +10,66 @@ raw = get_input(args["filename"], year=2024, day=15)
 
 lines = raw.splitlines()
 
-grid, moves = [group.strip() for group in raw.split("\n\n")]
-moves = moves.strip()
+raw_grid, moves = [group.strip() for group in raw.split("\n\n")]
+moves = "".join(moves.split())
 
-grid = [list(line) for line in grid.splitlines()]
-R, C = len(grid), len(grid[0])
+room = [list(line) for line in raw_grid.splitlines()]
+R, C = len(room), len(room[0])
 
+# Transform to doubly wide room
+transform = {"@": "@.", "#": "##", "O": "[]", ".": ".."}
+room_wide = [list("".join(transform[c] for c in row)) for row in room]
 
-grid_2 = []
-for row in grid:
-    row_2 = ""
-    for c in row:
-        if c == "@":
-            row_2 += "@."
-        elif c == "#":
-            row_2 += "##"
-        elif c == ".":
-            row_2 += ".."
-        else:
-            row_2 += "[]"
-    grid_2.append(list(row_2))
+D = {"^": (-1, 0), ">": (0, 1), "v": (1, 0), "<": (0, -1)}
 
-
-def pg(g):
-    for r in g:
-        print("".join(r))
-
-
-rr, rc = 0, 0
-for (r, c), val, _ in enumerate_grid(grid):
-    if val == "@":
-        rr, rc = (r, c)
-        break
-
-D = {
-    "^": (-1, 0),
-    ">": (0, 1),
-    "v": (1, 0),
-    "<": (0, -1),
-}
-
+rr, rc = next(find_in_grid(room, "@"))
 for move in moves:
-    if move == "\n":
-        continue
     dr, dc = D[move]
-    nr, nc = tuple_add((rr, rc), (dr, dc))
-    lr, lc = nr, nc
-    while grid[lr][lc] == "O":
-        lr, lc = tuple_add((lr, lc), (dr, dc))
-    if grid[lr][lc] == "#":
-        continue
-    if grid[lr][lc] == ".":
-        grid[lr][lc] = "O"
-        grid[rr][rc] = "."
-        grid[nr][nc] = "@"
-        rr, rc = nr, nc
+    nr, nc = rr + dr, rc + dc
+    while room[nr][nc] == "O":
+        nr, nc = nr + dr, nc + dc
+    if room[nr][nc] == ".":
+        room[rr][rc] = "."
+        room[nr][nc] = "O"
+        rr, rc = rr + dr, rc + dc
+        room[rr][rc] = "@"
 
-p1 = 0
-for (r, c), val, _ in enumerate_grid(grid):
-    if val == "O":
-        p1 += 100 * r + c
+p1 = sum(100 * r + c for (r, c), val, _ in enumerate_grid(room) if val == "O")
 print(p1)
 
 
-def move_vert(dr, dc, blocks) -> bool:
+def move_blocks(dr: int, dc: int, blocks: set) -> bool:
     new_blocks = []
     for r, c in blocks:
-        nr, nc = tuple_add((r, c), (dr, dc))
-        if grid_2[nr][nc] == "#":
+        nr, nc = r + dr, c + dc
+        if room_wide[nr][nc] == "#":
             return False
-        if grid_2[nr][nc] == "[":
+        if room_wide[nr][nc] == "[":
             new_blocks += [(nr, nc), (nr, nc + 1)]
-        elif grid_2[nr][nc] == "]":
+        elif room_wide[nr][nc] == "]":
             new_blocks += [(nr, nc), (nr, nc - 1)]
-    if len(new_blocks) == 0:
-        for r, c in blocks:
-            nr, nc = tuple_add((r, c), (dr, dc))
-            grid_2[nr][nc] = grid_2[r][c]
-            grid_2[r][c] = "."
-        return True
-    if not move_vert(dr, dc, list(set(new_blocks))):
+    new_blocks = set(new_blocks) - blocks
+    if len(new_blocks) != 0 and not move_blocks(dr, dc, new_blocks):
         return False
-    for r, c in blocks:
-        nr, nc = tuple_add((r, c), (dr, dc))
-        grid_2[nr][nc] = grid_2[r][c]
-        grid_2[r][c] = "."
+    blocks = list(sorted(blocks))
+    for r, c in (blocks[::-1] if dc == 1 else blocks):
+        room_wide[r][c], room_wide[r + dr][c + dc] = room_wide[r + dr][c + dc], room_wide[r][c]
     return True
 
 
-rr, rc = 0, 0
-for (r, c), val, _ in enumerate_grid(grid_2):
-    if val == "@":
-        rr, rc = (r, c)
-        break
-
+rr, rc = next(find_in_grid(room_wide, "@"))
 for move in moves:
-    if move == "\n":
-        continue
     dr, dc = D[move]
     nr, nc = tuple_add((rr, rc), (dr, dc))
-    if grid_2[nr][nc] == ".":
-        grid_2[nr][nc] = "@"
-        grid_2[rr][rc] = "."
+    if (room_wide[nr][nc] == "."
+                or (room_wide[nr][nc] == "[" and move_blocks(dr, dc, set([(nr, nc), (nr, nc + 1)])))
+                or (room_wide[nr][nc] == "]" and move_blocks(dr, dc, set([(nr, nc), (nr, nc - 1)])))
+            ):
+        room_wide[nr][nc] = "@"
+        room_wide[rr][rc] = "."
         rr, rc = nr, nc
-        continue
-    if grid_2[nr][nc] == "#":
-        continue
-    if move in "^v":
-        if (grid_2[nr][nc] == "[" and move_vert(dr, dc, [(nr, nc), (nr, nc + 1)])) or (grid_2[nr][nc] == "]" and move_vert(dr, dc, [(nr, nc), (nr, nc - 1)])):
-            grid_2[nr][nc] = "@"
-            grid_2[rr][rc] = "."
-            rr, rc = nr, nc
-    else:
-        lr, lc = nr, nc
-        while grid_2[lr][lc] in "[]":
-            lr, lc = tuple_add((lr, lc), (dr, dc))
-        if grid_2[lr][lc] == ".":
-            if move == ">":
-                grid_2[lr][rc+1:lc+1] = grid_2[lr][rc:lc]
-                grid_2[rr][rc] = "."
-            else:
-                grid_2[lr][lc:rc] = grid_2[lr][lc+1:rc+1]
-                grid_2[rr][rc] = "."
-            rr, rc = nr, nc
 
-p2 = 0
-for (r, c), val, _ in enumerate_grid(grid_2):
-    if val == "[":
-        p2 += 100 * r + c
+p2 = sum(100 * r + c for (r, c), val, _ in enumerate_grid(room_wide) if val == "[")
 print(p2)
 
 assert p1 == 1527563

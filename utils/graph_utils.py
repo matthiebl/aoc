@@ -1,5 +1,6 @@
 """BFS"""
 
+from heapq import heapify, heappush, heappop
 from collections import deque
 
 
@@ -21,10 +22,10 @@ def bfs(graph: dict, start, is_end) -> tuple:
         if nxt in visited:
             continue
         visited.add(nxt)
-        
+
         if is_end(nxt):
             return nxt, visited
-        
+
         queue.extend(list(graph[nxt]))
 
     return None, visited
@@ -54,15 +55,13 @@ def dfs(graph: dict, start, is_end):
 
         if is_end(nxt):
             return nxt
-        
+
         stack.extend(graph[nxt])
-    
+
     return visited
 
 
 """DIJKSTRA"""
-
-from heapq import heapify, heappush, heappop
 
 
 def dijkstras(graph: dict, start, is_end, initial_dist: int = 0):
@@ -75,14 +74,14 @@ def dijkstras(graph: dict, start, is_end, initial_dist: int = 0):
 
     Returns the distance to `is_end` if found; otherwise the distance mapping
     """
-    distances = { pos: float("inf") for pos in graph }
+    distances = {pos: float("inf") for pos in graph}
     distances[start] = initial_dist
-    
+
     visited = set()
-    
+
     heap = [(initial_dist, start)]
     heapify(heap)
-    
+
     while heap:
         d, nxt = heappop(heap)
         if nxt in visited:
@@ -91,17 +90,22 @@ def dijkstras(graph: dict, start, is_end, initial_dist: int = 0):
 
         if is_end(nxt):
             return d
-        
+
         for w, adj in graph[nxt]:
             tentative = d + w
             if tentative < distances[adj]:
                 distances[adj] = tentative
                 heappush(heap, (tentative, adj))
-    
+
     return distances
 
 
 """Utilities"""
+
+
+def show_grid(grid: list[list]):
+    for row in grid:
+        print("".join(row))
 
 
 def weight_const(val: int = 1):
@@ -182,3 +186,9 @@ def enumerate_grid(grid: list[list]):
     for r, row in enumerate(grid):
         for c, val in enumerate(row):
             yield (r, c), val, row
+
+
+def find_in_grid(grid: list[list[str]], search: str):
+    for (r, c), val, _ in enumerate_grid(grid):
+        if search == val:
+            yield (r, c)
