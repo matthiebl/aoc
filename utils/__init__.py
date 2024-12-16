@@ -1,4 +1,4 @@
-from .graph import grid_to_graph, weight_const, weight_of_pos, bfs, dijkstras, dfs, directions, within_grid, enumerate_grid
+from .graph_utils import grid_to_graph, weight_const, weight_of_pos, bfs, dijkstras, dfs, directions, within_grid, enumerate_grid
 from .input_handling import parse_args, get_input
 from .wrappers import memoize
 

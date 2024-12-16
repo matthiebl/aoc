@@ -1,3 +1,8 @@
+"""
+--- Day 14: Restroom Redoubt ---
+https://adventofcode.com/2024/day/14
+"""
+
 from utils import *
 
 args = parse_args(year=2024, day=14)

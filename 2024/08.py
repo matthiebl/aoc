@@ -1,3 +1,8 @@
+"""
+--- Day 8: Resonant Collinearity ---
+https://adventofcode.com/2024/day/8
+"""
+
 from collections import defaultdict
 from utils import *
 
@@ -20,7 +25,7 @@ for freq in antennas:
             dr, dc = r2 - r1, c2 - c1
             single_antinodes.add((r1 - dr, c1 - dc))
             single_antinodes.add((r2 + dr, c2 + dc))
-            
+
             ir, ic = r1, c1
             while 0 <= ir < R and 0 <= ic < C:
                 antinodes.add((ir, ic))
@@ -35,3 +40,6 @@ print(p1)
 
 p2 = len(antinodes)
 print(p2)
+
+assert p1 == 426
+assert p2 == 1359

@@ -1,3 +1,8 @@
+"""
+--- Day 4: Ceres Search ---
+https://adventofcode.com/2024/day/4
+"""
+
 from utils import *
 
 args = parse_args(year=2024, day=4)
@@ -30,3 +35,6 @@ for r in range(1, R - 1):
                 and "".join([grid[r + dr][c + dc] for dr, dc in up]) in ["MAS", "SAM"]):
             p2 += 1
 print(p2)
+
+assert p1 == 2530
+assert p2 == 1921

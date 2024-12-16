@@ -1,3 +1,8 @@
+"""
+--- Day 2: Red-Nosed Reports ---
+https://adventofcode.com/2024/day/2
+"""
+
 from utils import *
 
 args = parse_args(year=2024, day=2)
@@ -23,3 +28,6 @@ for report in reports:
             break
 print(p1)
 print(p2)
+
+assert p1 == 383
+assert p2 == 436

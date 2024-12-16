@@ -1,3 +1,8 @@
+"""
+--- Day 11: Plutonian Pebbles ---
+https://adventofcode.com/2024/day/11
+"""
+
 from utils import *
 
 args = parse_args(year=2024, day=11)
@@ -24,3 +29,6 @@ print(p1)
 
 p2 = sum(split_stones_count(stone, 75) for stone in stones)
 print(p2)
+
+assert p1 == 229043
+assert p2 == 272673043446478

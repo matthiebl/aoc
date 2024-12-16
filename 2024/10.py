@@ -1,3 +1,8 @@
+"""
+--- Day 10: Hoof It ---
+https://adventofcode.com/2024/day/10
+"""
+
 from collections import defaultdict
 from utils import *
 
@@ -31,3 +36,6 @@ for pos in trail_heads:
 p1 = sum(len(s) for s in trail_ends.values())
 print(p1)
 print(p2)
+
+assert p1 == 552
+assert p2 == 1225

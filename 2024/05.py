@@ -1,3 +1,8 @@
+"""
+--- Day 5: Print Queue ---
+https://adventofcode.com/2024/day/5
+"""
+
 from functools import cmp_to_key
 from utils import *
 
@@ -31,3 +36,6 @@ for update in updates:
 
 print(p1)
 print(p2)
+
+assert p1 == 5732
+assert p2 == 4716

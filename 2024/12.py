@@ -1,9 +1,8 @@
 """
 --- Day 12: Garden Groups ---
-
 https://adventofcode.com/2024/day/12
 
-Another problem that isn't straightforward to solve. The general solution I have taken is as follows.
+Finally, a problem that isn't straightforward to solve. The general solution I have taken is as follows.
 
 To determine the garden plots, we use a BFS to search the grid until we reach a different type of
 plant. We can determine the entire plot though the collection of same plants within the search. The
@@ -82,7 +81,7 @@ for (r, c), v, _ in enumerate_grid(grid):
         for dr, dc in directions():
             if not within_grid(grid, rr + dr, cc + dc):
                 perim += 1
-        
+
         queue.extend(list(graph[nxt]))
 
     p1 += len(plot) * perim
@@ -90,7 +89,7 @@ for (r, c), v, _ in enumerate_grid(grid):
 
 print(p1)
 
-corner_checks  = [
+corner_checks = [
     directions([1, 2, 5]),
     directions([5, 8, 7]),
     directions([7, 6, 3]),

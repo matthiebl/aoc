@@ -1,3 +1,8 @@
+"""
+--- Day 9: Disk Fragmenter ---
+https://adventofcode.com/2024/day/9
+"""
+
 from utils import *
 
 args = parse_args(year=2024, day=9)
@@ -59,3 +64,6 @@ for fid, (pos, size) in files.items():
     for x in range(pos, pos + size):
         p2 += x * fid
 print(p2)
+
+assert p1 == 6288707484810
+assert p2 == 6311837662089

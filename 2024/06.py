@@ -1,3 +1,8 @@
+"""
+--- Day 6: Guard Gallivant ---
+https://adventofcode.com/2024/day/6
+"""
+
 from utils import *
 
 args = parse_args(year=2024, day=6)
@@ -48,3 +53,6 @@ for r, c in path:
         p2 += 1
     grid[r][c] = "."
 print(p2)
+
+assert p1 == 5318
+assert p2 == 1831
