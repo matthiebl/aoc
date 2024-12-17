@@ -3,7 +3,6 @@
 https://adventofcode.com/2024/day/17
 """
 
-from math import lcm
 from utils import *
 
 args = parse_args(year=2024, day=17)
@@ -12,43 +11,19 @@ A = numbers[0]
 code = numbers[3:]
 
 
-def run(A):
-    B = 0
-    C = 0
+def run(A: int, B: int = 0, C: int = 0):
     output = []
     ip = 0
     while ip < len(code) - 1:
-        ins, lit = code[ip], code[ip + 1]
+        opcode, operand = code[ip], code[ip + 1]
+        comb = A if operand == 4 else B if operand == 5 else C if operand == 6 else operand
         
-        comb = None
-        if 0 <= lit <= 3:
-            comb = lit
-        elif lit == 4:
-            comb = A
-        elif lit == 5:
-            comb = B
-        elif lit == 6:
-            comb = C
-        
-        if ins == 0:
-            A = A >> comb
-        elif ins == 1:
-            B = B ^ lit
-        elif ins == 2:
-            B = comb % 8
-        elif ins == 3:
-            if A != 0:
-                ip = lit - 2
-        elif ins == 4:
-            B = B ^ C
-        elif ins == 5:
-            output.append(str(comb % 8))
-        elif ins == 6:
-            B = A >> comb
-        elif ins == 7:
-            C = A >> comb
+        A = A >> comb if opcode == 0 else A
+        B = B ^ operand if opcode == 1 else comb % 8 if opcode == 2 else B ^ C if opcode == 4 else A >> comb if opcode == 6 else B
+        C = A >> comb if opcode == 7 else C
+        output += [str(comb % 8)] if opcode == 5 else []
+        ip = operand if opcode == 3 and A != 0 else ip + 2
 
-        ip += 2
     return output
 
 
@@ -56,14 +31,14 @@ p1 = ",".join(run(A))
 print(p1)
 
 
-def construct(i, start):
+def reverse_engineer(i, start):
     if i == -1:
         return int(start, 8)
-    total = [construct(i - 1, start + n) for n in "01234567" if run(int(start + n, 8))[0] == str(code[i])]
+    total = [reverse_engineer(i - 1, start + n) for n in "01234567" if run(int(start + n, 8))[0] == str(code[i])]
     return min(total) if total else 8 ** 17
 
 
-p2 = construct(len(code) - 1, "0o")
+p2 = reverse_engineer(len(code) - 1, "0o")
 print(p2)
 
 if args.test:
