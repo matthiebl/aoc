@@ -22,9 +22,9 @@ Solutions will be done in python3.12 again this year.
 | 12  | 00:16:42 | 1593  | 0     | 00:36:44 | 881   | 0     | 
 | 13  | 00:13:13 | 1008  | 0     | 00:14:49 | 218   | 0     | Had to break out sympy
 | 14  | 00:06:11 | 241   | 0     | 00:25:43 | 446   | 0     | I didn't enjoy the guessing game of p2 :(
-| 15  |          |       |       |          |       |       | 
-| 16  |          |       |       |          |       |       | 
-| 17  |          |       |       |          |       |       | 
+| 15  | 00:13:13 | 317   | 0     | 00:58:46 | 1020  | 0     | Didn't enjoy the hidden tree for p2...
+| 16  | 00:28:52 | 2003  | 0     | 00:56:34 | 1629  | 0     | Wasn't prepared for backtracking in p2
+| 17  | 00:17:24 | 809   | 0     | 06:18:26 | 5158  | 0     | Took a long time to work out the strategy for p2
 | 18  |          |       |       |          |       |       | 
 | 19  |          |       |       |          |       |       | 
 | 20  |          |       |       |          |       |       | 

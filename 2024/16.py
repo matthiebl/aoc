@@ -1,5 +1,5 @@
 """
---- Day 16: Warehouse Woes ---
+--- Day 16: Reindeer Maze ---
 https://adventofcode.com/2024/day/16
 
 Today I have solved the problem with Dijkstra's algorithm, where I not only
