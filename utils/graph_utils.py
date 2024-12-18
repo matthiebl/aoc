@@ -4,7 +4,7 @@ from heapq import heapify, heappush, heappop
 from collections import deque
 
 
-def bfs(graph: dict, start, is_end) -> tuple:
+def bfs(graph: dict, start, is_end, initial_dist: int = 0) -> tuple:
     """
     ### Breadth First Search
 
@@ -16,17 +16,17 @@ def bfs(graph: dict, start, is_end) -> tuple:
     Weight of each adjacent cell is ignored
     """
     visited = set()
-    queue = deque([start])
+    queue = deque([(initial_dist, start)])
     while queue:
-        _, nxt = queue.popleft()
+        d, nxt = queue.popleft()
         if nxt in visited:
             continue
         visited.add(nxt)
 
         if is_end(nxt):
-            return nxt, visited
+            return d, visited
 
-        queue.extend(list(graph[nxt]))
+        queue.extend([(d + w, pos) for w, pos in graph[nxt]])
 
     return None, visited
 
@@ -34,7 +34,7 @@ def bfs(graph: dict, start, is_end) -> tuple:
 """DFS"""
 
 
-def dfs(graph: dict, start, is_end):
+def dfs(graph: dict, start, is_end, initial_dist: int = 0):
     """
     ### Depth First Search
 
@@ -46,9 +46,9 @@ def dfs(graph: dict, start, is_end):
     Weight of each adjacent cell is ignored
     """
     visited = set()
-    stack = [start]
+    stack = [(0, start)]
     while stack:
-        _, nxt = stack.pop()
+        d, nxt = stack.pop()
         if nxt in visited:
             continue
         visited.add(nxt)
@@ -56,7 +56,7 @@ def dfs(graph: dict, start, is_end):
         if is_end(nxt):
             return nxt
 
-        stack.extend(graph[nxt])
+        stack.extend([(d + w, pos) for w, pos in graph[nxt]])
 
     return visited
 
@@ -64,7 +64,7 @@ def dfs(graph: dict, start, is_end):
 """DIJKSTRA"""
 
 
-def dijkstras(graph: dict, start, is_end, initial_dist: int = 0):
+def dijkstras(graph: dict, start, is_end, initial_dist: int = 0) -> tuple[int | None, dict]:
     """
     ### Dijkstras Shortest Path
 
@@ -89,7 +89,7 @@ def dijkstras(graph: dict, start, is_end, initial_dist: int = 0):
         visited.add(nxt)
 
         if is_end(nxt):
-            return d
+            return d, distances
 
         for w, adj in graph[nxt]:
             tentative = d + w
@@ -97,7 +97,7 @@ def dijkstras(graph: dict, start, is_end, initial_dist: int = 0):
                 distances[adj] = tentative
                 heappush(heap, (tentative, adj))
 
-    return distances
+    return None, distances
 
 
 """Utilities"""
@@ -121,7 +121,17 @@ def weight_of_pos(grid: list[list], pos: tuple, adj: tuple):
     return int(grid[r][c])
 
 
-def grid_to_graph(grid: list[list], adjacent_request: list | int | str = 4, weight=weight_const()):
+def is_end_pos(r: int, c: int):
+    """Utility for checking is_end with a row and column value."""
+    def is_end(pos):
+        return pos[0] == r and pos[1] == c
+    return is_end
+
+
+def grid_to_graph(grid: list[list],
+                  adjacent_request: list | int | str = 4,
+                  weight=weight_const(),
+                  valid_tiles: str = None):
     """
     Converts a grid into a weighted graph
 
@@ -139,10 +149,14 @@ def grid_to_graph(grid: list[list], adjacent_request: list | int | str = 4, weig
     ```
     """
     graph: dict[tuple, list[tuple]] = {}
-    for (r, c), _, _ in enumerate_grid(grid):
+    for (r, c), val, _ in enumerate_grid(grid):
+        if valid_tiles and val not in valid_tiles:
+            continue
         graph[(r, c)] = []
         for dr, dc in directions(adjacent_request):
             if within_grid(grid, r + dr, c + dc):
+                if valid_tiles and grid[r + dr][c + dc] not in valid_tiles:
+                    continue
                 w = weight(grid, (r, c), (r + dr, c + dc))
                 graph[(r, c)].append((w, (r + dr, c + dc)))
     return graph
@@ -193,3 +207,16 @@ def find_in_grid(grid: list[list[str]], search: str):
     for (r, c), val, _ in enumerate_grid(grid):
         if search == val:
             yield (r, c)
+
+
+def create_grid(r: int, c: int, fill: str = ".", blocks: list[tuple[int, int, str]] = []):
+    """
+    Create a grid of `r` rows and `c` columns filled with `fill` or `.` by default.
+
+    Also place `(r, c, v)` items down where `v` is some string value to place.
+    """
+    grid = [[fill] * c for _ in range(r)]
+    for br, bc, v in blocks:
+        if within_grid(grid, br, bc):
+            grid[br][bc] = v
+    return grid

@@ -65,7 +65,7 @@ def answer_tester(year: str, day: str):
 
     def inner(p1, p2):
         if answers is None:
-            print("No stored answers for {year} day {day}")
+            print(f"No stored answers for {year} day {day}")
             return False
         assert p1 == answers["p1"], f"Part 1: {p1} is not expected {answers["p1"]}"
         assert p2 == answers["p2"], f"Part 2: {p2} is not expected {answers["p2"]}"

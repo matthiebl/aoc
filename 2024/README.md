@@ -2,7 +2,7 @@
 
 My solutions for [Advent of Code 2024](https://adventofcode.com/2024)
 
-Solutions will be done in python3.12 again this year.
+Solutions will be done in python3 again this year.
 
 ## Personal Times
 
@@ -25,7 +25,7 @@ Solutions will be done in python3.12 again this year.
 | 15  | 00:13:13 | 317   | 0     | 00:58:46 | 1020  | 0     | Didn't enjoy the hidden tree for p2...
 | 16  | 00:28:52 | 2003  | 0     | 00:56:34 | 1629  | 0     | Wasn't prepared for backtracking in p2
 | 17  | 00:17:24 | 809   | 0     | 06:18:26 | 5158  | 0     | Took a long time to work out the strategy for p2
-| 18  |          |       |       |          |       |       | 
+| 18  | 00:15:16 | 1583  | 0     | 00:27:06 | 2074  | 0     | Fiddled around with my existing Dijkstra's...
 | 19  |          |       |       |          |       |       | 
 | 20  |          |       |       |          |       |       | 
 | 21  |          |       |       |          |       |       | 
