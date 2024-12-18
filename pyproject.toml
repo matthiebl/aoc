@@ -1,0 +1,9 @@
+[project]
+name = "Matt's Advent of Code Solutions"
+version = 2024
+
+[pytest]
+python_files = "*.py"
+
+[tool.autopep8]
+max_line_length = 120
