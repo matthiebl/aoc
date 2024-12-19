@@ -24,3 +24,17 @@ answers = {
 
 def get_answers(year: str, day: str):
     return answers.get(int(year), {}).get(int(day), None)
+
+
+def answer_tester(year: str, day: str):
+    """Gets the answers from the answers"""
+    answers = get_answers(year, day)
+
+    def inner(p1, p2):
+        if answers is None:
+            print(f"No stored answers for {year} day {day}")
+            return False
+        assert p1 == answers["p1"], f"Part 1: {p1} is not expected {answers["p1"]}"
+        assert p2 == answers["p2"], f"Part 2: {p2} is not expected {answers["p2"]}"
+        return True
+    return inner
