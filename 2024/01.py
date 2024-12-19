@@ -20,11 +20,3 @@ print(p2)
 
 if args.test:
     args.tester(p1, p2)
-
-
-def test_():
-    assert True
-
-
-def test_1():
-    assert False
