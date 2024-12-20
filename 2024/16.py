@@ -80,10 +80,9 @@ print(p1)
 visited = set()
 queue = deque(shortest_path["paths"])
 while queue:
-    nxt = queue.popleft()
-    visited.add(nxt)
-    queue.extend(dists[nxt]["paths"])
-visited = set((r, c) for r, c, _ in visited)
+    r, c, d = queue.popleft()
+    visited.add((r, c))
+    queue.extend(dists[(r, c, d)]["paths"])
 p2 = len(visited) + 1
 print(p2)
 
