@@ -27,10 +27,9 @@ Solutions will be done in python3 again this year.
 | 17  | 00:17:24 | 809   | 0     | 06:18:26 | 5158  | 0     | Took a long time to work out the strategy for p2
 | 18  | 00:15:16 | 1583  | 0     | 00:27:06 | 2074  | 0     | Fiddled around with my existing Dijkstra's...
 | 19  | 00:05:49 | 551   | 0     | 00:08:41 | 499   | 0     | 
-| 20  |          |       |       |          |       |       | 
+| 20  | 00:16:32 | 415   | 0     | 00:54:40 | 1199  | 0     | Almost gave up when I saw p2, but stuck it through
 | 21  |          |       |       |          |       |       | 
 | 22  |          |       |       |          |       |       | 
 | 23  |          |       |       |          |       |       | 
 | 24  |          |       |       |          |       |       | 
 | 25  |          |       |       |          |       |       | 
-## Asides

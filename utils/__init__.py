@@ -49,3 +49,7 @@ def mul(*ns: list[int]) -> int:
 def tuple_add(t1: tuple[int, ...], t2: tuple[int, ...]) -> tuple[int, ...]:
     """Add two tuples of the same length."""
     return tuple(a + b for a, b in zip(t1, t2))
+
+
+def manhattan(r1: int, c1: int, r2: int, c2: int) -> int:
+    return abs(r1 - r2) + abs(c1 - c2)
