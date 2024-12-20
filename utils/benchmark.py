@@ -96,9 +96,9 @@ def benchmark(year: str, timeout: int = 600):
         sys.stdout.flush()
         match info["status"]:
             case SolutionStatus.PASS:
-                print(f"{Colour.GREEN}PASSED{Colour.RESET}")
+                print(f"{Colour.GREEN}PASSED{Colour.RESET} [{info["time"]:.03f}ms]")
             case SolutionStatus.COMP:
-                print(f"{Colour.CYAN}PASSED{Colour.RESET} (no answers)")
+                print(f"{Colour.CYAN}PASSED{Colour.RESET} [{info["time"]:.03f}ms] (no answers)")
             case SolutionStatus.FAIL:
                 print(f"{Colour.FAIL}FAILED{Colour.RESET}")
             case SolutionStatus.SKIP:
