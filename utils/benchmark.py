@@ -3,6 +3,7 @@ from enum import Enum
 from importlib import import_module
 from io import StringIO
 from pathlib import Path
+import signal
 import sys
 from time import time
 from .answers import get_answers
@@ -26,20 +27,20 @@ class SolutionStatus(Enum):
     COMP = 2
     FAIL = 3
     SKIP = 4
+    TIMEOUT = 5
 
 
-def benchmark(year: str, timeout: int = 600):
+def timeout_handler(signum, frame):
+    raise TimeoutError("Timed out!")
+
+
+def benchmark(year: str, timeout: int = 60):
     data = {"time": 0, "tests": {}}
 
     for day in range(1, 25 + 1):
         day_s = f"{day:02d}"
         print(f"Day {day_s}", end=" ", flush=True)
         info = {"status": SolutionStatus.WAIT, "time": 0, "stdout": "(None)", "stderr": "(None)", "logs": "(None)"}
-
-        if data["time"] / 1000 > timeout:
-            print(f"{Colour.WARNING}SKIPPED{Colour.RESET} (timeout)")
-            info["status"] = SolutionStatus.SKIP
-            continue
 
         print("...", end="", flush=True)
 
@@ -51,11 +52,18 @@ def benchmark(year: str, timeout: int = 600):
                     t0 = time()
 
                     try:
+                        signal.signal(signal.SIGALRM, timeout_handler)
+                        signal.alarm(timeout)
                         module = import_module(f"{year}.{day_s}")
+                    except TimeoutError:
+                        info["status"] = SolutionStatus.TIMEOUT
+                        info["stderr"] = f"Exceeded {timeout} seconds"
                     except Exception as e:
                         info["status"] = SolutionStatus.FAIL
                         info["stderr"] = str(e)
                         print(e)
+                    finally:
+                        signal.alarm(0)
                     p1 = getattr(module, "p1")
                     p2 = getattr(module, "p2")
 
@@ -69,12 +77,14 @@ def benchmark(year: str, timeout: int = 600):
                 if info["status"] == SolutionStatus.FAIL:
                     print("Unhandled exception caught:")
                     print("--- STDERR ---")
-                    print(str(e))
+                    print(info["stderr"])
 
                 print(f"Solution ran in: {ms:.3f}ms")
 
                 answers = get_answers(year, day_s)
-                if answers is None:
+                if info["status"] == SolutionStatus.TIMEOUT:
+                    pass
+                elif answers is None:
                     print(f"No answers for {year} day {day}")
                     info["status"] = SolutionStatus.COMP
                 elif p1 == answers["p1"] and p2 == answers["p2"]:
@@ -103,9 +113,9 @@ def benchmark(year: str, timeout: int = 600):
                 print(f"{Colour.FAIL}FAILED{Colour.RESET}")
             case SolutionStatus.SKIP:
                 print(f"{Colour.WARNING}SKIPPED{Colour.RESET} (no solution)")
+            case SolutionStatus.TIMEOUT:
+                print(f"{Colour.FAIL}TIMEOUT{Colour.RESET}")
 
-        if data["time"] / 1000 > timeout:
-            print("Timeout exceeded. Skipping remaining tests...")
         info["logs"] = f.getvalue()
         data["tests"][day] = info
 
@@ -125,8 +135,8 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description=f"Advent of Code Benchmarker")
     parser.add_argument("year", help="The year to test and benchmark")
-    parser.add_argument("--timeout", type=int, default=600,
-                        help="The seconds to quit benchmarking if exceeded after each day. default: 600")
+    parser.add_argument("--timeout", type=int, default=60,
+                        help="The seconds to terminate after if solution not reached. default: 60")
     args = parser.parse_args()
 
     benchmark(args.year, timeout=args.timeout)
