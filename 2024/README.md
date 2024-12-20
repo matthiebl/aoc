@@ -26,12 +26,11 @@ Solutions will be done in python3 again this year.
 | 16  | 00:28:52 | 2003  | 0     | 00:56:34 | 1629  | 0     | Wasn't prepared for backtracking in p2
 | 17  | 00:17:24 | 809   | 0     | 06:18:26 | 5158  | 0     | Took a long time to work out the strategy for p2
 | 18  | 00:15:16 | 1583  | 0     | 00:27:06 | 2074  | 0     | Fiddled around with my existing Dijkstra's...
-| 19  |          |       |       |          |       |       | 
+| 19  | 00:05:49 | 551   | 0     | 00:08:41 | 499   | 0     | 
 | 20  |          |       |       |          |       |       | 
 | 21  |          |       |       |          |       |       | 
 | 22  |          |       |       |          |       |       | 
 | 23  |          |       |       |          |       |       | 
 | 24  |          |       |       |          |       |       | 
 | 25  |          |       |       |          |       |       | 
-
 ## Asides
