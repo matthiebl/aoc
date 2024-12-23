@@ -30,6 +30,8 @@ I do not need to force any utilities into my PATH or site-packages.
 
 First, install some required dependencies or setup virtual env etc.:
 ```sh
+python3 -m venv .venv
+source .venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
