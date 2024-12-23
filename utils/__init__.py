@@ -40,10 +40,15 @@ def windows(it, n: int = 2):
             del window[0]
 
 
-def mul(*ns: list[int]) -> int:
-    """Mulitplies all the numbers together and returns their result."""
+def mul(n: int, *ns: list[int]) -> int:
+    """Multiplies all the numbers together and returns their result."""
     from functools import reduce
-    return reduce(lambda a, b: a * b, ns, 1)
+    if not isinstance(n, int):
+        return reduce(lambda a, b: a * b, n, 1)
+    res = n
+    for n in ns:
+        res *= n
+    return res
 
 
 def tuple_add(t1: tuple[int, ...], t2: tuple[int, ...]) -> tuple[int, ...]:
