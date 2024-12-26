@@ -31,5 +31,5 @@ Solutions will be done in python3 again this year.
 | 21  | 02:26:08 | 2080  | 0     | 02:27:18 | 894   | 0     | Too slow, so restarted solution assuming what p2 would be
 | 22  | 00:08:19 | 1032  | 0     | 00:16:37 | 200   | 0     | Very easy problem for this late
 | 23  | 00:08:09 | 823   | 0     | 00:29:48 | 1265  | 0     | 
-| 24  |          |       |       |          |       |       | 
-| 25  |          |       |       |          |       |       | 
+| 24  | 00:10:14 | 369   | 0     |     >24h | 12434 | 0     | Required some manual inspection to solve
+| 25  | 22:32:30 | 17239 | 0     | 23:24:12 | 10544 | 0     | 
