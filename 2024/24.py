@@ -3,9 +3,7 @@
 https://adventofcode.com/2024/day/24
 """
 
-from functools import cache
-from itertools import combinations
-from random import randint
+from collections import defaultdict
 from utils import *
 
 args = parse_args(year=2024, day=24)
@@ -19,21 +17,25 @@ for line in initial:
     values[wire] = int(value)
 
 wires = {}
+used_by = defaultdict(list)
 for wire in connections:
     x, op, y, z = wire.replace(" -> ", " ").split(" ")
-    wires[z] = (op, x, y)
+    wires[z] = (op, *sorted((x, y)))
+    used_by[x].append(z)
+    used_by[y].append(z)
 
-operators = {
-    "OR": lambda x, y: x | y,
-    "XOR": lambda x, y: x ^ y,
-    "AND": lambda x, y: x & y,
-}
+for u in used_by:
+    used_by[u].sort()
 
 
 def eval(wire):
     if wire in values:
         return values[wire]
-
+    operators = {
+        "OR": lambda x, y: x | y,
+        "XOR": lambda x, y: x ^ y,
+        "AND": lambda x, y: x & y,
+    }
     op, x, y = wires[wire]
     return operators[op](eval(x), eval(y))
 
@@ -42,79 +44,46 @@ p1 = int("".join(map(str, [eval(f"z{i:02d}") for i in range(46)]))[::-1], 2)
 print(p1)
 
 
-def run(m: int = 45):
-    bits = []
-    for wire in wires:
-        if wire[0] == "z":
-            if int(wire[1:]) > m:
-                continue
-            bits.append((wire, eval(wire)))
-    return "".join(map(str, [b for _, b in sorted(bits, reverse=True)]))
-
-
-def test_sum(tests: int = 5):
-    saved = values.copy()
-    bad = False
-    for _ in range(tests):
-        x = "".join(["1" if randint(0, 1) == 1 else "0" for _ in range(45)])
-        y = "".join(["1" if randint(0, 1) == 1 else "0" for _ in range(45)])
-        for i in range(45):
-            values[f"x{i:02d}"] = int(x[i])
-            values[f"y{i:02d}"] = int(y[i])
-        r = run()
-        z = bin(int(x[::-1], 2) + int(y[::-1], 2))[2:].rjust(46, "0")
-        if r != z:
-            bad = True
-    for s in saved:
-        values[s] = saved[s]
-    return not bad
-
-
-x = "".join(map(str, [values[v] for v in sorted(values, reverse=True) if v[0] == "x"]))
-y = "".join(map(str, [values[v] for v in sorted(values, reverse=True) if v[0] == "y"]))
-z_target = bin(int(x, 2) + int(y, 2))[2:][::-1]
-
-good = []
-
-
-@cache
-def is_solvable(bits: int, swaps: tuple):
-    if bits == len(z_target):
-        if len(swaps) != 8:
-            return False
-        if test_sum():
-            good.append(swaps)
+def check_input_xor(wire: str) -> bool:
+    if wire == "z00":
+        return True
+    # should have one XOR and one AND, and at most one "z"
+    users = used_by[wire]
+    if len(users) != 2:
         return False
-    try:
-        up_to = run(bits)[::-1]
-    except RecursionError:
+    a, b = users
+    a_op, _, _ = wires[a]
+    b_op, _, _ = wires[b]
+    return a[0] != "z" and (a_op == "XOR" or b_op == "XOR") and (a_op == "AND" or b_op == "AND")
+
+
+def check_and(wire: str) -> bool:
+    if wires[wire][1] == "x00":
+        return True
+    users = used_by[wire]
+    if len(users) != 1:
         return False
-    if up_to == z_target[:len(up_to)]:
-        return is_solvable(bits + 1, swaps)
-    if len(swaps) >= 8:
-        return False
-    for (a, b) in combinations(wires, 2):
-        a, b = sorted((a, b))
-        if a in swaps or b in swaps or (a[0] == "z" and b[0] == "z"):
-            continue
-        wires[a], wires[b] = wires[b], wires[a]
-        try:
-            up_to_2 = run(bits)[::-1]
-        except RecursionError:
-            wires[a], wires[b] = wires[b], wires[a]
-            continue
-        if up_to_2 == z_target[:len(up_to_2)] and is_solvable(bits + 1, tuple(s for s in swaps) + (a, b)):
-            return True
-        wires[a], wires[b] = wires[b], wires[a]
-    return False
+    op, _, _ = wires[users[0]]
+    return op == "OR"
 
 
-wires["vwr"], wires["z06"] = wires["z06"], wires["vwr"]
-wires["tqm"], wires["z11"] = wires["z11"], wires["tqm"]
-wires["kfs"], wires["z16"] = wires["z16"], wires["kfs"]
-is_solvable(16, ("vwr", "z06", "tqm", "z11", "kfs", "z16"))
+incorrect = []
+for z, (op, x, y) in wires.items():
+    if op == "XOR":
+        if x[0] == "x" and y[0] == "y":
+            if not check_input_xor(z):
+                incorrect.append(z)
+        elif not z[0] == "z":
+            # output z XOR
+            incorrect.append(z)
+    elif op == "AND":
+        if not check_and(z):
+            incorrect.append(z)
+    elif len(used_by[z]) != 2 and z != "z45":
+        # carry OR
+        incorrect.append(z)
 
-p2 = next(map(lambda t: ",".join(sorted(t)), good))
+p2 = ",".join(sorted(incorrect))
 print(p2)
 
 if args.test:
