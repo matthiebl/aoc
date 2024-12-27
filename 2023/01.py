@@ -1,53 +1,34 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 1: Trebuchet?! ---
+https://adventofcode.com/2023/day/1
+"""
 
-from sys import argv
-import aocutils as u
+import re
+from utils import *
 
+args = parse_args(year=2023, day=1)
+raw = get_input(args.filename, year=2023, day=1)
 
-def starts_with_index(s: str, l: list[str]) -> int:
-    for i, match in enumerate(l):
-        if s.startswith(match):
-            return i
-    return None
+lines = raw.splitlines()
+pattern = r"zero|one|two|three|four|five|six|seven|eight|nine"
+value = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
 
+p1 = 0
+p2 = 0
 
-def get_digit(line: str, i: int) -> int:
-    if line[i] in '1234567890':
-        return int(line[i])
-    return starts_with_index(line[i:i+5], ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'])
+for line in lines:
+    first = None
+    for last in re.findall(r"\d", line):
+        first = last if first is None else first
+    p1 += int(first + last)
 
+    first = re.findall(pattern + r"|\d", line)[0]
+    last = re.findall(pattern[::-1] + r"|\d", line[::-1])[0][::-1]
+    p2 += (value.index(first) if first in value else int(first)) * \
+        10 + (value.index(last) if last in value else int(last))
 
-def first_first(line: str, start: int, inc: int, f):
-    i = start
-    while f(line, i) == None:
-        i += inc
-    return f(line, i)
+print(p1)
+print(p2)
 
-
-def get_left_most(line: str, f):
-    return first_first(line, 0, 1, f)
-
-
-def get_right_most(line: str, f):
-    return first_first(line, len(line) - 1, -1, f)
-
-
-def main(file: str) -> None:
-    print('Day 01')
-
-    data = u.input_as_lines(file)
-
-    def first_last_dig(l):
-        line = list(map(int, filter(lambda x: x in '123456789', l)))
-        return line[0] * 10 + line[-1]
-    p1 = sum(first_last_dig(line) for line in data)
-    print(f'{p1=}')
-
-    p2 = sum(get_left_most(line, get_digit) * 10 +
-             get_right_most(line, get_digit) for line in data)
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '01.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

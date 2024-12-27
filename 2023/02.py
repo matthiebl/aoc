@@ -1,50 +1,33 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 2: Cube Conundrum ---
+https://adventofcode.com/2023/day/2
+"""
 
-from sys import argv
-from collections import defaultdict
-import aocutils as u
+from utils import *
 
+args = parse_args(year=2023, day=2)
+raw = get_input(args.filename, year=2023, day=2)
 
-ALLOWED = {
-    'red': 12,
-    'green': 13,
-    'blue': 14,
-}
+lines = raw.splitlines()
+cubes = {"red": 12, "green": 13, "blue": 14}
 
+p1, p2 = 0, 0
+for game in lines:
+    gid, rounds = game.split(": ")
+    possible = True
+    required = {"red": 0, "green": 0, "blue": 0}
+    for round in rounds.split("; "):
+        for cube in round.split(", "):
+            amt, colour = cube.split(" ")
+            if int(amt) > cubes[colour]:
+                possible = False
+            required[colour] = max(required[colour], int(amt))
+    if possible:
+        p1 += int(gid[5:])
+    p2 += mul(n for n in required.values())
 
-def main(file: str) -> None:
-    print('Day 02')
+print(p1)
+print(p2)
 
-    data = u.input_as_lines(file)
-
-    p1 = 0
-    p2 = 0
-    for line in data:
-        [game_info, game] = line.split(': ')
-        id = int(game_info[5:])
-        game = u.double_sep(game, '; ', ', ')
-
-        min_needed = defaultdict(int)
-
-        invalid = False
-        for hand in game:
-            for cube in hand:
-                count, colour = cube.split(' ')
-                count = int(count)
-
-                if count > ALLOWED[colour]:
-                    invalid = True
-                min_needed[colour] = max(min_needed[colour], count)
-
-        if not invalid:
-            p1 += id
-
-        p2 += min_needed['red'] * min_needed['green'] * min_needed['blue']
-
-    print(f'{p1=}')
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '02.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

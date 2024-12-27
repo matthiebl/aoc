@@ -1,35 +1,33 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 4: Scratchcards ---
+https://adventofcode.com/2023/day/4
+"""
 
-import aocutils as u
-from sys import argv
 from collections import defaultdict
+from utils import *
 
+args = parse_args(year=2023, day=4)
+raw = get_input(args.filename, year=2023, day=4)
 
-def main(file: str) -> None:
-    print('Day 04')
+cards = raw.splitlines()
 
-    data = [line[8:].strip().split(' | ')
-            for line in u.input_as_lines(file)]
+p1 = 0
+p2 = 0
+copies = defaultdict(lambda: 1)
 
-    cards = defaultdict(int)
-    p1 = 0
-    for i, [winning, mine] in enumerate(data):
-        winning = set(u.find_digits(winning))
-        mine = set(u.find_digits(mine))
+for i, card in enumerate(cards):
+    left, right = card.split(" | ")
+    winning = set(list(nums(left))[1:])
+    yours = set(nums(right))
+    match = len(winning.intersection(yours))
+    if match:
+        p1 += 2 ** (match - 1)
+    p2 += copies[i]
+    for j in range(i + 1, i + match + 1):
+        copies[j] += copies[i]
 
-        matching_numbers = len(winning & mine)
-        if matching_numbers > 0:
-            p1 += 2 ** (matching_numbers - 1)
+print(p1)
+print(p2)
 
-        cards[i + 1] += 1
-        for j in range(matching_numbers):
-            cards[i + j + 2] += cards[i + 1]
-
-    p2 = sum(cards.values())
-    print(f'{p1=}')
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '04.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

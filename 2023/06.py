@@ -1,37 +1,32 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 6: Wait For It ---
+https://adventofcode.com/2023/day/6
+"""
 
-from sys import argv
-import aocutils as u
+from utils import *
 
+args = parse_args(year=2023, day=6)
+raw = get_input(args.filename, year=2023, day=6)
 
-def ways(time, dist):
-    beat = 0
-    for t in range((time + 1) // 2):
-        speed = t
-        travel = speed * (time - t)
-        if travel > dist:
-            beat += 1
-    return beat * 2 + (1 if time % 2 == 0 else 0)
+times, distances = list(map(list, map(nums, raw.splitlines())))
 
+p1 = 1
+for time, dist in zip(times, distances):
+    p1 *= sum(1 for t in range(time + 1) if t * (time - t) > dist)
+print(p1)
 
-def main(file: str) -> None:
-    print('Day 06')
+# Use binary search to find lowest time that still beats the record
+time, dist = tuple(nums(raw.replace(" ", "")))
+lo, hi = 1, time // 2
+while lo < hi:
+    m = (lo + hi) // 2
+    if m * (time - m) > dist:
+        hi = m
+    else:
+        lo = m + 1
 
-    data = u.input_as_lines(file)
+p2 = (1 if (time // 2) % 2 == 0 else 0) + 2 * (time // 2 - lo)
+print(p2)
 
-    races = list(zip(u.find_digits(data[0]), u.find_digits(data[1])))
-
-    p1 = 1
-    for time, dist in races:
-        p1 *= ways(time, dist)
-    print(f'{p1=}')
-
-    real_time = int(''.join(u.find_digits(data[0], map=str)))
-    real_dist = int(''.join(u.find_digits(data[1], map=str)))
-    p2 = ways(real_time, real_dist)
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '06.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)
