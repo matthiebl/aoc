@@ -1,128 +1,49 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 7: Camel Cards ---
+https://adventofcode.com/2023/day/7
+"""
 
-from sys import argv
-import aocutils as u
 from collections import Counter
+from functools import cmp_to_key
+from utils import *
 
-card_val = {
-    'A': 13,
-    'K': 12,
-    'Q': 11,
-    'J': 10,
-    'T': 9,
-    '9': 8,
-    '8': 7,
-    '7': 6,
-    '6': 5,
-    '5': 4,
-    '4': 3,
-    '3': 2,
-    '2': 1,
-}
+args = parse_args(year=2023, day=7)
+raw = get_input(args.filename, year=2023, day=7)
 
-card_val_p2 = {
-    'A': 13,
-    'K': 12,
-    'Q': 11,
-    'T': 10,
-    '9': 9,
-    '8': 8,
-    '7': 7,
-    '6': 6,
-    '5': 5,
-    '4': 4,
-    '3': 3,
-    '2': 2,
-    'J': 1,
+cards = list(map(lambda t: tuple(t.split()), raw.splitlines()))
+
+hand_type_value = {
+    (5,): 60000000,
+    (4, 1): 50000000,
+    (3, 2): 40000000,
+    (3, 1, 1): 30000000,
+    (2, 2, 1): 20000000,
+    (2, 1, 1, 1): 10000000,
+    (1, 1, 1, 1, 1): 0,
 }
 
 
-def eq(l):
-    if len(l) == 0:
-        return True
-    s = l[0]
-    for i in l:
-        if i != s:
-            return False
-    return True
+def hand_type(hand):
+    count = tuple(sorted(Counter(hand).values(), reverse=True))
+    return hand_type_value[count]
 
 
-def none_eq(l):
-    # assume l is sorted
-    assert len(l) > 0
-    last = l[0]
-    for c in l[1:]:
-        if last == c:
-            return False
-        last = c
-    return True
+def value(hand: str, jokers: bool = False):
+    value = 0
+    for c in hand:
+        value = 15 * (value + ("J23456789TQKA" if jokers else "23456789TJQKA").index(c))
+    if jokers:
+        return max(value + hand_type(hand.replace("J", r)) for r in "23456789TQKA")
+    return value + hand_type(hand)
 
 
-def card_values(hand: str, lookup: dict[str, int]):
-    val = 0
-    for card in list(hand):
-        val = val * 100 + lookup[card]
-    return val
+cards.sort(key=lambda play: value(play[0]))
+p1 = sum(i * int(bid) for i, (_, bid) in enumerate(cards, 1))
+print(p1)
 
+cards.sort(key=lambda play: value(play[0], jokers=True))
+p2 = sum(i * int(bid) for i, (_, bid) in enumerate(cards, 1))
+print(p2)
 
-def value(hand: str) -> int:
-    val = card_values(hand, card_val)
-    freq = Counter(list(hand))
-    type_ = 1
-    if len(freq) == 1:
-        type_ = 7  # five kind
-    elif len(freq) == 2 and 4 in freq.values():
-        type_ = 6  # four kind
-    elif len(freq) == 2:
-        type_ = 5  # full house
-    elif 3 in freq.values():
-        type_ = 4  # three kind
-    elif len(freq) == 3:
-        type_ = 3  # two pair
-    elif len(freq) == 4:
-        type_ = 2  # one pair
-    return val + type_ * 10000000000
-
-
-def value2(hand: str) -> int:
-    val = card_values(hand, card_val_p2)
-    jokerless = sorted([c for c in hand if c != 'J'])
-
-    if len(jokerless) == len(hand):
-        return value(hand) - card_values(hand, card_val) + val
-
-    freq = Counter(jokerless)
-
-    type_ = 2
-    if len(freq) == 0 or len(freq) == 1:
-        type_ = 7  # five kind
-    elif len(freq) == 2 and 1 in freq.values():
-        type_ = 6  # four
-    elif len(freq) == 2:
-        type_ = 5  # full house
-    elif len(freq) == 3:
-        type_ = 4  # three kind
-
-    return val + type_ * 10000000000
-
-
-def main(file: str) -> None:
-    print('Day 07')
-
-    hands = u.input_as_lines(file, map=lambda s: (
-        s.split()[0], int(s.split()[1])))
-
-    hands.sort(key=lambda t: value(t[0]))
-
-    p1 = sum(bid * (rank + 1) for rank, (_, bid) in enumerate(hands))
-    print(f'{p1=}')
-
-    hands.sort(key=lambda t: value2(t[0]))
-
-    p2 = sum(bid * (rank + 1) for rank, (_, bid) in enumerate(hands))
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '07.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)
