@@ -1,47 +1,44 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 15: ... ---
+https://adventofcode.com/2023/day/15
+"""
 
-import aocutils as u
-from sys import argv
+from collections import defaultdict
+from utils import *
 
+args = parse_args(year=2023, day=15)
+raw = get_input(args.filename, year=2023, day=15)
 
-def hash_(s):
-    i = 0
-    for c in s:
-        i = ((i + ord(c)) * 17) % 256
-    return i
-
-
-def main(file: str) -> None:
-    print('Day 15')
-
-    data = u.read_input(file).split(',')
-
-    p1 = sum(map(hash_, data))
-    print(f'{p1=}')
-
-    boxes = u.defaultdict(list)
-    focal = {}
-    for word in data:
-        if word[-1] == '-':
-            label = word[:-1]
-            hash__ = hash_(label)
-            if label in boxes[hash__]:
-                boxes[hash__].remove(label)
-        else:
-            label, focus = word.split('=')
-            focus = int(focus)
-            hash__ = hash_(label)
-            if label not in boxes[hash__]:
-                boxes[hash__].append(label)
-            focal[label] = focus
-
-    p2 = 0
-    for k, v in boxes.items():
-        for i, label in enumerate(v):
-            p2 += (k + 1) * (i + 1) * focal[label]
-    print(f'{p2=}')
+strings = raw.split(",")
 
 
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '15.in'
-    main(file)
+def hash_string(string: str) -> int:
+    hash_value = 0
+    for c in string:
+        hash_value = ((hash_value + ord(c)) * 17) % 256
+    return hash_value
+
+
+p1 = sum(map(hash_string, strings))
+print(p1)
+
+boxes = defaultdict(list)
+focus = {}
+for string in strings:
+    index = string.index("=") if "=" in string else string.index("-")
+    label = string[:index]
+    label_hash = hash_string(label)
+    if string[index] == "-":
+        boxes[label_hash] = [lbl for lbl in boxes[label_hash] if lbl != label]
+    else:
+        focus[label] = int(string[index + 1:])
+        if label not in boxes[label_hash]:
+            boxes[label_hash].append(label)
+
+p2 = 0
+for box, labels in boxes.items():
+    p2 += (box + 1) * sum((i + 1) * focus[label] for i, label in enumerate(labels))
+print(p2)
+
+if args.test:
+    args.tester(p1, p2)

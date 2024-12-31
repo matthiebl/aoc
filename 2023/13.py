@@ -1,69 +1,47 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 13: Point of Incidence ---
+https://adventofcode.com/2023/day/13
+"""
 
-import aocutils as u
-from sys import argv
+from utils import *
 
+args = parse_args(year=2023, day=13)
+raw = get_input(args.filename, year=2023, day=13)
 
-def rotate(lst):
-    return [''.join(c) for c in zip(*lst[::-1])]
-
-
-def reflection_h(space, row):
-    above = space[:row]
-    above.reverse()
-    below = space[row:]
-
-    for a, b in zip(above, below):
-        if a != b:
-            return 0
-    return row
+grids = [[list(line) for line in group.splitlines()] for group in raw.split("\n\n")]
 
 
-def find_reflection_score(space, exclude: int = 0):
-    for i in range(1, len(space)):
-        score = 100 * reflection_h(space, i)
-        if score > 0 and score != exclude:
-            return score
-    rotated = rotate(space)
-    for i in range(1, len(rotated)):
-        score = reflection_h(rotated, i)
-        if score > 0 and score != exclude:
-            return score
+def rows_above_reflection(grid: list[list[str]], skip_row: int = 0):
+    for i in range(1, len(grid)):
+        if i == skip_row:
+            continue
+        if all(a == b for a, b in zip(grid[i:], grid[:i][::-1])):
+            return i
     return 0
 
 
-def smudge_score(space, prev_score: int):
-    for i in range(len(space)):
-        for j in range(len(space[i])):
-            space[i] = list(space[i])
-            space[i][j] = '#' if space[i][j] == '.' else '.'
-            space[i] = ''.join(space[i])
+p1 = 0
+p2 = 0
 
-            new_score = find_reflection_score(space, prev_score)
-            if new_score:
-                return new_score
+for grid in grids:
+    h = rows_above_reflection(grid)
+    v = rows_above_reflection(list(zip(*grid)))
+    p1 += h * 100 + v
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            grid[r][c] = "#" if grid[r][c] == "." else "."
+            h2 = rows_above_reflection(grid, h)
+            v2 = rows_above_reflection(list(zip(*grid)), v)
+            grid[r][c] = "#" if grid[r][c] == "." else "."
+            if h2 or v2:
+                p2 += h2 * 100 + v2
+                break
+        else:
+            continue
+        break
 
-            space[i] = list(space[i])
-            space[i][j] = '#' if space[i][j] == '.' else '.'
-            space[i] = ''.join(space[i])
+print(p1)
+print(p2)
 
-
-def main(file: str) -> None:
-    print('Day 13')
-
-    spaces = u.input_from_grouped_lines(file)
-
-    p1 = 0
-    p2 = 0
-    for space in spaces:
-        score = find_reflection_score(space)
-        p1 += score
-        p2 += smudge_score(space, score)
-
-    print(f'{p1=}')
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '13.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)
