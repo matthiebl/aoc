@@ -1,62 +1,46 @@
-#!/usr/bin/env python3.12
-
-import aocutils as u
-from sys import argv
-import heapq as hq
-
 """
-In the end, kind of happy with this solution. Even though it took way too long.
-
-I had an alternate solution previously, but did not cache, and handled
-skipping wrong directions more complicated than necessary.
+--- Day 17: Clumsy Crucible ---
+https://adventofcode.com/2023/day/17
 """
 
-DX = [0, 1, 0, -1]
-DY = [-1, 0, 1, 0]
+from utils import *
+
+args = parse_args(year=2023, day=17)
+raw = get_input(args.filename, year=2023, day=17)
+
+grid = [list(line) for line in raw.splitlines()]
+R, C = len(grid), len(grid[0])
 
 
-def main(file: str) -> None:
-    print('Day 17')
+def dijkstras(min_steps: int = 1, max_steps: int = 3) -> tuple[int | None, dict]:
+    from heapq import heappush, heappop
+    from collections import defaultdict
+    distances = defaultdict(lambda: float("inf"))
+    distances[(0, 0, 0, 0, 0)] = 0
 
-    lava = u.input_as_lines(file)
+    heap = [(0, (0, 0), (0, 0), 0)]
+    while heap:
+        heat, (r, c), (dr, dc), steps = heappop(heap)
+        if (r, c) == (R - 1, C - 1):
+            return heat
 
-    H = len(lava)
-    W = len(lava[0])
-    target = (W-1, H-1)
-
-    def dijkstra(min_steps, max_steps):
-        dist = u.defaultdict(lambda: float('inf'))
-        # dist is (x, y, dir to coord, # of steps in that dir): sum of heat loss
-        dist[0, 0, 0, 0] = 0
-        q = [(0, 0, 0, None, 0)]
-        while q:
-            heat_loss, x, y, dir, steps = hq.heappop(q)
-            if (x, y) == target:
-                return heat_loss
-
-            for d in range(4):
-                if d == dir and steps >= max_steps:
-                    continue
-                if dir is not None and d != dir and steps < min_steps:
-                    continue
-                if ((d + 2) % 4) == dir:
-                    continue
-                nx = x + DX[d]
-                ny = y + DY[d]
-                if 0 <= nx < W and 0 <= ny < H:
-                    score = heat_loss + int(lava[ny][nx])
-                    nprev = steps + 1 if d == dir else 1
-                    if score < dist[nx, ny, d, nprev]:
-                        dist[nx, ny, d, nprev] = score
-                        hq.heappush(
-                            q, (score, nx, ny, d, nprev))
-
-    p1 = dijkstra(1, 3)
-    print(f'{p1=}')
-    p2 = dijkstra(4, 10)
-    print(f'{p2=}')
+        for ndr, ndc in directions(4):
+            if (((dr, dc) == (ndr, ndc) and steps >= max_steps)
+                    or ((dr, dc) not in [(0, 0), (ndr, ndc)] and steps < min_steps)
+                    or ((dr, dc) == (-ndr, -ndc))
+                    or (not within_grid(grid, r + ndr, c + ndc))):
+                continue
+            tentative = heat + int(grid[r + ndr][c + ndc])
+            new_steps = steps + 1 if (dr, dc) == (ndr, ndc) else 1
+            if tentative < distances[(r + ndr, c + ndc, ndr, ndc, new_steps)]:
+                distances[(r + ndr, c + ndc, ndr, ndc, new_steps)] = tentative
+                heappush(heap, (tentative, (r + ndr, c + ndc), (ndr, ndc), new_steps))
 
 
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '17.in'
-    main(file)
+p1 = dijkstras()
+print(p1)
+p2 = dijkstras(min_steps=4, max_steps=10)
+print(p2)
+
+if args.test:
+    args.tester(p1, p2)

@@ -1,8 +1,5 @@
 """BFS"""
 
-from heapq import heapify, heappush, heappop
-from collections import deque
-
 
 def bfs(graph: dict, start, is_end, initial_dist: int = 0) -> tuple:
     """
@@ -15,6 +12,8 @@ def bfs(graph: dict, start, is_end, initial_dist: int = 0) -> tuple:
 
     Weight of each adjacent cell is ignored
     """
+    from collections import deque
+
     visited = set()
     queue = deque([(initial_dist, start)])
     while queue:
@@ -74,6 +73,8 @@ def dijkstras(graph: dict, start, is_end, initial_dist: int = 0) -> tuple[int | 
 
     Returns the distance to `is_end` if found; otherwise the distance mapping
     """
+    from heapq import heapify, heappush, heappop
+
     distances = {pos: float("inf") for pos in graph}
     distances[start] = initial_dist
 

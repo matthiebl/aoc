@@ -1,33 +1,10 @@
-#!/usr/bin/env python3.12
-
-import aocutils as u
-from sys import argv
-
 """
 --- Day 18: Lavaduct Lagoon ---
+https://adventofcode.com/2023/day/18
 
-Oh boy, was this a more difficult problem than I wanted.
-At least is was an appropriately placed day.
+For part 1, a naive flood fill to find the area will work, but will not cut it for part 2.
 
-I tried a few things to solve this problem.
-
-Initially, I used a floodfill for part 1, but this was obviously
-not going to work for part 2.
-
-So I tried another idea I had for day 10, where you could move
-along a row/column and work out based on the types of edges, which
-part of the shape was inside or outside. This proved difficult,
-and I was getting incorrect answers.
-
-I even tried to implement a strategy that was analagous to working
-out the integrals of each horizontal line, adding/subtracting the
-different direction lines. This was also not working for me.
-
-Finally, after admitting defeat, I tried having a look for
-existing algorithms that could solve the problem for me.
-
-I found the Shoelace formula, which had a nice simple general
-algorithm.
+In order to solve the larger example, we need to leverage the Shoelace formula, which has a nice general algorithm.
      n
     ___
     \
@@ -35,67 +12,47 @@ algorithm.
     ---
     i=1
 
-This gives only the interior area, and in our case, the vertices
-used in the algorithm are at the center of each perimeter wall,
-and not on the exterior.
+This gives only the interior area, and in our case, the vertices used in the algorithm are at the center of each
+perimeter wall, and not on the exterior.
 
-So to add the part that's exterior, we also need to add the part on
-the outside. This will be half a block for every straight edge.
-Plus the final 4 quarter blocks for the outside corners that get
-missed.
+So to add the part that's exterior, we also need to add the part on the outside. This will be half a block for every
+straight edge. Plus the final 4 quarter blocks for the outside corners that get missed.
 
-In order to add this extra part, I just added a unit for every
-up and right direction block, plus a final extra unit for the quarters.
+In order to add this extra part, I just added a unit for every up and right direction block, plus a final extra
+unit for the quarters.
 """
 
-DX = [0, 1, 0, -1]
-DY = [-1, 0, 1, 0]
-DD = {'U': 0, 'R': 1, 'D': 2, 'L': 3}
+from utils import *
+
+args = parse_args(year=2023, day=18)
+raw = get_input(args.filename, year=2023, day=18)
+
+lines = list(map(lambda l: l.replace("(", "").replace(")", "").split(" "), raw.splitlines()))
+
+D = {"R": (0, 1), "D": (1, 0), "L": (0, -1), "U": (-1, 0),
+     "0": (0, 1), "1": (1, 0), "2": (0, -1), "3": (-1, 0)}
 
 
-def instructions_to_vertices(instructions):
-    pos = (0, 0)
-    vertices = [pos]
-    for d, dist in instructions:
-        pos = u.add_tup(pos, u.mul_tup((DX[d], DY[d]), dist))
-        vertices.append(pos)
-    return vertices
+def shoelace(instructions: list[tuple[int | str, int]]):
+    vertices = [(0, 0)]
+    r, c = 0, 0
+    for d, n in instructions:
+        dr, dc = D[d]
+        r, c = r + dr * n, c + dc * n
+        vertices.append((r, c))
+    vertices.append((0, 0))
+
+    # shoelace formula
+    interior = sum((c1 * r2) - (r1 * c2) for (r1, c1), (r2, c2) in windows(vertices))
+    # extra exterior edges
+    exterior = sum(n for d, n in instructions if d in ["U", "R", "0", "3"])
+    return abs(interior) // 2 + exterior + 1
 
 
-def area(instructions):
-    vertices = instructions_to_vertices(instructions)
+p1 = shoelace([(d, int(n)) for d, n, _ in lines])
+print(p1)
+p2 = shoelace([(hex[-1], int(hex[1:-1], 16)) for _, _, hex in lines])
+print(p2)
 
-    instructions.append(instructions[0])
-    exterior = 0
-    for d1, dst1 in instructions:
-        # up and right blocks
-        if d1 == 0 or d1 == 1:
-            exterior += dst1
-
-    # Shoelace interior area
-    interior = 0
-    for (x1, y1), (x2, y2) in zip(vertices, vertices[1:]):
-        interior += (x1 * y2) - (x2 * y1)
-    interior = abs(interior) // 2
-
-    # the above, plus a final block
-    return (exterior + interior + 1)
-
-
-def main(file: str) -> None:
-    print('Day 18')
-
-    raw = u.input_as_lines(file, map=lambda l: l.split(' '))
-    instructions = [(DD[d], int(dist)) for d, dist, _ in raw]
-    new_instructions = [(int(colour[-2]), int(colour[2:-2], 16))
-                        for _, _, colour in raw]
-
-    p1 = area(instructions)
-    p2 = area(new_instructions)
-    print(f'{p1=}')
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '18.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)
