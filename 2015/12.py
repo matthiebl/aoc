@@ -1,56 +1,33 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 12: JSAbacusFramework.io ---
+https://adventofcode.com/2015/day/12
+"""
 
-import json
-from sys import argv
+from json import loads
+from utils import *
 
-import aocutils as u
+args = parse_args(year=2015, day=12)
+raw = get_input(args.filename, year=2015, day=12)
+
+p1 = sum(list(nums(raw)))
+print(p1)
 
 
-def json_sum(json) -> int:
+def non_red_sum(json) -> int:
     if isinstance(json, int):
         return json
     if isinstance(json, str):
         return 0
     if isinstance(json, list):
-        return sum(json_sum(it) for it in json)
-    return sum(json_sum(v) for v in json.values())
-
-
-def json_sum_p2(json) -> int:
-    if isinstance(json, int):
-        return json
-    if isinstance(json, str):
+        return sum(non_red_sum(it) for it in json)
+    assert isinstance(json, dict)
+    if any(v == "red" for v in json.values()):
         return 0
-    if isinstance(json, list):
-        return sum(json_sum_p2(it) for it in json)
-    return sum(json_sum_p2(v) for v in json.values() if not is_property_within(json))
+    return sum(non_red_sum(v) for v in json.values())
 
 
-def is_property_within(json, property='red'):
-    if isinstance(json, int):
-        return False
-    if isinstance(json, str):
-        return False
-    if isinstance(json, list):
-        return False
-    if any(v == property for v in json.values()):
-        return True
-    return False
+p2 = non_red_sum(loads(raw))
+print(p2)
 
-
-def main(file: str) -> None:
-    print('Day 12')
-
-    data = u.read_input(file)
-
-    j = json.loads(data)
-    p1 = json_sum(j)
-    print(f'{p1=}')
-
-    p2 = json_sum_p2(j)
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '12.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

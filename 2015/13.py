@@ -1,47 +1,37 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 13: Knights of the Dinner Table ---
+https://adventofcode.com/2015/day/13
+"""
 
+from collections import defaultdict
 from itertools import permutations
-from sys import argv
+from utils import *
 
-import aocutils as u
+args = parse_args(year=2015, day=13)
+raw = get_input(args.filename, year=2015, day=13)
 
+desires = [line[:-1].split() for line in raw.splitlines()]
 
-def main(file: str) -> None:
-    print('Day 13')
-
-    data = u.input_as_lines(file, map=str.split)
-
-    people = set()
-    happiness = u.defaultdict(int)
-
-    for [name, _, change, amt, *_, next_to] in data:
-        people.add(name)
-        happiness[tuple(sorted([name, next_to[:-1]]))] += int(amt) * (1 if change == 'gain' else -1)
-
-    people = sorted(people)
-
-    p1 = 0
-    for arrangement in permutations(people, len(people)):
-        score = happiness[tuple(sorted([arrangement[0], arrangement[-1]]))]
-        for name1, name2 in u.window(arrangement):
-            score += happiness[tuple(sorted([name1, name2]))]
-        p1 = max(p1, score)
-    print(f'{p1=}')
-
-    people.append('Me')
-    p2 = 0
-    for arrangement in permutations(people, len(people)):
-        score = 0
-        if arrangement[0] != 'Me' and arrangement[-1] != 'Me':
-            score += happiness[tuple(sorted([arrangement[0], arrangement[-1]]))]
-        for name1, name2 in u.window(arrangement):
-            if name1 == 'Me' or name2 == 'Me':
-                continue
-            score += happiness[tuple(sorted([name1, name2]))]
-        p2 = max(p2, score)
-    print(f'{p2=}')
+people = defaultdict(lambda: defaultdict(int))
+for [name, _, change, amt, *_, next_to] in desires:
+    people[name][next_to] = int(amt) * (-1 if change == "lose" else 1)
 
 
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '13.in'
-    main(file)
+def best_seating_score(names) -> int:
+    best = 0
+    for arrangement in permutations(names):
+        score = people[arrangement[0]][arrangement[-1]] + people[arrangement[-1]][arrangement[0]]
+        for n1, n2 in windows(arrangement):
+            score += people[n1][n2] + people[n2][n1]
+        best = max(score, best)
+    return best
+
+
+p1 = best_seating_score(people)
+print(p1)
+
+p2 = best_seating_score(set(people) | {"Me"})
+print(p2)
+
+if args.test:
+    args.tester(p1, p2)
