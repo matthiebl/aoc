@@ -1,29 +1,21 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 1: Not Quite Lisp ---
+https://adventofcode.com/2015/day/1
+"""
 
-import aocutils as u
-from sys import argv
+from utils import *
 
+args = parse_args(year=2015, day=1)
+moves = get_input(args.filename, year=2015, day=1)
 
-def main(file: str) -> None:
-    print('Day 1')
+floors = [0]
+for move in moves:
+    floors.append(floors[-1] + (1 if move == "(" else -1))
 
-    brackets = u.input_as_lines(file)[0]
-    p1 = brackets.count('(') - brackets.count(')')
-    print(f'{p1=}')
+p1 = floors[-1]
+p2 = floors.index(-1)
+print(p1)
+print(p2)
 
-    p2 = 0
-    level = 0
-    for i, c in enumerate(brackets):
-        if c == ')':
-            level -= 1
-        else:
-            level += 1
-        if level == -1:
-            p2 = i + 1
-            break
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '01.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

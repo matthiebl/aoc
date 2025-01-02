@@ -1,25 +1,19 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 2: I Was Told There Would Be No Math ---
+https://adventofcode.com/2015/day/2
+"""
 
-import aocutils as u
-from sys import argv
+from utils import *
 
+args = parse_args(year=2015, day=2)
+raw = get_input(args.filename, year=2015, day=2)
 
-def main(file: str) -> None:
-    print('Day 2')
+presents = list(map(sorted, map(list, map(nums, raw.splitlines()))))
 
-    dimensions = u.input_as_lines(file, map=lambda l: u.map_int(l.split('x')))
+p1 = sum(3 * w * h + 2 * (w * d + h * d) for w, h, d in presents)
+p2 = sum(2 * (w + h) + w * h * d for w, h, d in presents)
+print(p1)
+print(p2)
 
-    p1 = 0
-    p2 = 0
-    for [a, b, c] in dimensions:
-        area = [a * b, b * c, a * c]
-        p1 += min(area) + 2 * sum(area)
-        perim = [2 * (a + b), 2 * (b + c), 2 * (a + c)]
-        p2 += min(perim) + a * b * c
-    print(f'{p1=}')
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '02.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

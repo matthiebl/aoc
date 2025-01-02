@@ -1,79 +1,40 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 6: Probably a Fire Hazard ---
+https://adventofcode.com/2015/day/6
 
-import aocutils as u
-from sys import argv
+By using numpy's amazing array indexing, we can greatly speed up 2D array modifications.
+https://numpy.org/doc/stable/user/basics.indexing.html#
+"""
 
+import numpy as np
+from utils import *
 
-class AreaP1:
-    def __init__(self, range, op, prev) -> None:
-        self.x1 = range[0]
-        self.y1 = range[1]
-        self.x2 = range[2]
-        self.y2 = range[3]
+args = parse_args(year=2015, day=6)
+raw = get_input(args.filename, year=2015, day=6)
 
-        self.op = op
-        self.prev: AreaP1 = prev
+commands = raw.splitlines()
 
-    def status(self, x, y) -> bool:
-        if self.x1 <= x <= self.x2 and self.y1 <= y <= self.y2:
-            if self.op == 'off':
-                return False
-            elif self.op == 'on':
-                return True
-            else:
-                return not self.prev.status(x, y)
-        return self.prev.status(x, y)
+lights = np.zeros((1000, 1000), dtype=int)
+brightness = np.zeros((1000, 1000), dtype=int)
+for command in commands:
+    r1, c1, r2, c2 = list(nums(command))
+    sr, sc = slice(r1, r2 + 1), slice(c1, c2 + 1)
+    match command[:7]:
+        case "toggle ":
+            lights[sr, sc] ^= 1
+            brightness[sr, sc] += 2
+        case "turn on":
+            lights[sr, sc] = 1
+            brightness[sr, sc] += 1
+        case "turn of":
+            lights[sr, sc] = 0
+            brightness[sr, sc] -= 1
+            brightness[brightness < 0] = 0
 
+p1 = sum(sum(lights))
+p2 = sum(sum(brightness))
+print(p1)
+print(p2)
 
-class AreaP2:
-    def __init__(self, range, instruction, prev) -> None:
-        self.x1 = range[0]
-        self.y1 = range[1]
-        self.x2 = range[2]
-        self.y2 = range[3]
-
-        self.change = 2
-        if instruction == 'on':
-            self.change = 1
-        elif instruction == 'off':
-            self.change = -1
-        self.prev: AreaP2 = prev
-
-    def brightness(self, x, y) -> int:
-        prev = self.prev.brightness(x, y) if self.prev is not None else 0
-        if self.x1 <= x <= self.x2 and self.y1 <= y <= self.y2:
-            return max(self.change + prev, 0)
-        return prev
-
-
-def main(file: str) -> None:
-    print('Day 6')
-
-    data = u.input_as_lines(file)
-
-    instructions = AreaP1([0, 0, 999, 999], 'off', None)
-    brightness = None
-
-    for line in data:
-        b = line.split()[1]
-        op = 'toggle'
-        if b == 'on' or b == 'off':
-            op = b
-        instructions = AreaP1(u.find_digits(line), op, instructions)
-        brightness = AreaP2(u.find_digits(line), op, brightness)
-
-    p1 = 0
-    p2 = 0
-    for x in range(0, 1000):
-        for y in range(0, 1000):
-            if instructions.status(x, y):
-                p1 += 1
-            p2 += brightness.brightness(x, y)
-
-    print(f'{p1=}')
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '06.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

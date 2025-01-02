@@ -1,46 +1,34 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 5: Doesn't He Have Intern-Elves For This? ---
+https://adventofcode.com/2015/day/5
+"""
 
-import aocutils as u
-from sys import argv
+import re
+from utils import *
+
+args = parse_args(year=2015, day=5)
+raw = get_input(args.filename, year=2015, day=5)
+
+strings = raw.splitlines()
 
 
-def nice(s: str) -> bool:
-    if 'ab' in s or 'cd' in s or 'pq' in s or 'xy' in s:
+def nice(string: str) -> bool:
+    if re.search(r"ab|cd|pq|xy", string):
         return False
-    double = False
-    for a, b in zip(s, s[1:]):
-        if a == b:
-            double = True
-    freq = u.Counter(s)
-    vowels = freq['a'] + freq['e'] + freq['i'] + freq['o'] + freq['u']
-    return double and vowels >= 3
+    return any(a == b for a, b in windows(string)) and len(re.findall(r"a|e|i|o|u", string)) >= 3
 
 
-def nice2(s: str) -> bool:
-    pred1 = False
-    for i in range(len(s) - 1):
-        t = s[i:i+2]
-        if t in s[:i] or t in s[i+2:]:
-            pred1 = True
-    pred2 = False
-    for a, b in zip(s, s[2:]):
-        if a == b:
-            pred2 = True
-    return pred1 and pred2
+def nice_v2(string: str) -> bool:
+    return (any(string.count(a + b) >= 2 for a, b in windows(string))
+            and any(a == b for a, b in zip(string, string[2:])))
 
 
-def main(file: str) -> None:
-    print('Day 5')
+p1 = len(list(filter(nice, strings)))
+print(p1)
 
-    data = u.input_as_lines(file)
+p2 = len(list(filter(nice_v2, strings)))
 
-    p1 = len(list(filter(nice, data)))
-    print(f'{p1=}')
+print(p2)
 
-    p2 = len(list(filter(nice2, data)))
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '05.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

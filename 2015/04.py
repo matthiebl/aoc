@@ -1,31 +1,26 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 4: The Ideal Stocking Stuffer ---
+https://adventofcode.com/2015/day/4
+"""
 
-import aocutils as u
-from sys import argv
+from _md5 import md5
+from utils import *
 
-from hashlib import md5
+args = parse_args(year=2015, day=4)
+key = get_input(args.filename, year=2015, day=4)
 
+p1 = 0
+p2 = 0
+i = 1
+while not (p1 and p2):
+    hash = md5(f"{key}{i}".encode()).hexdigest()
+    if not p1 and hash.startswith("00000"):
+        p1 = i
+    if not p2 and hash.startswith("000000"):
+        p2 = i
+    i += 1
+print(p1)
+print(p2)
 
-def coin(hash: str, zeroes=5) -> bool:
-    return hash.startswith('0' * zeroes)
-
-
-def main(file: str) -> None:
-    print('Day 4')
-
-    secret = u.read_input(file)
-
-    p1 = 0
-    while not coin(md5((secret + str(p1)).encode()).hexdigest()):
-        p1 += 1
-    print(f'{p1=}')
-
-    p2 = 0
-    while not coin(md5((secret + str(p2)).encode()).hexdigest(), zeroes=6):
-        p2 += 1
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '04.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

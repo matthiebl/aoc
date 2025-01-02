@@ -1,47 +1,38 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 9: All in a Single Night ---
+https://adventofcode.com/2015/day/9
+"""
 
-from sys import argv
+from collections import defaultdict
+from utils import *
 
-import aocutils as u
+args = parse_args(year=2015, day=9)
+raw = get_input(args.filename, year=2015, day=9)
 
-every = []
+lines = raw.splitlines()
+graph = defaultdict(list)
+for line in lines:
+    a, _, b, _, n = line.split()
+    graph[a].append((int(n), b))
+    graph[b].append((int(n), a))
 
-
-def dfs(graph: dict[str, dict[str, int]], visited: set, place: str, dist: int):
-    if len(visited) == len(graph):
-        every.append(dist)
-        return dist
-
-    dists = []
-    for path in graph[place]:
-        if path in visited:
+p1 = float("inf")
+p2 = 0
+for n in graph:
+    stack = [(0, n, set())]
+    while stack:
+        d, nxt, visited = stack.pop()
+        if nxt in visited:
             continue
-        v = visited.copy()
-        v.add(path)
-        d = dfs(graph, v, path, dist + graph[place][path])
-        dists.append(d)
-    if not dists:
-        return None
-    return min(dists)
+        visited.add(nxt)
 
+        if len(visited) == len(graph):
+            p1 = min(p1, d)
+            p2 = max(p2, d)
+            continue
+        stack.extend([(d + w, pos, set(visited)) for w, pos in graph[nxt]])
+print(p1)
+print(p2)
 
-def main(file: str) -> None:
-    print('Day 09')
-
-    data = u.input_as_lines(file, map=str.split)
-
-    graph = u.defaultdict(dict)
-    for [p1, _, p2, _, d] in data:
-        graph[p1][p2] = int(d)
-        graph[p2][p1] = int(d)
-
-    p1 = min(dfs(graph, set([place]), place, 0) for place in graph)
-    print(f'{p1=}')
-
-    p2 = sorted(every)[-1]
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '09.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

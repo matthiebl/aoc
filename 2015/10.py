@@ -1,42 +1,37 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 10: Elves Look, Elves Say ---
+https://adventofcode.com/2015/day/10
+"""
 
-from sys import argv
+from itertools import groupby
+from utils import *
 
-import aocutils as u
+args = parse_args(year=2015, day=10)
+raw = get_input(args.filename, year=2015, day=10)
 
 
-def iter(code: str) -> str:
-    new = ''
-    c = code[0]
-    l = 0
-    for i in range(len(code)):
-        if code[i] == c:
+def look_and_say(code: str) -> str:
+    said, cur, l = "", code[0], 1
+    for nxt in code[1:]:
+        if nxt == cur:
             l += 1
         else:
-            new += f'{l}{c}'
-            c = code[i]
-            l = 1
-    new += f'{l}{c}'
-    return new
+            said += f"{l}{cur}"
+            cur, l = nxt, 1
+    said += f"{l}{cur}"
+    return said
 
 
-def main(file: str) -> None:
-    print('Day 10')
+code = raw
+for _ in range(40):
+    code = look_and_say(code)
+p1 = len(code)
+print(p1)
 
-    code = u.read_input(file)
+for _ in range(10):
+    code = look_and_say(code)
+p2 = len(code)
+print(p2)
 
-    iterated = code
-    for _ in range(40):
-        iterated = iter(iterated)
-    p1 = len(iterated)
-    print(f'{p1=}')
-
-    for _ in range(10):
-        iterated = iter(iterated)
-    p2 = len(iterated)
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '10.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

@@ -40,12 +40,12 @@ def dfs(graph: dict, start, is_end, initial_dist: int = 0):
     Provided a graph in the form `{ A: [(w, B), ...] }` we check
     if we have reached a goal position in `is_end(A): bool`
 
-    Returns the goal position (or `(-1, -1)` if none found) and the visited set
+    Returns the goal position (or `None` if none found) and the visited set
 
     Weight of each adjacent cell is ignored
     """
     visited = set()
-    stack = [(0, start)]
+    stack = [(initial_dist, start)]
     while stack:
         d, nxt = stack.pop()
         if nxt in visited:
@@ -53,11 +53,11 @@ def dfs(graph: dict, start, is_end, initial_dist: int = 0):
         visited.add(nxt)
 
         if is_end(nxt):
-            return nxt
+            return nxt, visited
 
         stack.extend([(d + w, pos) for w, pos in graph[nxt]])
 
-    return visited
+    return None, visited
 
 
 """DIJKSTRA"""

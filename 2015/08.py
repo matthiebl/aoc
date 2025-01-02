@@ -1,44 +1,20 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 8: Matchsticks ---
+https://adventofcode.com/2015/day/8
+"""
 
-from sys import argv
+from utils import *
 
-import aocutils as u
+args = parse_args(year=2015, day=8)
+raw = get_input(args.filename, year=2015, day=8)
 
+strings = raw.splitlines()
 
-def main(file: str) -> None:
-    print('Day 08')
+p1 = sum(len(s) - len(s.encode().decode("unicode-escape")) + 2 for s in strings)
+print(p1)
 
-    data = u.input_as_lines(file)
-    code = sum(len(x) for x in data)
+p2 = sum(len(repr(s)) - len(s) + s.count('"') for s in strings)
+print(p2)
 
-    extras = 0
-
-    chars = 0
-    for string in data:
-        curr = string[1:-1]
-        extras += 4
-        i = 0
-        while i < len(curr):
-            chars += 1
-            if curr[i] != '\\':
-                i += 1
-                continue
-            n = curr[i+1:i+2]
-            extras += 1
-            if n == '\\' or n == '"':
-                i += 2
-                extras += 1
-            elif n == 'x':
-                i += 4
-            else:
-                raise ValueError(f'String: "{curr}", current: {curr[i]}:{n}')
-    p1 = code - chars
-    print(f'{p1=}')
-
-    p2 = extras
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '08.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)
