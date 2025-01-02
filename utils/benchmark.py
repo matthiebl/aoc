@@ -34,7 +34,13 @@ def timeout_handler(signum, frame):
     raise TimeoutError("Timed out!")
 
 
-def benchmark(year: str, timeout: int = 60):
+def benchmark(args):
+    header(args)
+
+    year = args.year
+    timeout = args.timeout
+    executions = args.attempts
+
     data = {"time": 0, "tests": {}}
 
     for day in range(1, 25 + 1):
@@ -51,10 +57,13 @@ def benchmark(year: str, timeout: int = 60):
                 with redirect_stdout(fm):
                     t0 = time()
 
+                    p1, p2 = None, None
                     try:
                         signal.signal(signal.SIGALRM, timeout_handler)
                         signal.alarm(timeout)
                         module = import_module(f"{year}.{day_s}")
+                        p1 = getattr(module, "p1")
+                        p2 = getattr(module, "p2")
                     except TimeoutError:
                         info["status"] = SolutionStatus.TIMEOUT
                         info["stderr"] = f"Exceeded {timeout} seconds"
@@ -64,8 +73,6 @@ def benchmark(year: str, timeout: int = 60):
                         print(e)
                     finally:
                         signal.alarm(0)
-                    p1 = getattr(module, "p1")
-                    p2 = getattr(module, "p2")
 
                     t1 = time()
 
@@ -118,15 +125,20 @@ def benchmark(year: str, timeout: int = 60):
 
         info["logs"] = f.getvalue()
         data["tests"][day] = info
+    
+    summary(args, data)
 
     return data
 
 
-def header(year: str):
-    ...
+def header(args):
+    print(f"Advent of Code {args.year} Benchmark")
+    print(f"timeout={args.timeout}")
+    print(f"execution-attempts={args.attempts}")
+    print()
 
 
-def summary(data: dict):
+def summary(args, data: dict):
     ...
 
 
@@ -137,6 +149,8 @@ if __name__ == "__main__":
     parser.add_argument("year", help="The year to test and benchmark")
     parser.add_argument("--timeout", type=int, default=60,
                         help="The seconds to terminate after if solution not reached. default: 60")
+    parser.add_argument("--attempts", "-n", type=int, default=1,
+                        help="The number of runs of each day to average the times over")
     args = parser.parse_args()
 
-    benchmark(args.year, timeout=args.timeout)
+    benchmark(args)
