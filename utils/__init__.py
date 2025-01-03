@@ -58,3 +58,12 @@ def tuple_add(t1: tuple[int, ...], t2: tuple[int, ...]) -> tuple[int, ...]:
 
 def manhattan(r1: int, c1: int, r2: int, c2: int) -> int:
     return abs(r1 - r2) + abs(c1 - c2)
+
+
+def nums_sum_to(target: int, n: int = 2) -> list[tuple[int]]:
+    if n == 1:
+        return [(target,)]
+    ns = []
+    for i in range(1, target + 1 - n + 1):
+        ns += list(map(lambda t: (i,) + t, nums_sum_to(target - i, n - 1)))
+    return ns
