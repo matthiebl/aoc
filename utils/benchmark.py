@@ -22,12 +22,22 @@ class Colour:
 
 
 class SolutionStatus(Enum):
-    WAIT = 0
-    PASS = 1
-    COMP = 2
-    FAIL = 3
-    SKIP = 4
-    TIMEOUT = 5
+    WAIT = "waiting"
+    PASS = "passed"
+    COMP = "no answers"
+    FAIL = "failed"
+    SKIP = "skipped"
+    TIME = "timed out"
+
+
+colour_map: dict[SolutionStatus, Colour] = {
+    SolutionStatus.WAIT: Colour.RESET,
+    SolutionStatus.PASS: Colour.GREEN,
+    SolutionStatus.COMP: Colour.CYAN,
+    SolutionStatus.FAIL: Colour.FAIL,
+    SolutionStatus.SKIP: Colour.WARNING,
+    SolutionStatus.TIME: Colour.FAIL,
+}
 
 
 def timeout_handler(signum, frame):
@@ -65,7 +75,7 @@ def benchmark(args):
                         p1 = getattr(module, "p1")
                         p2 = getattr(module, "p2")
                     except TimeoutError:
-                        info["status"] = SolutionStatus.TIMEOUT
+                        info["status"] = SolutionStatus.TIME
                         info["stderr"] = f"Exceeded {timeout} seconds"
                     except Exception as e:
                         info["status"] = SolutionStatus.FAIL
@@ -89,7 +99,7 @@ def benchmark(args):
                 print(f"Solution ran in: {ms:.3f}ms")
 
                 answers = get_answers(year, day_s)
-                if info["status"] == SolutionStatus.TIMEOUT:
+                if info["status"] == SolutionStatus.TIME:
                     pass
                 elif answers is None:
                     print(f"No answers for {year} day {day}")
@@ -111,21 +121,12 @@ def benchmark(args):
 
         sys.stdout.write("\b\b\b")
         sys.stdout.flush()
-        match info["status"]:
-            case SolutionStatus.PASS:
-                print(f"{Colour.GREEN}PASSED{Colour.RESET} [{info["time"]:.03f}ms]")
-            case SolutionStatus.COMP:
-                print(f"{Colour.CYAN}PASSED{Colour.RESET} [{info["time"]:.03f}ms] (no answers)")
-            case SolutionStatus.FAIL:
-                print(f"{Colour.FAIL}FAILED{Colour.RESET}")
-            case SolutionStatus.SKIP:
-                print(f"{Colour.WARNING}SKIPPED{Colour.RESET} (no solution)")
-            case SolutionStatus.TIMEOUT:
-                print(f"{Colour.FAIL}TIMEOUT{Colour.RESET}")
+        time_message = f" [{info["time"]:.03f}ms]" if info["status"] != SolutionStatus.SKIP else ""
+        print(f"{colour_map[info["status"]]}{info["status"].value.upper()}{Colour.RESET}{time_message}")
 
         info["logs"] = f.getvalue()
         data["tests"][day] = info
-    
+
     summary(args, data)
 
     return data
@@ -139,7 +140,15 @@ def header(args):
 
 
 def summary(args, data: dict):
-    ...
+    from collections import Counter
+    results = Counter(map(lambda t: t["status"], data["tests"].values()))
+    message = ", ".join([f"{results[r]} {r.value}" for r in results])
+
+    colour = (Colour.FAIL if results.get(SolutionStatus.FAIL, 0) > 0 else
+              Colour.CYAN if results.get(SolutionStatus.PASS, 0) == 0 else Colour.GREEN)
+    print(f"{colour}")
+    print(f"===== {message} in {data["time"] / 1000:.3f} seconds =====")
+    print(f"{Colour.RESET}", end="")
 
 
 if __name__ == "__main__":
