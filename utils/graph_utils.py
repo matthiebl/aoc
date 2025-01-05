@@ -197,6 +197,13 @@ def within_grid(grid: list[list], r: int, c: int) -> bool:
     return 0 <= r < len(grid) and 0 <= c < len(grid[0])
 
 
+def neighbours(grid: list[list], r: int, c: int, request=4):
+    """Piggy-backs the `directions` request format to provide the new row and column and grid value."""
+    for dr, dc in directions(request):
+        if within_grid(grid, r + dr, c + dc):
+            yield (r + dr, c + dc), grid[r + dr][c + dc]
+
+
 def enumerate_grid(grid: list[list], skip: str = ""):
     for r, row in enumerate(grid):
         for c, val in enumerate(row):

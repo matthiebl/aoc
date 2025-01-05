@@ -1,7 +1,7 @@
 from .graph_utils import (
     bfs, dfs, dijkstras,  # pre-made searches
     grid_to_graph, create_grid,  # quick input parsing
-    show_grid, enumerate_grid, find_in_grid, directions, within_grid,  # handle grids
+    show_grid, enumerate_grid, find_in_grid, directions, within_grid, neighbours,  # handle grids
     weight_const, weight_of_pos, is_end_pos,  # utilities
 )
 from .input_handling import parse_args, get_input
