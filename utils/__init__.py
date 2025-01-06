@@ -5,7 +5,7 @@ from .graph_utils import (
     weight_const, weight_of_pos, is_end_pos,  # utilities
 )
 from .input_handling import parse_args, get_input
-from .wrappers import memoize
+from .wrappers import echo, memoize
 
 
 def nums(s: str):

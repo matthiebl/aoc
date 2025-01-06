@@ -10,3 +10,11 @@ def memoize(cache: dict = {}):
             return res
         return wrapper
     return decorator
+
+
+def echo(func):
+    def wrapper(*args, **kwargs):
+        res = func(*args, **kwargs)
+        print(f'{func.__name__}({args}, {kwargs}) = {res}')
+        return res
+    return wrapper
