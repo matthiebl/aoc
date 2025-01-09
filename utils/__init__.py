@@ -36,8 +36,8 @@ def windows(it, n: int = 2):
     for i in it:
         window.append(i)
         if len(window) == n:
-            yield window
-            del window[0]
+            yield tuple(window)
+            window.pop(0)
 
 
 def mul(n: int, *ns: list[int]) -> int:
@@ -61,6 +61,7 @@ def manhattan(r1: int, c1: int, r2: int, c2: int) -> int:
 
 
 def nums_sum_to(target: int, n: int = 2) -> list[tuple[int]]:
+    """Find all the combinations of `n` positive numbers that sum to the `target` value."""
     if n == 1:
         return [(target,)]
     ns = []
