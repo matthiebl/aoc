@@ -213,7 +213,7 @@ def enumerate_grid(grid: list[list], skip: str = ""):
 
 def find_in_grid(grid: list[list[str]], search: str):
     for (r, c), val, _ in enumerate_grid(grid):
-        if search == val:
+        if val in search:
             yield (r, c)
 
 
