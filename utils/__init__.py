@@ -68,3 +68,19 @@ def nums_sum_to(target: int, n: int = 2) -> list[tuple[int]]:
     for i in range(1, target + 1 - n + 1):
         ns += list(map(lambda t: (i,) + t, nums_sum_to(target - i, n - 1)))
     return ns
+
+
+def crt(a: list[int], n: list[int]) -> int:
+    """
+    Finds `x` using the Chinese Remainder Theorem for list of `a`s and `n`s where
+
+    ```
+    x = a_1 % n_1
+    x = a_2 % n_2
+    ...
+    x = a_i % n_i
+    """
+    N = mul(n)
+    E = [N // n_i for n_i in n]
+    y = [pow(e_i, n_i - 2, n_i) for e_i, n_i in zip(E, n)]
+    return sum(a_i * e_i * y_i for a_i, e_i, y_i in zip(a, E, y)) % N

@@ -17,7 +17,6 @@ while len(p1) < 8 or p2.count(".") > 0:
     if hash.startswith("00000"):
         if len(p1) < 8:
             p1 += hash[5]
-        print(p2, hash)
         if hash[5] in "01234567" and p2[int(hash[5])] == ".":
             p2[int(hash[5])] = hash[6]
     i += 1

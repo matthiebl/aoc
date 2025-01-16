@@ -19,8 +19,7 @@ def decompressed_size(string: str, v2: bool = False):
     if v2:
         return (left + n * decompressed_size(string[right + 1:right + s + 1], v2)
                 + decompressed_size(string[right + s + 1:], v2))
-    else:
-        return left + s * n + decompressed_size(string[right + s + 1:])
+    return left + s * n + decompressed_size(string[right + s + 1:])
 
 
 p1 = decompressed_size(raw)
