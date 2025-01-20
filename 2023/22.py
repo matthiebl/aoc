@@ -1,86 +1,56 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 22: Sand Slabs ---
+https://adventofcode.com/2023/day/22
+"""
 
-import aocutils as u
-from sys import argv
+from collections import defaultdict
 
+from utils import *
 
-def main(file: str) -> None:
-    print('Day 22')
+args = parse_args(year=2023, day=22)
+raw = get_input(args.filename, year=2023, day=22)
 
-    bricks = u.input_as_lines(file, map=lambda l: u.double_sep(
-        l, '~', ',', map=int, group=tuple))
+blocks = sorted((tuple(nums(line)) for line in raw.splitlines()), key=lambda l: l[2])
 
-    bricks.sort(key=lambda b: b[0][2])
-    XY = u.defaultdict(int)
-    B = {}
-    below = u.defaultdict(set)
-    above = u.defaultdict(set)
+# Move all bricks down
+max_height = defaultdict(int)
+for i, (x1, y1, z1, x2, y2, z2) in enumerate(blocks):
+    z = max(max_height[(x, y)] for x in range(x1, x2 + 1) for y in range(y1, y2 + 1)) + 1
+    max_height.update({(x, y): z + z2 - z1 for x in range(x1, x2 + 1) for y in range(y1, y2 + 1)})
+    blocks[i] = (x1, y1, z, x2, y2, z + z2 - z1)
 
-    # Did this sort of inefficiently, but sort of logically.
-    for i, [(x1, y1, z1), (x2, y2, z2)] in enumerate(bricks):
-        dx, dy, dz = x2 - x1, y2 - y1, z2 - z1
-        # Find the (m)ax height of a placed
-        # brick below the current brick at each (x,y)
-        m = 0
-        for dx in range(x1, x2 + 1):
-            for dy in range(y1, y2 + 1):
-                m = max(m, XY[(dx, dy)])
-        # Update max height at (x,y),
-        # then place the current brick at that height
-        for dx in range(x1, x2 + 1):
-            for dy in range(y1, y2 + 1):
-                XY[(dx, dy)] = m + z2 - z1 + 1
-        for dx in range(x1, x2 + 1):
-            for dy in range(y1, y2 + 1):
-                for dz in range(z2 - z1 + 1):
-                    B[(dx, dy, XY[(dx, dy)] - dz)] = i
-        # Then check for all the bricks below the current brick,
-        # as well as the reverse
-        for dx in range(x1, x2 + 1):
-            for dy in range(y1, y2 + 1):
-                for dz in range(z2 - z1 + 1):
-                    if (dx, dy, XY[(dx, dy)] - dz - 1) in B:
-                        below[i].add(B[(dx, dy, XY[(dx, dy)] - dz - 1)])
-                        above[B[(dx, dy, XY[(dx, dy)] - dz - 1)]].add(i)
-    # This leaves multi-height bricks having themselves in these lists,
-    # but we can compensate for that
+cubes = {(x, y, z): i for i, (x1, y1, z1, x2, y2, z2) in enumerate(blocks)
+         for x in range(x1, x2 + 1) for y in range(y1, y2 + 1) for z in range(z1, z2 + 1)}
 
-    def disolvable(brick):
-        s1 = above[brick] - {brick}
-        for b in s1:
-            s2 = below[b] - {brick, b}
-            if len(s2) == 0:
-                return False
-        return True
-
-    p1 = 0
-    for brick in range(len(bricks)):
-        if disolvable(brick):
-            p1 += 1
-    print(f'{p1=}')
-
-    def fall(brick) -> int:
-        fallen = set()
-        check = [brick]
-        while check:
-            this_brick = check.pop(0)
-            if this_brick in fallen:
-                continue
-            fallen.add(this_brick)
-
-            s = above[this_brick] - {this_brick}
-            for b in s:
-                s2 = below[b] - {b} - fallen
-                if len(s2) == 0:
-                    check.append(b)
-        return len(fallen) - 1
-
-    p2 = 0
-    for brick in range(len(bricks)):
-        p2 += fall(brick)
-    print(f'{p2=}')
+# Determine what bricks are above and below every brick
+above = defaultdict(set)
+below = defaultdict(set)
+for (x, y, z), i in cubes.items():
+    j = cubes.get((x, y, z + 1), i)
+    if j != i:
+        above[i].add(j)
+    j = cubes.get((x, y, z - 1), i)
+    if j != i:
+        below[i].add(j)
 
 
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '22.in'
-    main(file)
+def how_many_fall(brick: int) -> int:
+    fallen = set()
+    q = [brick]
+    while q:
+        brick = q.pop(0)
+        fallen.add(brick)
+        for b in above[brick]:
+            if len(below[b] - fallen) == 0:
+                q.append(b)
+    return len(fallen) - 1
+
+
+p1 = sum(how_many_fall(i) == 0 for i in range(len(blocks)))
+print(p1)
+
+p2 = sum(how_many_fall(i) for i in range(len(blocks)))
+print(p2)
+
+if args.test:
+    args.tester(p1, p2)
