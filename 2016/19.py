@@ -4,6 +4,7 @@ https://adventofcode.com/2016/day/19
 """
 
 from math import floor, log
+
 from utils import *
 
 args = parse_args(year=2016, day=19)

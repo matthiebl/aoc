@@ -10,6 +10,7 @@ required replacements to reduce the final molecule into `e`.
 """
 
 from re import sub
+
 from utils import *
 
 args = parse_args(year=2015, day=19)

@@ -5,6 +5,7 @@ https://adventofcode.com/2016/day/24
 
 from collections import defaultdict
 from heapq import heappop, heappush
+
 from utils import *
 
 args = parse_args(year=2016, day=24)

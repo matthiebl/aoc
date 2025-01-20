@@ -7,6 +7,7 @@ https://numpy.org/doc/stable/user/basics.indexing.html#
 """
 
 import numpy as np
+
 from utils import *
 
 args = parse_args(year=2015, day=6)

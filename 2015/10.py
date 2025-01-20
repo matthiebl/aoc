@@ -4,6 +4,7 @@ https://adventofcode.com/2015/day/10
 """
 
 from itertools import groupby
+
 from utils import *
 
 args = parse_args(year=2015, day=10)

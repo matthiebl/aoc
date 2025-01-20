@@ -16,6 +16,7 @@ found 64 keys. We can then sort this in case we found any corresponding quintupl
 """
 
 from _md5 import md5
+
 from utils import *
 
 args = parse_args(year=2016, day=14)

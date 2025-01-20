@@ -5,6 +5,7 @@ https://adventofcode.com/2015/day/7
 
 from functools import cache
 from re import search
+
 from utils import *
 
 args = parse_args(year=2015, day=7)

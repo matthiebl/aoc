@@ -5,6 +5,7 @@ https://adventofcode.com/2015/day/13
 
 from collections import defaultdict
 from itertools import permutations
+
 from utils import *
 
 args = parse_args(year=2015, day=13)

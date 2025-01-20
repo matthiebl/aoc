@@ -4,6 +4,7 @@ https://adventofcode.com/2016/day/5
 """
 
 from _md5 import md5
+
 from utils import *
 
 args = parse_args(year=2016, day=5)

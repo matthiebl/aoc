@@ -4,6 +4,7 @@ https://adventofcode.com/2016/day/6
 """
 
 from collections import Counter
+
 from utils import *
 
 args = parse_args(year=2016, day=6)

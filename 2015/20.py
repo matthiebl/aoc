@@ -4,6 +4,7 @@ https://adventofcode.com/2015/day/20
 """
 
 import numpy as np
+
 from utils import *
 
 args = parse_args(year=2015, day=20)

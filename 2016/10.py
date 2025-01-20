@@ -5,6 +5,7 @@ https://adventofcode.com/2016/day/10
 
 from collections import defaultdict
 from re import search
+
 from utils import *
 
 args = parse_args(year=2016, day=10)

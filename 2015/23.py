@@ -10,6 +10,7 @@ raw = get_input(args.filename, year=2015, day=23)
 
 instructions = raw.splitlines()
 
+
 def run_program(a: int = 0):
     registers = {"a": a, "b": 0}
     ip = 0
@@ -34,7 +35,7 @@ def run_program(a: int = 0):
             continue
         ip += 1
     return registers["b"]
-    
+
 
 p1 = run_program()
 print(p1)

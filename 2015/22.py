@@ -16,7 +16,7 @@ health, damage = nums(raw)
 
 
 def min_cost_to_win(hardmode=False):
-    from heapq import heappush, heappop
+    from heapq import heappop, heappush
 
     visited = set()
     heap = [(0, 50, health, 500, 0, 0, 0, True)]

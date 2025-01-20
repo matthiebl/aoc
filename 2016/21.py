@@ -4,7 +4,9 @@ https://adventofcode.com/2016/day/21
 """
 
 from itertools import permutations
+
 import numpy as np
+
 from utils import *
 
 args = parse_args(year=2016, day=21)

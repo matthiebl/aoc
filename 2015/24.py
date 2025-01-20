@@ -18,6 +18,7 @@ every time we see our current minimum number of presents.
 """
 
 from collections import defaultdict
+
 from utils import *
 
 args = parse_args(year=2015, day=24)
