@@ -56,6 +56,7 @@ answers = {
         3:  {"p1": 419, "p2": 295229},
         4:  {"p1": 325, "p2": 119},
         5:  {"p1": 396086, "p2": 28675390},
+        6:  {"p1": 3156, "p2": 1610},
 
         21:  {"p1": 125, "p2": 1782917},
     },
@@ -133,7 +134,7 @@ def answer_tester(year: str, day: str):
         if answers is None:
             print(f"No stored answers for {year} day {day}")
             return False
-        assert p1 == answers["p1"], f"Part 1: {p1} is not expected {answers["p1"]}"
-        assert p2 == answers["p2"], f"Part 2: {p2} is not expected {answers["p2"]}"
+        assert p1 == answers["p1"], f"Part 1: {p1} is not expected {answers['p1']}"
+        assert p2 == answers["p2"], f"Part 2: {p2} is not expected {answers['p2']}"
         return True
     return inner
