@@ -73,7 +73,7 @@ def dijkstras(graph: dict, start, is_end, initial_dist: int = 0) -> tuple[int | 
 
     Returns the distance to `is_end` if found; otherwise the distance mapping
     """
-    from heapq import heapify, heappush, heappop
+    from heapq import heapify, heappop, heappush
 
     distances = {pos: float("inf") for pos in graph}
     distances[start] = initial_dist

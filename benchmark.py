@@ -1,12 +1,13 @@
+import signal
+import sys
 from contextlib import redirect_stdout
 from enum import Enum
 from importlib import import_module
 from io import StringIO
 from pathlib import Path
-import signal
-import sys
 from time import time
-from .answers import get_answers
+
+from answers import get_answers
 
 
 class Colour:

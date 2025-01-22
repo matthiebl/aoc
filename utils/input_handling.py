@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from .answers import answer_tester
+
+from answers import answer_tester
+
 from .constants import Constants
 
 
