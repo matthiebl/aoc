@@ -14,7 +14,7 @@ knot = list(range(256))
 sizes = list(nums(raw))
 
 
-def hash_round(i: int = 0, skip: int = 0):
+def hash_round(knot: list[int], sizes: list[int], i: int = 0, skip: int = 0):
     for size in sizes:
         mid = knot[i:i+size]
         if len(mid) < size:
@@ -29,16 +29,21 @@ def hash_round(i: int = 0, skip: int = 0):
     return i, skip
 
 
-hash_round()
+hash_round(knot, sizes)
 p1 = knot[0] * knot[1]
 print(p1)
 
-knot = list(range(256))
-sizes = list(map(ord, raw)) + [17, 31, 73, 47, 23]
-i, skip = 0, 0
-for _ in range(64):
-    i, skip = hash_round(i, skip)
-p2 = "".join(f"{hex(reduce(lambda x, y: x ^ y, ns[1:], ns[0]))[2:]:0>2}" for ns in chunks(knot, n=16))
+
+def knot_hash(input: str):
+    knot = list(range(256))
+    sizes = list(map(ord, input)) + [17, 31, 73, 47, 23]
+    i, skip = 0, 0
+    for _ in range(64):
+        i, skip = hash_round(knot, sizes, i, skip)
+    return "".join(f"{hex(reduce(lambda x, y: x ^ y, ns[1:], ns[0]))[2:]:0>2}" for ns in chunks(knot, n=16))
+
+
+p2 = knot_hash(raw)
 print(p2)
 
 if args.test:
