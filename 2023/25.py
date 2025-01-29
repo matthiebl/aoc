@@ -1,33 +1,28 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 25: Snowverload ---
+https://adventofcode.com/2023/day/25
+"""
 
-import aocutils as u
-from sys import argv
+from networkx import Graph, connected_components, minimum_edge_cut
 
-from networkx import Graph, minimum_edge_cut, connected_components
+from utils import *
 
+args = parse_args(year=2023, day=25)
+raw = get_input(args.filename, year=2023, day=25)
 
-def main(file: str) -> None:
-    print('Day 25')
+edges = flatmap([[(n1, n2) for n2 in lst.split()] for n1, lst in [line.split(": ") for line in raw.splitlines()]])
 
-    edges = u.input_as_lines(file)
+graph = Graph()
+graph.add_edges_from(edges)
 
-    G = Graph()
-    for line in edges:
-        a, lst = line.split(': ')
-        lst = lst.split()
-        G.add_node(a)
-        for b in lst:
-            G.add_node(b)
-            G.add_edge(a, b)
+graph.remove_edges_from(minimum_edge_cut(graph))
+forests = connected_components(graph)
 
-    G.remove_edges_from(minimum_edge_cut(G))
+p1 = len(next(forests)) * len(next(forests))
+print(p1)
 
-    forests = connected_components(G)
-    p1 = len(next(forests)) * len(next(forests))
+p2 = None
+print(p2)
 
-    print(f'{p1=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '25.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

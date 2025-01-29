@@ -1,11 +1,23 @@
-from .graph_utils import (
-    bfs, dfs, dijkstras,  # pre-made searches
-    grid_to_graph, create_grid,  # quick input parsing
-    show_grid, enumerate_grid, find_in_grid, directions, within_grid, neighbours,  # handle grids
-    weight_const, weight_of_pos, is_end_pos,  # utilities
-)
-from .input_handling import parse_args, get_input
+from .graph_utils import (  # pre-made searches; quick input parsing; handle grids; utilities
+    bfs, create_grid, dfs, dijkstras, directions, enumerate_grid, find_in_grid,
+    grid_to_graph, is_end_pos, neighbours, show_grid, weight_const,
+    weight_of_pos, within_grid)
+from .input_handling import get_input, parse_args
 from .wrappers import echo, memoize
+
+
+def import_day(package: str, attribute=None):
+    from contextlib import redirect_stdout
+    from importlib import import_module
+    from io import StringIO
+    f = StringIO()
+    with redirect_stdout(f):
+        module = import_module(package)
+    return getattr(module, attribute) if attribute else module
+
+
+def flatmap(lst: list[list]):
+    return [item for list in lst for item in list]
 
 
 def nums(s: str):
