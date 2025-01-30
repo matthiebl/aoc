@@ -3,44 +3,50 @@
 https://adventofcode.com/2023/day/21
 """
 
+from collections import deque
+
 from utils import *
 
 args = parse_args(year=2023, day=21)
 raw = get_input(args.filename, year=2023, day=21)
 
 grid = [list(line) for line in raw.splitlines()]
-R, C = len(grid), len(grid[0])
+size = len(grid)
 
-plots = set([next(find_in_grid(grid, "S"))])
-
-
-def step(n: int = 1):
-    global plots
-    if n == 0:
-        return len(plots)
-    reachable = set()
-    for r, c in plots:
-        for dr, dc in directions():
-            nr, nc = r + dr, c + dc
-            if grid[nr % R][nc % C] in ".S":
-                reachable.add((nr, nc))
-    plots = reachable
-    return step(n - 1)
+distances = {}
 
 
-p1 = step(64)
+def bfs(start):
+    distances.clear()
+    queue = deque(start)
+    while queue:
+        d, plot = queue.popleft()
+        if plot in distances:
+            continue
+        distances[plot] = d
+        for n, v in neighbours(grid, *plot):
+            if n not in distances and v != "#":
+                queue.append((d + 1, n))
+
+
+distance_to_edge = size // 2
+bfs([(0, next(find_in_grid(grid, "S")))])
+
+p1 = sum(v < distance_to_edge and v % 2 == 0 for v in distances.values())
 print(p1)
 
-sequence = [step(), step(131), step(131)]
+odd_corners = sum(v > distance_to_edge and v % 2 == 1 for v in distances.values())
+bfs([(0, (0, 0)), (0, (size - 1, size - 1)), (0, (0, size - 1)), (0, (size - 1, 0))])
+even_corners = sum(v < distance_to_edge and v % 2 == 0 for v in distances.values())
 
-for _ in range(26501365 // R - 2):
-    reduced = [sequence[-3:]]
-    while not all(n == 0 for n in reduced[-1]):
-        reduced.append([m - n for n, m in windows(reduced[-1])])
-    reduced[-1].append(0)
-    sequence.append(sum(ns[-1] for ns in reduced))
+n = (26501365 - distance_to_edge) // size
+odd_tiles = (n + 1) ** 2
+even_tiles = n ** 2
 
-p2 = sequence[-1]
+p2 = (odd_tiles * sum(v % 2 == 1 for v in distances.values())
+      + even_tiles * sum(v % 2 == 0 for v in distances.values())
+      + n * even_corners
+      - (n + 1) * odd_corners)
 print(p2)
 
 if args.test:
