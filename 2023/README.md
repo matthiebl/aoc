@@ -52,6 +52,6 @@ Learning these libraries is definitely beneficial but feels cheap.
 
 ## Tests
 
-I made a test runner that ensures all of my results stay accurate throughout any refactors.
-
-Cool enough, every day solves correcly in under 30 seconds!
+```python
+python3 -m benchmark 2023 # runs in under 15 seconds on my machine
+```
