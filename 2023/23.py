@@ -68,6 +68,10 @@ for intersection in intersections:
 p1 = dfs(directional_graph)
 print(p1)
 
+for node in graph:
+    if end in [p for _, p in graph[node]]:
+        graph[node] = [(d, p) for d, p in graph[node] if p == end]
+
 p2 = dfs(graph)
 print(p2)
 
