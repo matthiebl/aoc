@@ -30,7 +30,5 @@ while severity(p2):
     p2 += 1
 print(p2)
 
-# low 168108
-
 if args.test:
     args.tester(p1, p2)

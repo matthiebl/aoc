@@ -21,7 +21,6 @@ from utils import *
 
 args = parse_args(year=2016, day=14)
 salt = get_input(args.filename, year=2016, day=14)
-# salt = "abc"
 
 
 def find_keys(stretch: bool = False):
