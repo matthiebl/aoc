@@ -12,8 +12,6 @@ raw = get_input(args.filename, year=2017, day=20)
 
 particles = [tuple(nums(line)) for line in raw.splitlines()]
 
-p2 = 0
-
 
 def displacement(s0: int, v: int, a: int, t: int = 1):
     return abs(s0 + v * t + 0.5 * a * t * t)
