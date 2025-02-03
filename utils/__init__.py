@@ -3,6 +3,7 @@ from .graph_utils import (  # pre-made searches; quick input parsing; handle gri
     grid_to_graph, is_end_pos, neighbours, show_grid, weight_const,
     weight_of_pos, within_grid)
 from .input_handling import get_input, parse_args
+from .interpreters import Interpreter
 from .wrappers import echo, memoize
 
 
