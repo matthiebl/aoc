@@ -17,8 +17,8 @@ class Solo(Interpreter):
 
 class Duet(Interpreter):
     def _snd(self, x):
-        super()._snd(x)
         self.sent = 1 + (0 if not hasattr(self, "sent") else self.sent)
+        return super()._snd(x)
 
 
 p1 = Solo().parse_instructions(instructions).run().output[-1]
