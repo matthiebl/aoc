@@ -4,7 +4,6 @@ https://adventofcode.com/2017/day/18
 """
 
 from collections import defaultdict, deque
-from time import sleep
 
 from utils import *
 

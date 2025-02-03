@@ -3,8 +3,6 @@
 https://adventofcode.com/2017/day/19
 """
 
-from time import sleep
-
 from utils import *
 
 args = parse_args(year=2017, day=19)

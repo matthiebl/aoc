@@ -3,8 +3,6 @@
 https://adventofcode.com/2017/day/20
 """
 
-from collections import defaultdict
-
 from utils import *
 
 args = parse_args(year=2017, day=20)
