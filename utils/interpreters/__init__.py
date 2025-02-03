@@ -26,7 +26,7 @@ class Interpreter:
         return self
 
     def value(self, x: str):
-        if x[0] == "-" or x.isnumeric():
+        if x[0] in "-+" or x.isnumeric():
             return int(x)
         return self.registers[x]
 
@@ -62,8 +62,6 @@ class Interpreter:
     def _jez(self, x, y): return self.value(y) if self.value(x) == 0 else 1
     def _jgz(self, x, y): return self.value(y) if self.value(x) > 0 else 1
     def _jlz(self, x, y): return self.value(y) if self.value(x) < 0 else 1
-    def _jie(self, x, y): return self.value(y) if self.value(x) % 2 == 0 else 1
-    def _jio(self, x, y): return self.value(y) if self.value(x) % 2 == 1 else 1
 
     def _snd(self, x): self.output.append(self.value(x))
 
@@ -72,3 +70,8 @@ class Interpreter:
             self.halt = True
             return 0
         self.registers[x] = self.input.popleft()
+
+    # --- Other ---
+
+    def __repr__(self):
+        return f"{type(self).__name__}(registers={self.registers})"
