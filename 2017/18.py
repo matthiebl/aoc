@@ -16,8 +16,10 @@ class Solo(Interpreter):
 
 
 class Duet(Interpreter):
+    sent = 0
+
     def _snd(self, x):
-        self.sent = 1 + (0 if not hasattr(self, "sent") else self.sent)
+        self.sent += 1
         return super()._snd(x)
 
 
