@@ -13,7 +13,7 @@ raw = get_input(args.filename, year=2018, day=9)
 players, marbles = nums(raw)
 
 
-def highest_score(player: int, marbles: int):
+def highest_score(marbles: int):
     scores = defaultdict(int)
     list = CircularList()
     list.insert(0)
@@ -30,10 +30,10 @@ def highest_score(player: int, marbles: int):
     return max(scores.values())
 
 
-p1 = highest_score(players, marbles)
+p1 = highest_score(marbles)
 print(p1)
 
-p2 = highest_score(players, marbles * 100)
+p2 = highest_score(marbles * 100)
 print(p2)
 
 if args.test:
