@@ -4,6 +4,7 @@ from .graph_utils import (  # pre-made searches; quick input parsing; handle gri
     weight_of_pos, within_grid)
 from .input_handling import get_input, parse_args
 from .interpreters import Interpreter
+from .types.list import CircularList
 from .wrappers import echo, memoize
 
 
