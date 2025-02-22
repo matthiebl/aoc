@@ -21,6 +21,11 @@ class Interpreter:
         self.complete = False
 
     def parse_instructions(self, raw: str):
+        """
+        Parses a raw version of the instructions into a useable version.
+
+        Must set `self.instructions` and `self.length` attributes.
+        """
         self.instructions = [line.split() for line in raw.splitlines()]
         self.length = len(self.instructions)
         return self
@@ -31,6 +36,11 @@ class Interpreter:
         return self.registers[x]
 
     def run(self):
+        """
+        Runs the program. Ends execution if program finished naturally or `self.halt` is set to `True`.
+
+        `self.complete` will be set to `True` if the program finished naturally.
+        """
         self.halt = False
         while 0 <= self.ip < self.length and not self.halt:
             [op, *args] = self.instructions[self.ip]
