@@ -1,6 +1,15 @@
 """
 --- Day 19: Go With The Flow ---
 https://adventofcode.com/2018/day/19
+
+The code we get given to run does the following general steps:
+
+1. Do some computation to set register n with large number (~10**4)
+2. If part 2, make register n even larger (~10**7)
+3. Find the sum of factors (poorly) for register n (including 1 and n)
+
+Once we know that, we can just quit after finding n - which happens after setting the instruction pointer to 0 - and
+then working out the sum of factors much faster.
 """
 
 from utils import *
