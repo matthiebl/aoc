@@ -30,10 +30,46 @@ class Interpreter:
         self.length = len(self.instructions)
         return self
 
-    def value(self, x: str):
+    def value(self, x: str) -> int:
+        """
+        Gets the value of `x`.
+
+        If `x` is an integer, returns its value, otherwise the value in register `x`.
+        """
         if x[0] in "-+" or x.isnumeric():
             return int(x)
         return self.registers[x]
+
+    def instruction(self):
+        """
+        Gets the current instruction to run.
+        """
+        return self.instructions[self.ip]
+
+    def operation(self, op: str):
+        """
+        Gets the current operation function to run.
+        """
+        return getattr(self, f"_{op}")
+
+    def running(self) -> bool:
+        return 0 <= self.ip < self.length and not self.halt
+
+    def pre_op(self, op: str, *args):
+        """
+        Runs before the operation is executed.
+
+        Takes the `op` that is about to execute, as well as its `args`.
+        """
+        pass
+
+    def post_op(self, jmp: int):
+        """
+        Runs after the operation is executed.
+
+        Takes the `jmp` length, and defaults to incrementing the instruction pointer by that length.
+        """
+        self.ip += jmp
 
     def run(self):
         """
@@ -42,10 +78,12 @@ class Interpreter:
         `self.complete` will be set to `True` if the program finished naturally.
         """
         self.halt = False
-        while 0 <= self.ip < self.length and not self.halt:
-            [op, *args] = self.instructions[self.ip]
-            jmp = getattr(self, f"_{op}")(*args)
-            self.ip += 1 if jmp is None else jmp
+        while self.running():
+            [op, *args] = self.instruction()
+            self.pre_op(op, *args)
+            res = self.operation(op)(*args)
+            jmp = 1 if res is None else res
+            self.post_op(jmp)
         self.complete = not self.halt
         return self
 
