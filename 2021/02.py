@@ -1,35 +1,41 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 2: Dive! ---
+https://adventofcode.com/2021/day/2
+"""
 
-import aocutils as u
-from sys import argv
+from utils import *
 
+args = parse_args(year=2021, day=2)
+raw = get_input(args.filename, year=2021, day=2)
 
-def main(file: str) -> None:
-    print('Day 02')
+instructions = raw.splitlines()
 
-    instructions = [(i, int(n)) for i, n in u.input_as_lines(file, map=lambda l: l.split())]
+x, depth = 0, 0
+for instruction in instructions:
+    match instruction.split():
+        case ["forward", n]:
+            x += int(n)
+        case ["up", n]:
+            depth -= int(n)
+        case ["down", n]:
+            depth += int(n)
 
-    x, d = (0, 0)
-    x2, d2, aim = (0, 0, 0)
+p1 = x * depth
+print(p1)
 
-    for ins, n in instructions:
-        if ins == 'forward':
-            x += n
-            x2 += n
-            d2 += aim * n
-        elif ins == 'down':
-            d += n
-            aim += n
-        else:
-            d -= n
-            aim -= n
+x, depth, aim = 0, 0, 0
+for instruction in instructions:
+    match instruction.split():
+        case ["forward", n]:
+            x += int(n)
+            depth += aim * int(n)
+        case ["up", n]:
+            aim -= int(n)
+        case ["down", n]:
+            aim += int(n)
 
-    p1 = x * d
-    print(f'{p1=}')
-    p2 = x2 * d2
-    print(f'{p2=}')
+p2 = x * depth
+print(p2)
 
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '02.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)

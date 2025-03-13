@@ -1,41 +1,41 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 3: Binary Diagnostic ---
+https://adventofcode.com/2021/day/3
+"""
 
-import aocutils as u
-from sys import argv
+from collections import Counter
 
+from utils import *
 
-def reduce(lst: list[str], default: str, prefix: str = '', depth: int = 0) -> str:
-    if len(lst) == 1:
-        return lst[0]
+args = parse_args(year=2021, day=3)
+raw = get_input(args.filename, year=2021, day=3)
 
-    (m, mc), (l, lc) = u.Counter(u.columns(lst)[depth]).most_common()
-    prefix += (default if mc == lc else (m if default == '1' else l))
+diagnostic = raw.splitlines()
 
-    return reduce([num for num in lst if num.startswith(prefix)], default, prefix, depth + 1)
+gamma, epsilon = "", ""
+for col in list(zip(*diagnostic)):
+    (g, _), (e, _) = Counter(col).most_common()
+    gamma += g
+    epsilon += e
 
-
-def main(file: str) -> None:
-    print('Day 03')
-
-    diagnositc = u.input_as_lines(file)
-
-    gamma = ''
-    epsilon = ''
-    for column in u.columns(diagnositc):
-        (g, _), (e, _) = u.Counter(column).most_common()
-        gamma += g
-        epsilon += e
-
-    p1 = int(gamma, 2) * int(epsilon, 2)
-    print(f'{p1=}')
-
-    oxygen = reduce(diagnositc, '1')
-    carbon = reduce(diagnositc, '0')
-
-    p2 = int(oxygen, 2) * int(carbon, 2)
-    print(f'{p2=}')
+p1 = int(gamma, 2) * int(epsilon, 2)
+print(p1)
 
 
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '03.in'
-    main(file)
+def reduce(diagnostic: list[str], default: str):
+    if len(diagnostic) == 1:
+        return diagnostic[0]
+
+    (m, mc), (l, lc) = Counter(next(zip(*diagnostic))).most_common()
+    ch = default if mc == lc else m if default == "1" else l
+    return ch + reduce([bits[1:] for bits in diagnostic if bits[0] == ch], default)
+
+
+oxygen = reduce(diagnostic, "1")
+carbon = reduce(diagnostic, "0")
+
+p2 = int(oxygen, 2) * int(carbon, 2)
+print(p2)
+
+if args.test:
+    args.tester(p1, p2)
