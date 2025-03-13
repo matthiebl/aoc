@@ -1,39 +1,30 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 6: Lanternfish ---
+https://adventofcode.com/2021/day/6
+"""
 
-import aocutils as u
-from sys import argv
+from collections import Counter
 
+from utils import *
 
-def main(file: str) -> None:
-    print('Day 06')
+args = parse_args(year=2021, day=6)
+raw = get_input(args.filename, year=2021, day=6)
 
-    lanternfish = u.Counter(u.map_int(u.read_input(file).split(',')))
+lanternfish = Counter(nums(raw))
 
-    def day():
-        restarting = lanternfish.get(0, 0)
-        lanternfish[0] = lanternfish[1]
-        lanternfish[1] = lanternfish[2]
-        lanternfish[2] = lanternfish[3]
-        lanternfish[3] = lanternfish[4]
-        lanternfish[4] = lanternfish[5]
-        lanternfish[5] = lanternfish[6]
-        lanternfish[6] = lanternfish[7] + restarting
-        lanternfish[7] = lanternfish[8]
-        lanternfish[8] = restarting
+for day in range(256):
+    if day == 80:
+        p1 = sum(lanternfish.values())
+    respawn = lanternfish.get(0, 0)
+    for age in range(8):
+        lanternfish[age] = lanternfish.get(age + 1, 0)
+    lanternfish[6] = lanternfish.get(6, 0) + respawn
+    lanternfish[8] = respawn
 
-    for t in range(80):
-        day()
+print(p1)
 
-    p1 = sum(lanternfish.values())
-    print(f'{p1=}')
+p2 = sum(lanternfish.values())
+print(p2)
 
-    for t in range(256 - 80):
-        day()
-
-    p2 = sum(lanternfish.values())
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '06.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)
