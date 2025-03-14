@@ -205,6 +205,10 @@ def neighbours(grid: list[list], r: int, c: int, request=4):
 
 
 def enumerate_grid(grid: list[list], skip: str = ""):
+    """
+    Iterates through a grid, top to bottom, left to right.
+    Provides: `(r, c), val, row`
+    """
     for r, row in enumerate(grid):
         for c, val in enumerate(row):
             if val not in skip:
