@@ -1,64 +1,37 @@
-#!/usr/bin/env python3.12
+"""
+--- Day 10: Syntax Scoring ---
+https://adventofcode.com/2021/day/10
+"""
 
-import aocutils as u
-from sys import argv
+from utils import *
 
-import heapq as hq
+args = parse_args(year=2021, day=10)
+raw = get_input(args.filename, year=2021, day=10)
 
-matches = {
-    '(': ')',
-    '[': ']',
-    '{': '}',
-    '<': '>',
-}
+lines = raw.splitlines()
 
-syntax_error = {
-    ')': 3,
-    ']': 57,
-    '}': 1197,
-    '>': 25137,
-}
+pair = {"(": ")", "[": "]", "{": "}", "<": ">"}
+break_points = {")": 3, "]": 57, "}": 1197, ">": 25137}
+close_points = {")": "1", "]": "2", "}": "3", ">": "4"}
 
-auto_complete = {
-    '(': 1,
-    '[': 2,
-    '{': 3,
-    '<': 4,
-}
+close_scores = []
 
+p1 = 0
+for chunk in lines:
+    stack = []
+    for c in chunk:
+        if c in pair:
+            stack.append(pair[c])
+        elif stack.pop() != c:
+            p1 += break_points[c]
+            break
+    else:
+        close_scores.append(int("".join(close_points[c] for c in stack[::-1]), 5))
 
-def main(file: str) -> None:
-    print('Day 10')
+print(p1)
 
-    bracket_data = u.input_as_lines(file)
+p2 = sorted(close_scores)[len(close_scores) // 2]
+print(p2)
 
-    p1 = 0
-    auto_complete_scores = []
-    for brackets in bracket_data:
-        stack = []
-        for b in brackets:
-            if b in '([<{':
-                stack.append(b)
-                continue
-            bb = stack.pop()
-            if matches[bb] == b:
-                continue
-            p1 += syntax_error[b]
-        auto_score = 0
-        while stack:
-            b = stack.pop()
-            auto_score = auto_score * 5 + auto_complete[b]
-        hq.heappush(auto_complete_scores, auto_score)
-
-    print(f'{p1=}')
-
-    for _ in range(len(auto_complete_scores) // 2 + 1):
-        hq.heappop(auto_complete_scores)
-
-    p2 = hq.heappop(auto_complete_scores)
-    print(f'{p2=}')
-
-
-if __name__ == '__main__':
-    file = argv[1] if len(argv) >= 2 else '10.in'
-    main(file)
+if args.test:
+    args.tester(p1, p2)
