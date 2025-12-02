@@ -21,6 +21,7 @@ from doing previous AoC's to speed up the boring stuff.
 | 2022 | 50    | 0     |
 | 2023 | 50    | 0     |
 | 2024 | 50    | 0     |
+| 2025 |       |       |
 | Tot  | 292   |       |
 
 ## Usage
