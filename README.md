@@ -1,74 +1,61 @@
 # Advent of Code
 
-A collection of my solutions for [Advent of Code](https://adventofcode.com/)
-
-Coding in `python3`. May explore `TypeScript` and/or `Haskell` later for some type fun!
-
-I use my own general utility functions that I have collected
-from doing previous AoC's to speed up the boring stuff.
+A collection of my solutions for [Advent of Code](https://adventofcode.com/) solved in Python 3.12
 
 ## Personal Stats
 
 | Year | Stars | Score |
 | ---- | ----- | ----- |
-| 2015 | 26    | 0     |
-| 2016 | 0     | 0     |
-| 2017 | 0     | 0     |
-| 2018 | 2     | 0     |
+| 2015 | 50    | 0     |
+| 2016 | 50    | 0     |
+| 2017 | 50    | 0     |
+| 2018 | 36    | 0     |
 | 2019 | 36    | 0     |
 | 2020 | 39    | 0     |
 | 2021 | 39    | 0     |
 | 2022 | 50    | 0     |
 | 2023 | 50    | 0     |
 | 2024 | 50    | 0     |
-| Tot  | 292   |       |
+| Tot  | 450   | 0     |
 
 ## Usage
 
-### 2024 Onwards
-
-I have switched to using module style execution and imports. This way
-I do not need to force any utilities into my PATH or site-packages.
-
-First, install some required dependencies or setup virtual env etc.:
-```sh
-python3 -m venv .venv
-source .venv/bin/activate
-pip3 install -r requirements.txt
+```bash
+# Install in development mode
+pip install -e ".[dev]"
 ```
 
-In order to run a day's solution, from the root run
-```sh
-python3 -m $YEAR.$DAY
+### Quick Start
 
-# eg. 2024 Day 7
-python3 -m 2024.07 --input path/to/input
+1. Set your Advent of Code session cookie:
+```bash
+echo "AOC_SESSION=your_session_cookie_here" > .env
 ```
 
-By default, it attempts to pull input from a file `$YEAR/$DAY.in` (eg. `2024/07.in`),
-if this file is not present, it will attempt to pull input directly from
-https://adventofcode.com using the [aocd](https://pypi.org/project/advent-of-code-data/)
-package. This requires your token to be stored according to how `aocd`
-expects it. See https://pypi.org/project/advent-of-code-data/ for a guide
-to set this up.
-
-**Notes:**
-```sh
-python3 -m 2024.07 --example
-# is shorthand for the following to run using 
-python3 -m 2024.07 --input 2024/07.ex
+2. Create a new day:
+```bash
+aoc new 2015 1
 ```
 
-### 2023 and Before
+3. Solve the problem in `src/advent/solutions/year_2015/day_01.py`
 
-In order to use any of my code, you will need my `/aocutils.py` file.
-This contains a few useful functions I have kept handy to speed up
-my solves.
+4. Run your solution:
+```bash
+aoc run 2015 1
+```
 
-Since python is so fun, importing the file in the current structure
-is unlikely to work for you. I recommend moving the `aocutils.py` file
-into the same directory as the file you are trying to execute.
+### Development
 
-By default, running `python3 X.py` will look for the file `X.in` as
-the input file to use. So put your input in that file, or you can
-specify a file with `python3 X.py your-input-file`.
+```bash
+# Run tests
+pytest
+
+# Lint code
+ruff check .
+
+# Type check
+mypy src/
+
+# Format code
+ruff format .
+```
