@@ -28,10 +28,12 @@ class Solver(ABC):
         self.Point: Point = Point
         self.store: Store = Store()
 
-    def load_input(self, input_path: Path | None = None) -> None:
+    def load_input(self, input_path: str | None = None) -> None:
         """Load input data from file."""
         if input_path is None:
             input_path = Path(f"inputs/{self.year}/day_{self.day:02d}.txt")
+        else:
+            input_path = Path(input_path)
 
         if input_path.exists():
             data = input_path.read_text().strip()

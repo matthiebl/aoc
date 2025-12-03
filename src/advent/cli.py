@@ -9,13 +9,17 @@ from rich.console import Console
 from rich.panel import Panel
 
 from advent.core.fetcher import fetch_input
+from advent.core.solver import Solver
 from advent.core.utils import timing
 
 console = Console()
 
 
-def create_day_template(year: int, day: int) -> None:
+def create_day_template(args) -> None:
     """Create a new day solution template."""
+    year = args.year
+    day = args.day
+
     year_dir = Path(f"src/advent/solutions/year_{year}")
     year_dir.mkdir(parents=True, exist_ok=True)
 
@@ -68,17 +72,20 @@ class Day{day:02d}(Solver):
         console.print(f"[yellow]⚠[/yellow] Could not fetch input: {e}")
 
 
-def run_solution(year: int, day: int) -> None:
+def run_solution(args) -> None:
     """Run a solution for a specific day."""
+    year = args.year
+    day = args.day
     try:
         module = import_module(f"advent.solutions.year_{year}.day_{day:02d}")
         solver_class = getattr(module, f"Day{day:02d}")
 
-        solver = solver_class(year, day)
-        solver.load_input()
+        solver: Solver = solver_class(year, day)
+        solver.load_input(args.input)
 
         console.print(
-            Panel(f"[bold cyan]Advent of Code {year} - Day {day}[/bold cyan]", expand=False)
+            Panel(
+                f"[bold cyan]Advent of Code {year} - Day {day}[/bold cyan]", expand=False)
         )
 
         solver.prepare()
@@ -109,26 +116,30 @@ def run_solution(year: int, day: int) -> None:
 
 def main() -> None:
     """Main CLI entry point."""
-    parser = argparse.ArgumentParser(prog="aoc", description="Advent of Code solver toolkit")
+    parser = argparse.ArgumentParser(
+        prog="aoc", description="Advent of Code solver toolkit")
 
-    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+    subparsers = parser.add_subparsers(
+        dest="command", help="Available commands")
 
     # New command
     new_parser = subparsers.add_parser("new", help="Create a new day solution")
-    new_parser.add_argument("year", type=int, help="Year (e.g., 2024)")
+    new_parser.add_argument("year", type=int, help="Year (e.g., 2015)")
     new_parser.add_argument("day", type=int, help="Day (1-25)")
 
     # Run command
     run_parser = subparsers.add_parser("run", help="Run a solution")
-    run_parser.add_argument("year", type=int, help="Year (e.g., 2024)")
+    run_parser.add_argument("year", type=int, help="Year (e.g., 2015)")
     run_parser.add_argument("day", type=int, help="Day (1-25)")
+    run_parser.add_argument("--input", "-i", type=str,
+                            help="Alternate input file path")
 
     args = parser.parse_args()
 
     if args.command == "new":
-        create_day_template(args.year, args.day)
+        create_day_template(args)
     elif args.command == "run":
-        run_solution(args.year, args.day)
+        run_solution(args)
     else:
         parser.print_help()
         sys.exit(1)
