@@ -1,11 +1,15 @@
 """Tests for the base Solver class."""
 
 from pathlib import Path
+
 from advent.core import Solver
 
 
 class ExampleSolver(Solver):
     """Test implementation of Solver."""
+
+    def prepare(self):
+        pass
 
     def part1(self) -> int:
         return len(self.input.lines())

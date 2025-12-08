@@ -21,6 +21,10 @@ A collection of my solutions for [Advent of Code](https://adventofcode.com/) sol
 ## Usage
 
 ```bash
+# Setup virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
 # Install in development mode
 pip install -e ".[dev]"
 ```
@@ -58,4 +62,7 @@ mypy src/
 
 # Format code
 ruff format .
+
+# Run tests
+python3 -m pytest
 ```
