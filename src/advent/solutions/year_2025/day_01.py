@@ -8,13 +8,15 @@ from advent.core import Solver
 
 class Day01(Solver):
     """Solution for day 1."""
+
     DIAL_START = 50
     DIAL_SIZE = 100
 
     def prepare(self):
         direction = {"L": -1, "R": 1}
-        self.store.rotations = [direction[instruction[0]] * int(instruction[1:])
-                                for instruction in self.input.lines()]
+        self.store.rotations = [
+            direction[instruction[0]] * int(instruction[1:]) for instruction in self.input.lines()
+        ]
 
     def part1(self) -> int:
         """Solve part 1."""
@@ -34,6 +36,8 @@ class Day01(Solver):
             passed_zero += abs(rotation) // self.DIAL_SIZE
             before = dial
             dial = (dial + rotation) % self.DIAL_SIZE
-            if before != 0 and (dial == 0 or rotation < 0 and (dial >= before) or rotation > 0 and dial <= before):
+            if before != 0 and (
+                dial == 0 or rotation < 0 and (dial >= before) or rotation > 0 and dial <= before
+            ):
                 passed_zero += 1
         return passed_zero

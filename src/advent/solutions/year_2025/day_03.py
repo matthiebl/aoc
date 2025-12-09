@@ -22,7 +22,7 @@ class Day03(Solver):
                     if largest[i] >= largest[i + 1]:
                         new.append(largest[i])
                     else:
-                        new.extend(largest[i+1:])
+                        new.extend(largest[i + 1 :])
                         break
                 largest = new
         return int("".join(map(str, largest)))

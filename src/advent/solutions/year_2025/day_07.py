@@ -11,6 +11,7 @@ from advent.utils.point import Point
 
 class Day07(Solver):
     """Solution for day 7."""
+
     START = "S"
     EMPTY = "."
     SPLIT = "^"

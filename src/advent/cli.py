@@ -84,8 +84,7 @@ def run_solution(args) -> None:
         solver.load_input(args.input)
 
         console.print(
-            Panel(
-                f"[bold cyan]Advent of Code {year} - Day {day}[/bold cyan]", expand=False)
+            Panel(f"[bold cyan]Advent of Code {year} - Day {day}[/bold cyan]", expand=False)
         )
 
         solver.prepare()
@@ -116,11 +115,9 @@ def run_solution(args) -> None:
 
 def main() -> None:
     """Main CLI entry point."""
-    parser = argparse.ArgumentParser(
-        prog="aoc", description="Advent of Code solver toolkit")
+    parser = argparse.ArgumentParser(prog="aoc", description="Advent of Code solver toolkit")
 
-    subparsers = parser.add_subparsers(
-        dest="command", help="Available commands")
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # New command
     new_parser = subparsers.add_parser("new", help="Create a new day solution")
@@ -131,8 +128,7 @@ def main() -> None:
     run_parser = subparsers.add_parser("run", help="Run a solution")
     run_parser.add_argument("year", type=int, help="Year (e.g., 2015)")
     run_parser.add_argument("day", type=int, help="Day (1-25)")
-    run_parser.add_argument("--input", "-i", type=str,
-                            help="Alternate input file path")
+    run_parser.add_argument("--input", "-i", type=str, help="Alternate input file path")
 
     args = parser.parse_args()
 

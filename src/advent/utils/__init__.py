@@ -44,10 +44,12 @@ class Utils:
         """
         if b is None:
             from itertools import repeat
+
             b = repeat(0)
 
         summation = sum((n1 - n2) ** 2 for n1, n2 in zip(a, b))
         if relative:
             return summation
         from math import sqrt
+
         return sqrt(summation)

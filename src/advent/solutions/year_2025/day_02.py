@@ -10,7 +10,9 @@ class Day02(Solver):
     """Solution for day 2."""
 
     def prepare(self):
-        self.store.ranges = list(map(lambda x: tuple(map(int, x.split("-"))), self.input.split(",")))
+        self.store.ranges = list(
+            map(lambda x: tuple(map(int, x.split("-"))), self.input.split(","))
+        )
 
     def part1(self) -> int:
         """Solve part 1."""
@@ -19,7 +21,7 @@ class Day02(Solver):
             for n in range(a, b + 1):
                 id_ = str(n)
                 length = len(id_)
-                if length % 2 == 0 and id_[:length // 2] == id_[length // 2:]:
+                if length % 2 == 0 and id_[: length // 2] == id_[length // 2 :]:
                     invalid_sum += n
         return invalid_sum
 

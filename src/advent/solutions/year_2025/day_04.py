@@ -8,6 +8,7 @@ from advent.core import Solver
 
 class Day04(Solver):
     """Solution for day 4."""
+
     PAPER = "@"
     EMPTY = "."
 
@@ -19,8 +20,7 @@ class Day04(Solver):
         grid = self.input.grid()
         removable = 0
         for p in grid.find_all(self.PAPER):
-            rolls = sum(grid.get(pp) == self.PAPER
-                        for pp in grid.neighbors8(p))
+            rolls = sum(grid.get(pp) == self.PAPER for pp in grid.neighbors8(p))
             if rolls < 4:
                 removable += 1
         return removable
@@ -32,8 +32,7 @@ class Day04(Solver):
         while True:
             removable = []
             for p in grid.find_all(self.PAPER):
-                rolls = sum(grid.get(pp) == self.PAPER
-                            for pp in grid.neighbors8(p))
+                rolls = sum(grid.get(pp) == self.PAPER for pp in grid.neighbors8(p))
                 if rolls < 4:
                     removable.append(p)
             if len(removable) == 0:

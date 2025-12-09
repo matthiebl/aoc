@@ -21,21 +21,14 @@ class Day06(Solver):
 
     def part1(self) -> int:
         """Solve part 1."""
-        problems = list(zip(
-            self.store.operations,
-            zip(*[line.nums() for line in self.input.lines()[:-1]])
-        ))
+        problems = list(
+            zip(self.store.operations, zip(*[line.nums() for line in self.input.lines()[:-1]]))
+        )
         return sum(self.cephalopod_math(operation, ns) for operation, ns in problems)
 
     def part2(self) -> int:
         """Solve part 2."""
         lines = self.input.lines()[:-1]
-        numbers = "_".join(map(
-            lambda x: "".join(x).replace(" ", ""),
-            zip(*lines)
-        )).split("__")
-        problems = list(zip(
-            self.store.operations,
-            map(self.input.nums, numbers)
-        ))
+        numbers = "_".join(map(lambda x: "".join(x).replace(" ", ""), zip(*lines))).split("__")
+        problems = list(zip(self.store.operations, map(self.input.nums, numbers)))
         return sum(self.cephalopod_math(operation, ns) for operation, ns in problems)

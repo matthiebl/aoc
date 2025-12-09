@@ -35,7 +35,7 @@ class DisjointSet:
         return self.size[self.find(x)]
 
     def root_sizes(self):
-        return [self.size[i] for i, root in enumerate(self.is_root) if root == True]
+        return [self.size[i] for i, root in enumerate(self.is_root) if root]
 
 
 class Day08(Solver):
@@ -49,7 +49,9 @@ class Day08(Solver):
         self.store.edges = []
         for i, n1 in enumerate(self.store.nodes):
             for n2 in self.store.nodes[i + 1 :]:
-                heappush(self.store.edges, (self.utils.euclidean_distance(n1, n2, relative=True), n1, n2))
+                heappush(
+                    self.store.edges, (self.utils.euclidean_distance(n1, n2, relative=True), n1, n2)
+                )
         self.store.ids = {n: i for i, n in enumerate(self.store.nodes)}
 
     def part1(self) -> int:
