@@ -81,7 +81,26 @@ def run_solution(args) -> None:
         solver_class = getattr(module, f"Day{day:02d}")
 
         solver: Solver = solver_class(year, day)
-        solver.load_input(args.input)
+
+        # Check if input file exists, offer to fetch if not
+        input_path = args.input
+        if input_path is None:
+            default_input = Path(f"inputs/{year}/day_{day:02d}.txt")
+            if not default_input.exists():
+                console.print(f"[yellow]Input file not found: {default_input}[/yellow]")
+                response = console.input("[bold]Fetch input from Advent of Code? (y/N): [/bold]")
+                if response.lower() in ("y", "yes"):
+                    try:
+                        fetch_input(year, day, default_input)
+                        console.print(f"[green]✓[/green] Downloaded input to {default_input}")
+                    except Exception as e:
+                        console.print(f"[red]✗[/red] Failed to fetch input: {e}")
+                        sys.exit(1)
+                else:
+                    console.print("[red]✗[/red] Cannot run without input file")
+                    sys.exit(1)
+
+        solver.load_input(input_path)
 
         console.print(
             Panel(f"[bold cyan]Advent of Code {year} - Day {day}[/bold cyan]", expand=False)
