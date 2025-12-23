@@ -28,19 +28,6 @@ class Solver(ABC):
         self.Point: Point = Point
         self.store: Store = Store()
 
-    def load_input(self, input_path: str | None = None) -> None:
-        """Load input data from file."""
-        if input_path is None:
-            input_path = Path(f"inputs/{self.year}/day_{self.day:02d}.txt")
-        else:
-            input_path = Path(input_path)
-
-        if input_path.exists():
-            data = input_path.read_text().strip()
-            self.input = InputString(data)
-        else:
-            raise FileNotFoundError(f"Input file not found: {input_path}")
-
     @abstractmethod
     def prepare(self):
         pass
@@ -59,3 +46,20 @@ class Solver(ABC):
         """Solve both parts and return results."""
         self.prepare()
         return self.part1(), self.part2()
+
+    @property
+    def solution_dir(self) -> Path:
+        return Path(f"src/advent/solutions/year_{self.year}")
+
+    def load_input(self, input_path: str | None = None) -> None:
+        """Load input data from file."""
+        if input_path is None:
+            input_path = Path(f"inputs/{self.year}/day_{self.day:02d}.txt")
+        else:
+            input_path = Path(input_path)
+
+        if input_path.exists():
+            data = input_path.read_text().strip()
+            self.input = InputString(data)
+        else:
+            raise FileNotFoundError(f"Input file not found: {input_path}")
