@@ -15,10 +15,8 @@ from advent.core.utils import timing
 console = Console()
 
 
-def create_day_template(args) -> None:
+def create_day_template(year: int, day: int) -> None:
     """Create a new day solution template."""
-    year = args.year
-    day = args.day
 
     year_dir = Path(f"src/advent/solutions/year_{year}")
     year_dir.mkdir(parents=True, exist_ok=True)
@@ -72,10 +70,8 @@ class Day{day:02d}(Solver):
         console.print(f"[yellow]⚠[/yellow] Could not fetch input: {e}")
 
 
-def run_solution(args) -> None:
+def run_solution(year: int, day: int, input_path: str | None) -> None:
     """Run a solution for a specific day."""
-    year = args.year
-    day = args.day
     try:
         module = import_module(f"advent.solutions.year_{year}.day_{day:02d}")
         solver_class = getattr(module, f"Day{day:02d}")
@@ -83,7 +79,6 @@ def run_solution(args) -> None:
         solver: Solver = solver_class(year, day)
 
         # Check if input file exists, offer to fetch if not
-        input_path = args.input
         if input_path is None:
             default_input = Path(f"inputs/{year}/day_{day:02d}.txt")
             if not default_input.exists():
@@ -152,9 +147,9 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.command == "new":
-        create_day_template(args)
+        create_day_template(args.year, args.day)
     elif args.command == "run":
-        run_solution(args)
+        run_solution(args.year, args.day, args.input)
     else:
         parser.print_help()
         sys.exit(1)
