@@ -26,7 +26,5 @@ class Day12(Solver):
         return fit
 
     def part2(self) -> int:
-        """Solve part 2."""
-        lines = self.input.lines()
-        # TODO: Implement solution
+        """No part 2 for final day!"""
         return 0
