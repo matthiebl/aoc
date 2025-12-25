@@ -27,4 +27,4 @@ class Day12(Solver):
 
     def part2(self) -> int:
         """No part 2 for final day!"""
-        return 0
+        return None

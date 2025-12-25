@@ -2,7 +2,7 @@
 
 import time
 from collections.abc import Callable
-from functools import wraps
+from functools import partial, wraps
 from typing import Any, TypeVar
 
 from rich.console import Console
@@ -12,16 +12,22 @@ console = Console()
 F = TypeVar("F", bound=Callable[..., Any])
 
 
-def timing(func: F) -> F:
+def timing(func: F = None, *, store: bool = False, verbose: bool = True) -> F:
     """Decorator to time function execution."""
+
+    if func is None:
+        return partial(timing, store=store, verbose=verbose)
 
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         start = time.perf_counter()
         result = func(*args, **kwargs)
-        elapsed = time.perf_counter() - start
+        elapsed = round((time.perf_counter() - start) * 1000, 2)
 
-        console.print(f"⏱️  {func.__name__}: {elapsed * 1000:.2f}ms", style="dim")
+        if verbose:
+            console.print(f"⏱️  {func.__name__}: {elapsed}ms", style="dim")
+        if store:
+            return result, elapsed
         return result
 
     return wrapper  # type: ignore
