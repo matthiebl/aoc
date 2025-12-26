@@ -1,0 +1,37 @@
+"""
+--- Day 2: 1202 Program Alarm ---
+https://adventofcode.com/2019/day/2
+"""
+
+from advent.core import Solver
+from advent.solutions.year_2019.intcode import Intcode
+
+
+class Day02(Solver):
+    """Solution for day 2."""
+
+    TARGET = 19690720
+
+    def prepare(self):
+        pass
+
+    def part1(self) -> int:
+        """Solve part 1."""
+        code = Intcode(list(self.input.nums()))
+        code.memory[1] = 12
+        code.memory[2] = 2
+        code.run()
+        return code.get(0)
+
+    def part2(self) -> int:
+        """Solve part 2."""
+        program = list(self.input.nums())
+        for noun in range(100):
+            for verb in range(100):
+                code = Intcode(program.copy())
+                code.memory[1] = noun
+                code.memory[2] = verb
+                code.run()
+                if code.get(0) == self.TARGET:
+                    return 100 * noun + verb
+        return 0

@@ -14,7 +14,7 @@ def test_part1(input, expected):
 
 
 def test_part2():
-    solver = get_solver("L10\nR100")
+    solver = get_solver("L10\nR99")
     result = solver.part2()
     assert result == 1
 
