@@ -89,6 +89,11 @@ class Day{day:02d}(Solver):
         return 0
 '''
 
+INIT_TEMPLATE = '''"""Solutions for Advent of Code {year}."""
+
+answers = {{}}
+'''
+
 
 def create_day_template(year: int, day: int) -> None:
     """Create a new day solution template."""
@@ -99,7 +104,7 @@ def create_day_template(year: int, day: int) -> None:
     # Create __init__.py if it doesn't exist
     init_file = year_dir / "__init__.py"
     if not init_file.exists():
-        init_file.write_text(f'"""Solutions for Advent of Code {year}."""\n')
+        init_file.write_text(INIT_TEMPLATE.format(year=year))
 
     day_file = year_dir / f"day_{day:02d}.py"
     if day_file.exists():
