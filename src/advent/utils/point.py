@@ -56,6 +56,28 @@ class Point:
                     continue
                 yield Point(self.x + dx, self.y + dy)
 
+    @staticmethod
+    def direction_from(string: str) -> "Point":
+        letter_to_point = {
+            "U": Point.NORTH,
+            "R": Point.EAST,
+            "D": Point.SOUTH,
+            "L": Point.WEST,
+        }
+        if string in letter_to_point:
+            return letter_to_point[string]
+
+        dir_to_point = {
+            "^": Point.NORTH,
+            ">": Point.EAST,
+            "v": Point.SOUTH,
+            "<": Point.WEST,
+        }
+        if string in dir_to_point:
+            return dir_to_point[string]
+
+        raise ValueError(f"Direction {string} cannot be deduced")
+
 
 # Define direction constants after the class is fully defined
 Point.NORTH = Point(0, -1)
