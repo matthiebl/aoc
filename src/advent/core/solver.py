@@ -19,6 +19,8 @@ class Store:
 class Solver(ABC):
     """Base class for all AoC solution implementations."""
 
+    ALPHABET = "abcdefghijklmnopqrstuvwxyz"
+
     def __init__(self, year: int, day: int) -> None:
         self.year: int = year
         self.day: int = day

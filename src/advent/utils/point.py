@@ -33,6 +33,10 @@ class Point:
     def __mul__(self, scalar: int) -> "Point":
         return Point(self.x * scalar, self.y * scalar)
 
+    @staticmethod
+    def of(x: int, y: int):
+        return Point(x, y)
+
     def distance(self, other: "Point") -> float:
         """Calculate Euclidean distance to another point."""
         return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
