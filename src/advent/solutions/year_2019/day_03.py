@@ -9,7 +9,7 @@ from advent.core import Solver
 class Day03(Solver):
     """Solution for day 3."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.points = []
         for line in self.input.lines():
             line_points = set()

@@ -16,7 +16,7 @@ class Day07(Solver):
     EMPTY = "."
     SPLIT = "^"
 
-    def prepare(self):
+    def prepare(self) -> None:
         pass
 
     def part1(self) -> int:

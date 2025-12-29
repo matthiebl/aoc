@@ -11,7 +11,7 @@ from advent.core import Solver
 class Day09(Solver):
     """Solution for day 9."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.graph = defaultdict(list)
         for line in self.input.lines():
             a, _, b, _, n = line.split()

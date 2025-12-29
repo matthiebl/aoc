@@ -12,7 +12,7 @@ class Day02(Solver):
 
     TARGET = 19690720
 
-    def prepare(self):
+    def prepare(self) -> None:
         pass
 
     def part1(self) -> int:

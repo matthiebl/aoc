@@ -9,7 +9,7 @@ from advent.core import Solver
 class Day01(Solver):
     """Solution for day 1."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         floors = [0]
         for move in self.input:
             floors.append(floors[-1] + (1 if move == "(" else -1))

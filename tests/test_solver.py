@@ -8,7 +8,7 @@ from advent.core import Solver
 class ExampleSolver(Solver):
     """Test implementation of Solver."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         pass
 
     def part1(self) -> int:

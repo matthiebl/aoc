@@ -10,7 +10,7 @@ from advent.solutions.year_2019.intcode import Intcode
 class Day05(Solver):
     """Solution for day 5."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         pass
 
     def part1(self) -> int:

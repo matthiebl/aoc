@@ -22,7 +22,7 @@ class Day10(Solver):
         lights: tuple[bool]
         joltage: tuple[int]
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.machines = []
         for line in self.input.lines():
             [raw_lights, *raw_buttons, raw_joltage] = line.split()

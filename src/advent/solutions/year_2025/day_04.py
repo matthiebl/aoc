@@ -12,7 +12,7 @@ class Day04(Solver):
     PAPER = "@"
     EMPTY = "."
 
-    def prepare(self):
+    def prepare(self) -> None:
         pass
 
     def part1(self) -> int:

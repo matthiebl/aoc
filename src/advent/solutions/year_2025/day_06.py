@@ -11,7 +11,7 @@ from advent.core import Solver
 class Day06(Solver):
     """Solution for day 6."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.operations = self.input.lines()[-1].replace(" ", "")
 
     def cephalopod_math(self, operation: str, ns: list[int]) -> int:

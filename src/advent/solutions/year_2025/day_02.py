@@ -9,7 +9,7 @@ from advent.core import Solver
 class Day02(Solver):
     """Solution for day 2."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.ranges = list(
             map(lambda x: tuple(map(int, x.split("-"))), self.input.split(","))
         )

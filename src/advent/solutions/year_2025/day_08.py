@@ -44,7 +44,7 @@ class Day08(Solver):
     NUM_SHORTEST = 1000
     N_LARGEST_TREES = 3
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.nodes = list(map(tuple, self.utils.chunks(self.input.nums(), n=3)))
         self.store.edges = []
         for i, n1 in enumerate(self.store.nodes):

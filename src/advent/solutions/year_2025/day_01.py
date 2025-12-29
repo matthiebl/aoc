@@ -12,7 +12,7 @@ class Day01(Solver):
     DIAL_START = 50
     DIAL_SIZE = 100
 
-    def prepare(self):
+    def prepare(self) -> None:
         direction = {"L": -1, "R": 1}
         self.store.rotations = [
             direction[instruction[0]] * int(instruction[1:]) for instruction in self.input.lines()

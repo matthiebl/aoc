@@ -23,7 +23,7 @@ class Day11(Solver):
     YOU = "you"
     OUT = "out"
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.graph = defaultdict(list)
         for line in self.input.lines():
             src, to = line.split(": ")

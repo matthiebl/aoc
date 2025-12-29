@@ -12,7 +12,7 @@ from advent.core import Solver
 class Day07(Solver):
     """Solution for day 7."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.wires = {k: v for v, k in [line.split(" -> ") for line in self.input.lines()]}
 
     def part1(self) -> int:

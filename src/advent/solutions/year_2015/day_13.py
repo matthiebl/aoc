@@ -12,7 +12,7 @@ from advent.core import Solver
 class Day13(Solver):
     """Solution for day 13."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.people = defaultdict(lambda: defaultdict(int))
 
         desires = [line[:-1].split() for line in self.input.lines()]

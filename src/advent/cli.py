@@ -73,7 +73,7 @@ from advent.core import Solver
 class Day{day:02d}(Solver):
     """Solution for day {day}."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         pass
 
     def part1(self) -> int:

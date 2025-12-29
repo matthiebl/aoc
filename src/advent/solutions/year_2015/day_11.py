@@ -9,7 +9,7 @@ from advent.core import Solver
 class Day11(Solver):
     """Solution for day 11."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.password = self.input
 
     def part1(self) -> int:

@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 from advent.utils import Utils
@@ -28,10 +29,10 @@ class Solver(ABC):
         self.input: InputString = InputString("")
         self.Grid: Grid = Grid
         self.Point: Point = Point
-        self.store: Store = Store()
+        self.store: SimpleNamespace = SimpleNamespace()
 
     @abstractmethod
-    def prepare(self):
+    def prepare(self) -> None:
         pass
 
     @abstractmethod

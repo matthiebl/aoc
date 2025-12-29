@@ -9,7 +9,7 @@ from advent.core import Solver
 class Day05(Solver):
     """Solution for day 5."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         ranges, items = self.input.sections()
         self.store.ranges = sorted(self.utils.chunks(map(abs, ranges.nums())), reverse=True)
         self.store.items = list(items.nums())

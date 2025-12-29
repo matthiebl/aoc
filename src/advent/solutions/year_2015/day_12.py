@@ -11,7 +11,7 @@ from advent.core import Solver
 class Day12(Solver):
     """Solution for day 12."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         pass
 
     def part1(self) -> int:

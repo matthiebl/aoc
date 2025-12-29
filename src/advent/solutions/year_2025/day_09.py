@@ -13,7 +13,7 @@ from advent.core import Solver
 class Day09(Solver):
     """Solution for day 9."""
 
-    def prepare(self):
+    def prepare(self) -> None:
         self.store.corners = list(map(tuple, self.utils.chunks(self.input.nums())))
 
     def part1(self) -> int:
