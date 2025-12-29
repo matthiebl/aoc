@@ -26,7 +26,7 @@ class Day07(Solver):
         splitters = set()
         visited = set()
         search = [grid.find(self.START)]
-        while search:
+        while len(search):
             p = search.pop()
             if (p.x, p.y) in splitters or (p.x, p.y) in visited:
                 continue
@@ -46,7 +46,7 @@ class Day07(Solver):
         grid = self.input.grid()
 
         @cache
-        def timelines(p: Point):
+        def timelines(p: Point) -> int:
             while grid.in_bounds(p) and grid.get(p) != self.SPLIT:
                 p += p.SOUTH
             if not grid.in_bounds(p):

@@ -10,17 +10,17 @@ from advent.core import Solver
 
 
 class DisjointSet:
-    def __init__(self, n_ids):
+    def __init__(self, n_ids: int):
         self.parent = list(range(n_ids))
         self.size = [1] * n_ids
         self.is_root = [True] * n_ids
 
-    def find(self, x):
+    def find(self, x: int) -> int:
         if self.parent[x] == x:
             return x
         return self.find(self.parent[x])
 
-    def union(self, x, y):
+    def union(self, x: int, y: int) -> None:
         a = self.find(x)
         b = self.find(y)
         if a == b:
@@ -31,10 +31,10 @@ class DisjointSet:
         self.size[a] += self.size[b]
         self.is_root[b] = False
 
-    def root_size(self, x):
+    def root_size(self, x: int) -> int:
         return self.size[self.find(x)]
 
-    def root_sizes(self):
+    def root_sizes(self) -> list[int]:
         return [self.size[i] for i, root in enumerate(self.is_root) if root]
 
 
@@ -74,6 +74,6 @@ class Day08(Solver):
         while len(ds.root_sizes()) > 1:
             _, n1, n2 = heappop(edges)
             ds.union(self.store.ids[n1], self.store.ids[n2])
-            last_pair = n1[0] * n2[0]
+            last_pair: int = n1[0] * n2[0]
 
         return last_pair

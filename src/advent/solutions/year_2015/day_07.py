@@ -37,7 +37,10 @@ class Day07(Solver):
             return self.compute(gate)
         if gate.startswith("NOT"):
             return (2**17 - 1) ^ self.compute(gate[4:])
-        x, op, y = search(r"(\w+) (\w+) (\w+)", gate).groups()
+        match = search(r"(\w+) (\w+) (\w+)", gate)
+        if not match:
+            raise ValueError("Could not parse regex")
+        x, op, y = match.groups()
         if op == "OR":
             return self.compute(x) | self.compute(y)
         if op == "AND":
@@ -46,3 +49,4 @@ class Day07(Solver):
             return self.compute(x) << self.compute(y)
         if op == "RSHIFT":
             return self.compute(x) >> self.compute(y)
+        raise ValueError(f"{op} does not exist")

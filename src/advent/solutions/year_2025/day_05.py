@@ -14,9 +14,6 @@ class Day05(Solver):
         self.store.ranges = sorted(self.utils.chunks(map(abs, ranges.nums())), reverse=True)
         self.store.items = list(items.nums())
 
-    def is_fresh(self, item: int):
-        return any(l <= item <= r for l, r in self.store.ranges)
-
     def part1(self) -> int:
         """Solve part 1."""
         return sum(self.is_fresh(item) for item in self.store.items)
@@ -32,4 +29,8 @@ class Day05(Solver):
                 pl, pr = cl, cr
             else:
                 pl, pr = min(pl, cl), max(pr, cr)
-        return total + pr + 1 - pl
+        fresh: int = total + pr + 1 - pl
+        return fresh
+
+    def is_fresh(self, item: int) -> bool:
+        return any(low <= item <= high for low, high in self.store.ranges)

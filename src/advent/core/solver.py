@@ -25,10 +25,10 @@ class Solver(ABC):
     def __init__(self, year: int, day: int) -> None:
         self.year: int = year
         self.day: int = day
-        self.utils: Utils = Utils
+        self.utils = Utils
         self.input: InputString = InputString("")
-        self.Grid: Grid = Grid
-        self.Point: Point = Point
+        self.Grid = Grid
+        self.Point = Point
         self.store: SimpleNamespace = SimpleNamespace()
 
     @abstractmethod
@@ -57,12 +57,12 @@ class Solver(ABC):
     def load_input(self, input_path: str | None = None) -> None:
         """Load input data from file."""
         if input_path is None:
-            input_path = Path(f"inputs/{self.year}/day_{self.day:02d}.txt")
+            path = Path(f"inputs/{self.year}/day_{self.day:02d}.txt")
         else:
-            input_path = Path(input_path)
+            path = Path(input_path)
 
-        if input_path.exists():
-            data = input_path.read_text().strip()
+        if path.exists():
+            data = path.read_text().strip()
             self.input = InputString(data)
         else:
-            raise FileNotFoundError(f"Input file not found: {input_path}")
+            raise FileNotFoundError(f"Input file not found: {path}")

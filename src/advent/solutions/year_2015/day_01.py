@@ -17,8 +17,10 @@ class Day01(Solver):
 
     def part1(self) -> int:
         """Solve part 1."""
-        return self.store.floors[-1]
+        last_floor: int = self.store.floors[-1]
+        return last_floor
 
     def part2(self) -> int:
         """Solve part 2."""
-        return self.store.floors.index(-1)
+        first_basement: int = self.store.floors.index(-1)
+        return first_basement

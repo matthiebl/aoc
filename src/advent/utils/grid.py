@@ -1,17 +1,15 @@
 """Grid utilities for 2D problems."""
 
 from collections.abc import Iterator
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 from advent.utils.point import Point
 
 if TYPE_CHECKING:
     from advent.utils.input_string import InputString
 
-T = TypeVar("T")
 
-
-class Grid:
+class Grid[T]:
     """2D grid with common operations."""
 
     def __init__(self, data: list[list[T]]) -> None:
@@ -20,14 +18,14 @@ class Grid:
         self.width = len(data[0]) if data else 0
 
     @classmethod
-    def from_string(cls, text: "InputString") -> "Grid[str]":
+    def from_string(cls, text: "InputString") -> "Grid":
         """Create a grid from a string (one line per row)."""
-        return cls([list(line) for line in text.lines()])
+        return cls([list(map(str, line)) for line in text.lines()])  # type: ignore
 
     @classmethod
-    def from_num_string(cls, text: "InputString") -> "Grid[int]":
+    def from_num_string(cls, text: "InputString") -> "Grid":
         """Create a grid from a string (one line per row), where each character is a number."""
-        return cls([list(map(int, line)) for line in text.lines()])
+        return cls([list(map(int, line)) for line in text.lines()])  # type: ignore
 
     def get(self, point: Point, default: T | None = None) -> T | None:
         """Get value at point, or default if out of bounds."""
@@ -44,12 +42,12 @@ class Grid:
         """Check if point is within grid bounds."""
         return 0 <= point.x < self.width and 0 <= point.y < self.height
 
-    def find(self, value: T) -> Point | None:
+    def find(self, value: T) -> Point:
         """Find first occurrence of value in grid."""
         for point in self.all_points():
             if self.get(point) == value:
                 return point
-        return None
+        raise KeyError(f"Value `{value}` does not exist in the grid")
 
     def find_all(self, value: T) -> list[Point]:
         """Find all occurrences of value in grid."""

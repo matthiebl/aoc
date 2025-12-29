@@ -14,11 +14,6 @@ class Day06(Solver):
     def prepare(self) -> None:
         self.store.operations = self.input.lines()[-1].replace(" ", "")
 
-    def cephalopod_math(self, operation: str, ns: list[int]) -> int:
-        if operation == "*":
-            return reduce(lambda x, y: x * y, ns)
-        return sum(ns)
-
     def part1(self) -> int:
         """Solve part 1."""
         problems = list(
@@ -30,5 +25,12 @@ class Day06(Solver):
         """Solve part 2."""
         lines = self.input.lines()[:-1]
         numbers = "_".join(map(lambda x: "".join(x).replace(" ", ""), zip(*lines))).split("__")
-        problems = list(zip(self.store.operations, map(self.input.nums, numbers)))
+        problems = list(
+            zip(self.store.operations, map(lambda x: tuple(self.input.nums(x)), numbers))
+        )
         return sum(self.cephalopod_math(operation, ns) for operation, ns in problems)
+
+    def cephalopod_math(self, operation: str, ns: tuple[int, ...]) -> int:
+        if operation == "*":
+            return reduce(lambda x, y: x * y, ns)
+        return sum(ns)

@@ -37,10 +37,10 @@ class Day04(Solver):
         return any(a == b for a, b in self.utils.windows(str(n)))
 
     def has_single_adjacent(self, n: int) -> bool:
-        n = str(n)
-        last = n[0]
+        n_str = str(n)
+        last = n_str[0]
         length = 0
-        for x in n:
+        for x in n_str:
             if x == last:
                 length += 1
             elif length == 2:

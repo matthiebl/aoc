@@ -22,7 +22,7 @@ class Day12(Solver):
         """Solve part 2."""
         return self.non_red_sum(loads(self.input))
 
-    def non_red_sum(self, json) -> int:
+    def non_red_sum(self, json: int | str | list | dict) -> int:
         if isinstance(json, int):
             return json
         if isinstance(json, str):

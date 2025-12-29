@@ -5,6 +5,7 @@ import re
 import sys
 from importlib import import_module
 from pathlib import Path
+from typing import Any
 
 from rich.console import Console
 from rich.panel import Panel
@@ -139,11 +140,11 @@ def run_solution(year: int, day: int, input_path: str | None, parts: list[int]) 
         )
 
         @timing
-        def solve_part1() -> int:
+        def solve_part1() -> Any:
             return solver.part1()
 
         @timing
-        def solve_part2() -> int:
+        def solve_part2() -> Any:
             return solver.part2()
 
         answers = _get_answers(year)
@@ -168,6 +169,8 @@ def test_solutions(year: int) -> None:
     existing_solutions = []
     for file in Path(f"src/advent/solutions/year_{year}").glob("**/*day_*.py"):
         match = re.search(r"day_(\d\d).py", file.as_posix())
+        if match is None:
+            raise ValueError("Could not parse day file regex for two digit number")
         existing_solutions.append(int(match.group(1)))
     existing_solutions.sort()
 
@@ -185,27 +188,27 @@ def test_solutions(year: int) -> None:
         console.print(f"[bold cyan]Day {day}[/bold cyan]")
 
         @timing(store=True, verbose=False)
-        def solve_part1() -> int:
+        def solve_part1() -> Any:
             return solver.part1()
 
         @timing(store=True, verbose=False)
-        def solve_part2() -> int:
+        def solve_part2() -> Any:
             return solver.part2()
 
         answers = _get_answers(year)
         answer1, answer2 = answers.get(day, (None, None))
 
         solver.prepare()
-        result1, time1 = solve_part1()
-        colour = _get_answer_colour(result1, answer1)
-        console.print(f"Part 1: [{colour}]{result1}[/] ({time1}ms)")
-        total_time += time1
+        result1, time1 = solve_part1()  # type: ignore
+        colour = _get_answer_colour(result1, answer1)  # type: ignore
+        console.print(f"Part 1: [{colour}]{result1}[/] ({time1}ms)")  # type: ignore
+        total_time += time1  # type: ignore
         correct += 1 if colour == "green" else 0
 
-        result2, time2 = solve_part2()
-        colour = _get_answer_colour(result2, answer2)
-        console.print(f"Part 2: [{colour}]{result2}[/] ({time2}ms)")
-        total_time += time2
+        result2, time2 = solve_part2()  # type: ignore
+        colour = _get_answer_colour(result2, answer2)  # type: ignore
+        console.print(f"Part 2: [{colour}]{result2}[/] ({time2}ms)")  # type: ignore
+        total_time += time2  # type: ignore
         correct += 1 if colour == "green" else 0
 
         console.print("")
@@ -225,7 +228,7 @@ def _get_solver(year: int, day: int) -> Solver:
         module = import_module(f"advent.solutions.year_{year}.day_{day:02d}")
         solver_class = getattr(module, f"Day{day:02d}")
 
-        return solver_class(year, day)
+        return solver_class(year, day)  # type: ignore
     except ModuleNotFoundError:
         console.print(
             f"[red]✗[/red] Solution for day {day} not found. Create it with: aoc new {year} {day}"
@@ -250,11 +253,11 @@ def _get_default_solution_input(year: int, day: int) -> None:
             sys.exit(1)
 
 
-def _get_answers(year: int) -> dict[str, tuple]:
+def _get_answers(year: int) -> dict[int, tuple[Any, Any]]:
     try:
         module = import_module(f"advent.solutions.year_{year}")
         answers = getattr(module, "answers")
-        return answers
+        return answers  # type: ignore
     except ModuleNotFoundError:
         console.print(f"[red]✗[/red] Cannot find base init module for year {year}.")
     except AttributeError:
@@ -262,7 +265,7 @@ def _get_answers(year: int) -> dict[str, tuple]:
     return {}
 
 
-def _get_answer_colour(actual, expected) -> str:
+def _get_answer_colour(actual: Any, expected: Any) -> str:
     if actual == expected:
         return "green"
     elif expected is None:

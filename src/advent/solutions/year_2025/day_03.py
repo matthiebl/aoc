@@ -12,11 +12,20 @@ class Day03(Solver):
     def prepare(self) -> None:
         self.store.banks = self.input.lines()
 
+    def part1(self) -> int:
+        """Solve part 1."""
+        return sum(self.joltage(bank) for bank in self.store.banks)
+
+    def part2(self) -> int:
+        """Solve part 2."""
+        return sum(self.joltage(bank, 12) for bank in self.store.banks)
+
     def joltage(self, bank: str, flips: int = 2) -> int:
         largest = list(map(int, bank[-flips:]))
         for n in map(int, bank[::-1][flips:]):
             if n >= largest[0]:
-                # remove the first digit that breaks a non strict decreasing list, otherwise the last digit
+                # remove the first digit that breaks a non strict decreasing list,
+                # otherwise the last digit
                 new = [n]
                 for i in range(flips - 1):
                     if largest[i] >= largest[i + 1]:
@@ -26,11 +35,3 @@ class Day03(Solver):
                         break
                 largest = new
         return int("".join(map(str, largest)))
-
-    def part1(self) -> int:
-        """Solve part 1."""
-        return sum(self.joltage(bank) for bank in self.store.banks)
-
-    def part2(self) -> int:
-        """Solve part 2."""
-        return sum(self.joltage(bank, 12) for bank in self.store.banks)

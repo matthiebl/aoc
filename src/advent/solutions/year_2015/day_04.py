@@ -3,7 +3,7 @@
 https://adventofcode.com/2015/day/4
 """
 
-from _md5 import md5
+from hashlib import md5
 
 from advent.core import Solver
 

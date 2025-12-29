@@ -18,11 +18,13 @@ class Day05(Solver):
         code = Intcode(self.input.nums())
         code.add_input(1)
         code.run()
-        return code.output[-1]
+        diagnostic: int = code.output[-1]
+        return diagnostic
 
     def part2(self) -> int:
         """Solve part 2."""
         code = Intcode(self.input.nums())
         code.add_input(5)
         code.run()
-        return code.output[-1]
+        diagnostic: int = code.output[-1]
+        return diagnostic

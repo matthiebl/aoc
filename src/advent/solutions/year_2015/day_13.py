@@ -27,7 +27,7 @@ class Day13(Solver):
         """Solve part 2."""
         return self.best_seating_score(set(self.store.people) | {"Me"})
 
-    def best_seating_score(self, names) -> int:
+    def best_seating_score(self, names: set[str]) -> int:
         best = 0
         for arrangement in permutations(names):
             score = (

@@ -25,6 +25,6 @@ class Day12(Solver):
                 fit += 1
         return fit
 
-    def part2(self) -> int:
+    def part2(self) -> None:
         """No part 2 for final day!"""
         return None

@@ -9,7 +9,6 @@ Confirmed via visulisation of nx.write_graphml -> https://www.yworks.com/yed-liv
 
 from collections import defaultdict
 from functools import cache
-from pathlib import Path
 
 import networkx as nx
 
@@ -38,7 +37,7 @@ class Day11(Solver):
         return self.topological_paths(self.SERVER, self.OUT, ("dac", "fft"))
 
     @cache
-    def topological_paths(self, src: str, dst: str, passed: tuple[str]) -> int:
+    def topological_paths(self, src: str, dst: str, passed: tuple[str, ...]) -> int:
         if src == dst:
             return 1 if not len(passed) else 0
 
@@ -47,14 +46,14 @@ class Day11(Solver):
 
         return sum(self.topological_paths(adj, dst, passed) for adj in self.store.graph[src])
 
-    def save_to_graphml(self):
+    def save_to_graphml(self) -> None:
         # Create networkx graph
-        G = nx.Graph()
+        graph: nx.Graph = nx.Graph()
         for src, neighbours in self.store.graph.items():
-            G.add_node(src, data=src)
+            graph.add_node(src, data=src)
             for adj in neighbours:
-                G.add_edge(src, adj)
+                graph.add_edge(src, adj)
 
         # Save to graphml to be loaded in https://www.yworks.com/yed-live/
         path = self.solution_dir.joinpath("day_11_graph.graphml")
-        nx.write_graphml(G, path)
+        nx.write_graphml(graph, path)

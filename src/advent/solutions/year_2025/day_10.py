@@ -6,7 +6,7 @@ https://adventofcode.com/2025/day/10
 from dataclasses import dataclass
 from heapq import heappop, heappush
 
-import z3
+import z3  # type: ignore
 
 from advent.core import Solver
 
@@ -18,9 +18,9 @@ class Day10(Solver):
 
     @dataclass
     class Machine:
-        buttons: list[set[int]]
-        lights: tuple[bool]
-        joltage: tuple[int]
+        buttons: list[tuple[int, ...]]
+        lights: tuple[bool, ...]
+        joltage: tuple[int, ...]
 
     def prepare(self) -> None:
         self.store.machines = []
@@ -55,8 +55,9 @@ class Day10(Solver):
                 )
                 if new_state not in seen_states:
                     heappush(search, (presses + 1, new_state))
+        raise RuntimeError("Could not find valid button press configuration")
 
-    def presses_for_joltage(self, machine: Machine):
+    def presses_for_joltage(self, machine: Machine) -> int:
         s = z3.Optimize()
         vars = tuple(z3.Int(f"v{i}") for i in range(len(machine.buttons)))
         for v in vars:
@@ -69,4 +70,5 @@ class Day10(Solver):
             s.add(equation == joltage)
         s.minimize(sum(vars))
         s.check()
-        return s.model().eval(sum(vars)).as_long()
+        presses: int = s.model().eval(sum(vars)).as_long()
+        return presses

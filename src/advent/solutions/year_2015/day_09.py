@@ -4,6 +4,7 @@ https://adventofcode.com/2015/day/9
 """
 
 from collections import defaultdict
+from collections.abc import Callable
 
 from advent.core import Solver
 
@@ -18,27 +19,18 @@ class Day09(Solver):
             self.store.graph[a].append((int(n), b))
             self.store.graph[b].append((int(n), a))
 
-    def part1(self) -> int:
+    def part1(self) -> float:
         """Solve part 1."""
-        distance = float("inf")
-        for n in self.store.graph:
-            stack = [(0, n, set())]
-            while stack:
-                d, nxt, visited = stack.pop()
-                if nxt in visited:
-                    continue
-                visited.add(nxt)
+        return self.path_distance(using=min, start=float("inf"))
 
-                if len(visited) == len(self.store.graph):
-                    distance = min(distance, d)
-                stack.extend([(d + w, pos, set(visited)) for w, pos in self.store.graph[nxt]])
-        return distance
-
-    def part2(self) -> int:
+    def part2(self) -> float:
         """Solve part 2."""
-        distance = 0
+        return self.path_distance(using=max)
+
+    def path_distance(self, using: Callable[[float, float], float], start: float = 0) -> float:
+        distance = start
         for n in self.store.graph:
-            stack = [(0, n, set())]
+            stack: list[tuple[int, int, set[int]]] = [(0, n, set())]
             while stack:
                 d, nxt, visited = stack.pop()
                 if nxt in visited:
@@ -46,6 +38,6 @@ class Day09(Solver):
                 visited.add(nxt)
 
                 if len(visited) == len(self.store.graph):
-                    distance = max(distance, d)
+                    distance = using(distance, d)
                 stack.extend([(d + w, pos, set(visited)) for w, pos in self.store.graph[nxt]])
         return distance

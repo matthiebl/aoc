@@ -48,7 +48,7 @@ class Day09(Solver):
 
     @staticmethod
     @cmp_to_key
-    def cmp_rectangles(r1, r2):
+    def cmp_rectangles(r1: tuple[int, ...], r2: tuple[int, ...]) -> int:
         size1 = Day09.area(*r1)
         size2 = Day09.area(*r2)
         return size2 - size1
@@ -82,7 +82,7 @@ class Day09(Solver):
         points: list | None = None,
         square: tuple | None = None,
         file_name: str = "day_09_image.png",
-    ):
+    ) -> None:
         if points is None:
             points = self.store.corners
         points.append(points[0])

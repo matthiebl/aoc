@@ -34,12 +34,13 @@ class Point:
         return Point(self.x * scalar, self.y * scalar)
 
     @staticmethod
-    def of(x: int, y: int):
+    def of(x: int, y: int) -> "Point":
         return Point(x, y)
 
     def distance(self, other: "Point") -> float:
         """Calculate Euclidean distance to another point."""
-        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+        distance: float = ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+        return distance
 
     def manhattan_distance(self, other: "Point") -> int:
         """Calculate Manhattan distance to another point."""

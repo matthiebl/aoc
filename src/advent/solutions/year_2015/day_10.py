@@ -14,14 +14,14 @@ class Day10(Solver):
 
     def part1(self) -> int:
         """Solve part 1."""
-        code = self.input
+        code: str = self.input
         for _ in range(40):
             code = self.look_and_say(code)
         return len(code)
 
     def part2(self) -> int:
         """Solve part 2."""
-        code = self.input
+        code: str = self.input
         for _ in range(50):
             code = self.look_and_say(code)
         return len(code)

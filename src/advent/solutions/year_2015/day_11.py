@@ -10,20 +10,25 @@ class Day11(Solver):
     """Solution for day 11."""
 
     def prepare(self) -> None:
-        self.store.password = self.input
+        pass
 
-    def part1(self) -> int:
+    def part1(self) -> str:
         """Solve part 1."""
-        while not self.valid_password(self.store.password):
-            self.store.password = self.next_password(self.store.password)
-        return self.store.password
+        password: str = self.input
+        while not self.valid_password(password):
+            password = self.next_password(password)
+        return password
 
-    def part2(self) -> int:
+    def part2(self) -> str:
         """Solve part 2."""
-        self.store.password = self.next_password(self.store.password)
-        while not self.valid_password(self.store.password):
-            self.store.password = self.next_password(self.store.password)
-        return self.store.password
+        password: str = self.input
+        while not self.valid_password(password):
+            password = self.next_password(password)
+        password = self.next_password(password)
+
+        while not self.valid_password(password):
+            password = self.next_password(password)
+        return password
 
     def next_password(self, password: str) -> str:
         last = password[-1]
