@@ -71,6 +71,9 @@ class Grid[T]:
             if self.in_bounds(neighbor):
                 yield neighbor
 
+    def set_all(self, default: T) -> None:
+        self.data = [[default for _ in range(self.width)] for _ in range(self.height)]
+
     def __iter__(self) -> Iterator[tuple[Point, T]]:
         """Iterate over all (point, value) pairs in the grid."""
         for point in self.all_points():
