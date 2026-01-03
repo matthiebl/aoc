@@ -78,7 +78,7 @@ class Interpreter:
         """
         Gets the current operation function to run.
         """
-        return getattr(self, f"_{op}")
+        return getattr(self, f"_op_{op}")
 
     def pre_op(self, op: str, *args: str) -> None:
         """
@@ -97,67 +97,67 @@ class Interpreter:
         self.ip += jmp
 
     # --- Operations ---
-    # All operations are methods in the format `_{name}`
+    # All operations are methods in the format `_op_{name}`
     # Should return the change to the instruction pointer or None for +1
 
-    def _set(self, x: str, y: str) -> None:
+    def _op_set(self, x: str, y: str) -> None:
         self.registers[x] = self.value(y)
 
-    def _cpy(self, x: str, y: str) -> None:
+    def _op_cpy(self, x: str, y: str) -> None:
         self.registers[y] = self.value(x)
 
-    def _inp(self, x: str) -> None:
+    def _op_inp(self, x: str) -> None:
         self.registers[x] = self.input.popleft()
 
-    def _add(self, x: str, y: str) -> None:
+    def _op_add(self, x: str, y: str) -> None:
         self.registers[x] += self.value(y)
 
-    def _sub(self, x: str, y: str) -> None:
+    def _op_sub(self, x: str, y: str) -> None:
         self.registers[x] -= self.value(y)
 
-    def _mul(self, x: str, y: str) -> None:
+    def _op_mul(self, x: str, y: str) -> None:
         self.registers[x] *= self.value(y)
 
-    def _div(self, x: str, y: str) -> None:
+    def _op_div(self, x: str, y: str) -> None:
         self.registers[x] //= self.value(y)
 
-    def _mod(self, x: str, y: str) -> None:
+    def _op_mod(self, x: str, y: str) -> None:
         self.registers[x] %= self.value(y)
 
-    def _inc(self, x: str) -> None:
+    def _op_inc(self, x: str) -> None:
         self.registers[x] += 1
 
-    def _dec(self, x: str) -> None:
+    def _op_dec(self, x: str) -> None:
         self.registers[x] -= 1
 
-    def _hlf(self, x: str) -> None:
+    def _op_hlf(self, x: str) -> None:
         self.registers[x] //= 2
 
-    def _dbl(self, x: str) -> None:
+    def _op_dbl(self, x: str) -> None:
         self.registers[x] *= 2
 
-    def _tpl(self, x: str) -> None:
+    def _op_tpl(self, x: str) -> None:
         self.registers[x] *= 3
 
-    def _jmp(self, x: str) -> int:
+    def _op_jmp(self, x: str) -> int:
         return self.value(x)
 
-    def _jnz(self, x: str, y: str) -> int:
+    def _op_jnz(self, x: str, y: str) -> int:
         return self.value(y) if self.value(x) != 0 else 1
 
-    def _jez(self, x: str, y: str) -> int:
+    def _op_jez(self, x: str, y: str) -> int:
         return self.value(y) if self.value(x) == 0 else 1
 
-    def _jgz(self, x: str, y: str) -> int:
+    def _op_jgz(self, x: str, y: str) -> int:
         return self.value(y) if self.value(x) > 0 else 1
 
-    def _jlz(self, x: str, y: str) -> int:
+    def _op_jlz(self, x: str, y: str) -> int:
         return self.value(y) if self.value(x) < 0 else 1
 
-    def _snd(self, x: str) -> None:
+    def _op_snd(self, x: str) -> None:
         self.output.append(self.value(x))
 
-    def _rcv(self, x: str) -> None:
+    def _op_rcv(self, x: str) -> None:
         if len(self.input) == 0:
             self.halted = True
             return None

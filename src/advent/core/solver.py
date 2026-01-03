@@ -55,7 +55,11 @@ class Solver(ABC):
         return Path(f"src/advent/solutions/year_{self.year}")
 
     def load_input(self, input_path: str | None = None) -> None:
-        """Load input data from file."""
+        """
+        Load input data from file.
+
+        Uses the default path to stored input if `None`.
+        """
         if input_path is None:
             path = Path(f"inputs/{self.year}/day_{self.day:02d}.txt")
         else:

@@ -17,21 +17,17 @@ class Day02(Solver):
 
     def part1(self) -> int:
         """Solve part 1."""
-        code = Intcode(list(self.input.nums()))
-        code.memory[1] = 12
-        code.memory[2] = 2
+        code = Intcode(list(self.input.nums()), replace={1: 12, 2: 2})
         code.run()
-        return code.get(0)
+        return code.memory[0]
 
     def part2(self) -> int:
         """Solve part 2."""
         program = list(self.input.nums())
         for noun in range(100):
             for verb in range(100):
-                code = Intcode(program.copy())
-                code.memory[1] = noun
-                code.memory[2] = verb
+                code = Intcode(program.copy(), replace={1: noun, 2: verb})
                 code.run()
-                if code.get(0) == self.TARGET:
+                if code.memory[0] == self.TARGET:
                     return 100 * noun + verb
         return 0

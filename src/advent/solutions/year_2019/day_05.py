@@ -15,16 +15,14 @@ class Day05(Solver):
 
     def part1(self) -> int:
         """Solve part 1."""
-        code = Intcode(self.input.nums())
-        code.add_input(1)
+        code = Intcode(self.input.nums(), queue=[1])
         code.run()
         diagnostic: int = code.output[-1]
         return diagnostic
 
     def part2(self) -> int:
         """Solve part 2."""
-        code = Intcode(self.input.nums())
-        code.add_input(5)
+        code = Intcode(self.input.nums(), queue=[5])
         code.run()
         diagnostic: int = code.output[-1]
         return diagnostic

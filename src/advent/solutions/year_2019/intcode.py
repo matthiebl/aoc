@@ -3,97 +3,117 @@ from typing import Any
 
 
 class Intcode:
-    opcodes = {
-        1: "add",
-        2: "mul",
-        3: "input",
-        4: "output",
-        5: "jit",
-        6: "jif",
-        7: "lt",
-        8: "eq",
-        99: "halt",
+    OPCODES = {
+        1: {"name": "add", "nargs": 3},
+        2: {"name": "mul", "nargs": 3},
+        3: {"name": "input", "nargs": 1},
+        4: {"name": "output", "nargs": 1},
+        5: {"name": "jit", "nargs": 2},
+        6: {"name": "jif", "nargs": 2},
+        7: {"name": "lt", "nargs": 3},
+        8: {"name": "eq", "nargs": 3},
+        99: {"name": "halt", "nargs": 0},
     }
 
-    def __init__(self, program: list[int]):
+    def __init__(self, program: list[int], replace: dict[int, int] = {}, queue: list[Any] = []):
         self.memory = program
+        for idx, val in replace.items():
+            self.memory[idx] = val
         self.ip = 0
+
         self.halted = False
-        self.input: deque[Any] = deque()
+
+        self.input: deque[Any] = deque(queue)
         self.output: deque[Any] = deque()
 
+    def running(self) -> bool:
+        return not self.halted
+
     def run(self) -> None:
-        while not self.halted:
-            opcode, modes = self.get_opcode()
-            op_fn = getattr(self, f"opcode_{self.opcodes.get(opcode, 'error')}")
+        while self.running():
+            opcode, op_fn, modes = self._get_opcode()
             op_fn(modes=modes, code=opcode)
 
-    def next(self) -> int:
-        """Get the next int from memory and push the instruction pointer."""
-        n = self.memory[self.ip]
+    def _get(self, mode: int = 0) -> int:
+        """
+        Return the mode dependent value of the next value in memory.
+
+        If `mode == 0`, then the value at memory is returned.
+
+        If `mode == 1`, then the value itself is returned.
+        """
+        val = self.memory[self.ip]
         self.ip += 1
-        return n
 
-    def add_input(self, any: Any) -> None:
-        self.input.append(any)
-
-    def take_output(self) -> Any:
-        return self.output.popleft()
-
-    def get(self, i: int, mode: int = 0) -> int:
+        if mode == 0:
+            return self.memory[val]
         if mode == 1:
-            return i
-        return self.memory[i]
+            return val
 
-    def get_opcode(self) -> tuple[int, list[int]]:
-        raw = self.next()
+        raise ValueError(f"Intcode._get mode cannot be {mode}")
+
+    def _get_opcode(self) -> tuple[int, Any, list[int]]:
+        raw = self._get(mode=1)
         opcode = raw % 100
+
         modes = list(map(int, str(raw // 100)))[::-1]
-        return opcode, modes + [0] * 10
+        extra_modes = self.OPCODES[opcode]["nargs"] - len(modes)
+        modes += [0] * extra_modes
 
-    def opcode_add(self, **kwargs: Any) -> None:
-        modes: list[int] = kwargs["modes"]
-        i, j, addr = self.next(), self.next(), self.next()
-        self.memory[addr] = self.get(i, modes[0]) + self.get(j, modes[1])
+        op_fn = getattr(self, f"_op_{self.OPCODES[opcode]['name']}")
 
-    def opcode_mul(self, **kwargs: Any) -> None:
-        modes: list[int] = kwargs["modes"]
-        i, j, addr = self.next(), self.next(), self.next()
-        self.memory[addr] = self.get(i, modes[0]) * self.get(j, modes[1])
+        return opcode, op_fn, modes
 
-    def opcode_input(self, **kwargs: Any) -> None:
-        i, addr = self.input.popleft(), self.next()
-        self.memory[addr] = i
+    # --- Opcode Operations ---
+    # All opcode operations are methods in the format `_op_{name}`
 
-    def opcode_output(self, **kwargs: Any) -> None:
-        modes: list[int] = kwargs["modes"]
-        i = self.next()
-        self.output.append(self.get(i, modes[0]))
+    def _op_add(self, modes: list[int], **kwargs: Any) -> None:
+        x = self._get(modes[0])
+        y = self._get(modes[1])
+        addr = self._get(mode=1)
+        self.memory[addr] = x + y
 
-    def opcode_jit(self, **kwargs: Any) -> None:
-        modes: list[int] = kwargs["modes"]
-        i, j = self.next(), self.next()
-        if self.get(i, modes[0]):
-            self.ip = self.get(j, modes[1])
+    def _op_mul(self, modes: list[int], **kwargs: Any) -> None:
+        x = self._get(modes[0])
+        y = self._get(modes[1])
+        addr = self._get(mode=1)
+        self.memory[addr] = x * y
 
-    def opcode_jif(self, **kwargs: Any) -> None:
-        modes: list[int] = kwargs["modes"]
-        i, j = self.next(), self.next()
-        if not self.get(i, modes[0]):
-            self.ip = self.get(j, modes[1])
+    def _op_input(self, **kwargs: Any) -> None:
+        x = self.input.popleft()
+        addr = self._get(mode=1)
+        self.memory[addr] = x
 
-    def opcode_lt(self, **kwargs: Any) -> None:
-        modes: list[int] = kwargs["modes"]
-        i, j, addr = self.next(), self.next(), self.next()
-        self.memory[addr] = 1 if self.get(i, modes[0]) < self.get(j, modes[1]) else 0
+    def _op_output(self, modes: list[int], **kwargs: Any) -> None:
+        x = self._get(modes[0])
+        self.output.append(x)
 
-    def opcode_eq(self, **kwargs: Any) -> None:
-        modes: list[int] = kwargs["modes"]
-        i, j, addr = self.next(), self.next(), self.next()
-        self.memory[addr] = 1 if self.get(i, modes[0]) == self.get(j, modes[1]) else 0
+    def _op_jit(self, modes: list[int], **kwargs: Any) -> None:
+        x = self._get(modes[0])
+        y = self._get(modes[1])
+        if x:
+            self.ip = y
 
-    def opcode_halt(self, **kwargs: Any) -> None:
+    def _op_jif(self, modes: list[int], **kwargs: Any) -> None:
+        x = self._get(modes[0])
+        y = self._get(modes[1])
+        if not x:
+            self.ip = y
+
+    def _op_lt(self, modes: list[int], **kwargs: Any) -> None:
+        x = self._get(modes[0])
+        y = self._get(modes[1])
+        addr = self._get(mode=1)
+        self.memory[addr] = int(x < y)
+
+    def _op_eq(self, modes: list[int], **kwargs: Any) -> None:
+        x = self._get(modes[0])
+        y = self._get(modes[1])
+        addr = self._get(mode=1)
+        self.memory[addr] = int(x == y)
+
+    def _op_halt(self, **kwargs: Any) -> None:
         self.halted = True
 
-    def opcode_error(self, **kwargs: Any) -> None:
+    def _op_error(self, **kwargs: Any) -> None:
         raise ValueError(f"Opcode does not exist: {kwargs['code']}")

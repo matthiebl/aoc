@@ -35,8 +35,8 @@ class Day23(Solver):
             self.length = len(self.instructions)
             return self
 
-        def _jie(self, x: str, y: str) -> int:
+        def _op_jie(self, x: str, y: str) -> int:
             return self.value(y) if self.value(x) % 2 == 0 else 1
 
-        def _jio(self, x: str, y: str) -> int:
+        def _op_jio(self, x: str, y: str) -> int:
             return self.value(y) if self.value(x) == 1 else 1
