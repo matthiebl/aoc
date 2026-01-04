@@ -1,0 +1,1 @@
+mypy src && pytest && echo "BUILD SUCCESSFUL" || echo "BUILD FAILURE"
