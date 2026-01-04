@@ -1,7 +1,7 @@
 from advent.solutions.year_2025.day_08 import DisjointSet
 
 
-def test_disjoint_set_basic():
+def test_disjoint_set_basic() -> None:
     ds = DisjointSet(5)
     assert ds.find(3) == 3
     assert ds.root_size(2) == 1
@@ -9,7 +9,7 @@ def test_disjoint_set_basic():
     assert ds.root_sizes() == [1, 1, 1, 1, 1]
 
 
-def test_disjoint_set_union():
+def test_disjoint_set_union() -> None:
     ds = DisjointSet(5)
     assert ds.find(3) == 3
     assert ds.find(4) == 4
@@ -22,7 +22,7 @@ def test_disjoint_set_union():
     assert sizes.count(2) == 1
 
 
-def test_disjoint_set_union_all():
+def test_disjoint_set_union_all() -> None:
     ds = DisjointSet(5)
     ds.union(1, 2)
     ds.union(3, 4)

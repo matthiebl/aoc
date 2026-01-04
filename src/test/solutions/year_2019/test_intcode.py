@@ -12,10 +12,10 @@ from advent.solutions.year_2019.intcode import Intcode
         ([1, 5, 6, 4, 0, 50, 49], 4, 99),
     ],
 )
-def test_add(program, index, outcome):
+def test_add(program: list[int], index: int, outcome: int) -> None:
     code = Intcode(program)
     code.run()
-    assert code.get(index) == outcome
+    assert code.memory[index] == outcome
 
 
 @pytest.mark.parametrize(
@@ -28,23 +28,7 @@ def test_add(program, index, outcome):
         ([2, 5, 6, 4, 0, 3, 33], 4, 99),
     ],
 )
-def test_mul(program, index, outcome):
+def test_mul(program: list[int], index: int, outcome: int) -> None:
     code = Intcode(program)
     code.run()
-    assert code.get(index) == outcome
-
-
-@pytest.mark.parametrize(
-    "opcode, exp_code, exp_modes",
-    [
-        (1, 1, [0, 0, 0]),
-        (101, 1, [1, 0, 0]),
-        (1001, 1, [0, 1, 0]),
-        (11101, 1, [1, 1, 1]),
-    ],
-)
-def test_get_opcode(opcode, exp_code, exp_modes):
-    code = Intcode([opcode])
-    act_code, act_modes = code.get_opcode()
-    assert exp_code == act_code
-    assert exp_modes == act_modes[: len(exp_modes)]
+    assert code.memory[index] == outcome

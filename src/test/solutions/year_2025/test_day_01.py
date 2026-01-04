@@ -5,7 +5,7 @@ from advent.utils.input_string import InputString
 
 
 @pytest.mark.parametrize("input, expected", [("L10", 0)])
-def test_part1(input, expected):
+def test_part1(input: str, expected: int) -> None:
     solver = get_solver(input)
 
     result = solver.part1()
@@ -13,7 +13,7 @@ def test_part1(input, expected):
     assert result == expected
 
 
-def test_part2():
+def test_part2() -> None:
     solver = get_solver("L10\nR99")
     result = solver.part2()
     assert result == 1

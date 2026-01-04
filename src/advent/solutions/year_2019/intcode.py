@@ -1,18 +1,24 @@
 from collections import deque
+from dataclasses import dataclass
 from typing import Any
 
 
 class Intcode:
+    @dataclass
+    class Opcode:
+        name: str
+        nargs: int
+
     OPCODES = {
-        1: {"name": "add", "nargs": 3},
-        2: {"name": "mul", "nargs": 3},
-        3: {"name": "input", "nargs": 1},
-        4: {"name": "output", "nargs": 1},
-        5: {"name": "jit", "nargs": 2},
-        6: {"name": "jif", "nargs": 2},
-        7: {"name": "lt", "nargs": 3},
-        8: {"name": "eq", "nargs": 3},
-        99: {"name": "halt", "nargs": 0},
+        1: Opcode(name="add", nargs=3),
+        2: Opcode(name="mul", nargs=3),
+        3: Opcode(name="input", nargs=1),
+        4: Opcode(name="output", nargs=1),
+        5: Opcode(name="jit", nargs=2),
+        6: Opcode(name="jif", nargs=2),
+        7: Opcode(name="lt", nargs=3),
+        8: Opcode(name="eq", nargs=3),
+        99: Opcode(name="halt", nargs=0),
     }
 
     def __init__(self, program: list[int], replace: dict[int, int] = {}, queue: list[Any] = []):
@@ -57,10 +63,9 @@ class Intcode:
         opcode = raw % 100
 
         modes = list(map(int, str(raw // 100)))[::-1]
-        extra_modes = self.OPCODES[opcode]["nargs"] - len(modes)
-        modes += [0] * extra_modes
+        modes += [0] * (self.OPCODES[opcode].nargs - len(modes))
 
-        op_fn = getattr(self, f"_op_{self.OPCODES[opcode]['name']}")
+        op_fn = getattr(self, f"_op_{self.OPCODES[opcode].name}")
 
         return opcode, op_fn, modes
 

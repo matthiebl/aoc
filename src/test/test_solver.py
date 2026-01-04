@@ -25,7 +25,7 @@ def test_solver_basic(tmp_path: Path) -> None:
     input_file.write_text("line1\nline2\nline3")
 
     solver = ExampleSolver(2024, 1)
-    solver.load_input(input_file)
+    solver.load_input(str(input_file))
 
     assert solver.part1() == 3
     assert solver.part2() == 17
