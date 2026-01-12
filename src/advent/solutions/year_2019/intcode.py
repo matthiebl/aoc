@@ -22,7 +22,7 @@ class Intcode:
     }
 
     def __init__(self, program: list[int], replace: dict[int, int] = {}, queue: list[Any] = []):
-        self.memory = program
+        self.memory = program.copy()
         for idx, val in replace.items():
             self.memory[idx] = val
         self.ip = 0
