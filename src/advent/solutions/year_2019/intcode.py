@@ -1,4 +1,4 @@
-from collections import deque
+from collections import defaultdict, deque
 from dataclasses import dataclass
 from typing import Any
 
@@ -10,22 +10,26 @@ class Intcode:
         nargs: int
 
     OPCODES = {
-        1: Opcode(name="add", nargs=3),
-        2: Opcode(name="mul", nargs=3),
-        3: Opcode(name="input", nargs=1),
+        1: Opcode(name="add", nargs=4),
+        2: Opcode(name="mul", nargs=4),
+        3: Opcode(name="input", nargs=2),
         4: Opcode(name="output", nargs=1),
         5: Opcode(name="jit", nargs=2),
         6: Opcode(name="jif", nargs=2),
-        7: Opcode(name="lt", nargs=3),
-        8: Opcode(name="eq", nargs=3),
+        7: Opcode(name="lt", nargs=4),
+        8: Opcode(name="eq", nargs=4),
+        9: Opcode(name="rb_off", nargs=1),
         99: Opcode(name="halt", nargs=0),
     }
 
     def __init__(self, program: list[int], replace: dict[int, int] = {}, queue: list[Any] = []):
-        self.memory = program.copy()
+        self.memory = defaultdict(int)
+        for idx, val in enumerate(program):
+            self.memory[idx] = val
         for idx, val in replace.items():
             self.memory[idx] = val
-        self.ip = 0
+        self.pointer = 0
+        self.relative_base = 0
 
         self.halted = False
 
@@ -40,21 +44,26 @@ class Intcode:
             opcode, op_fn, modes = self._get_opcode()
             op_fn(modes=modes, code=opcode)
 
-    def _get(self, mode: int = 0) -> int:
+    def _get(self, mode: int = 0, address_mode: bool = False) -> int:
         """
         Return the mode dependent value of the next value in memory.
 
-        If `mode == 0`, then the value at memory is returned.
+        If `mode == 0` (position mode), then the value at memory is returned.
 
-        If `mode == 1`, then the value itself is returned.
+        If `mode == 1` (immediate mode), then the value itself is returned.
+
+        If `mode == 2` (relative mode), then the relative base plus the value is returned.
         """
-        val = self.memory[self.ip]
-        self.ip += 1
+        val = self.memory[self.pointer]
+        self.pointer += 1
 
+        if mode == 2:
+            addr = self.relative_base + val
+            return addr if address_mode else self.memory[addr]
+        if mode == 1 or address_mode:
+            return val
         if mode == 0:
             return self.memory[val]
-        if mode == 1:
-            return val
 
         raise ValueError(f"Intcode._get mode cannot be {mode}")
 
@@ -75,18 +84,18 @@ class Intcode:
     def _op_add(self, modes: list[int], **kwargs: Any) -> None:
         x = self._get(modes[0])
         y = self._get(modes[1])
-        addr = self._get(mode=1)
+        addr = self._get(modes[2], True)
         self.memory[addr] = x + y
 
     def _op_mul(self, modes: list[int], **kwargs: Any) -> None:
         x = self._get(modes[0])
         y = self._get(modes[1])
-        addr = self._get(mode=1)
+        addr = self._get(modes[2], True)
         self.memory[addr] = x * y
 
-    def _op_input(self, **kwargs: Any) -> None:
+    def _op_input(self, modes: list[int], **kwargs: Any) -> None:
         x = self.input.popleft()
-        addr = self._get(mode=1)
+        addr = self._get(modes[0], True)
         self.memory[addr] = x
 
     def _op_output(self, modes: list[int], **kwargs: Any) -> None:
@@ -97,25 +106,29 @@ class Intcode:
         x = self._get(modes[0])
         y = self._get(modes[1])
         if x:
-            self.ip = y
+            self.pointer = y
 
     def _op_jif(self, modes: list[int], **kwargs: Any) -> None:
         x = self._get(modes[0])
         y = self._get(modes[1])
         if not x:
-            self.ip = y
+            self.pointer = y
 
     def _op_lt(self, modes: list[int], **kwargs: Any) -> None:
         x = self._get(modes[0])
         y = self._get(modes[1])
-        addr = self._get(mode=1)
+        addr = self._get(modes[2], True)
         self.memory[addr] = int(x < y)
 
     def _op_eq(self, modes: list[int], **kwargs: Any) -> None:
         x = self._get(modes[0])
         y = self._get(modes[1])
-        addr = self._get(mode=1)
+        addr = self._get(modes[2], True)
         self.memory[addr] = int(x == y)
+
+    def _op_rb_off(self, modes: list[int], **kwargs: Any) -> None:
+        x = self._get(modes[0])
+        self.relative_base += x
 
     def _op_halt(self, **kwargs: Any) -> None:
         self.halted = True
